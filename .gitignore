@@ -1,3 +1,5 @@
 node_modules
 .parcel-cache
+dist
 netlify-example
+sprint_1.code-workspace

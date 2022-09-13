@@ -1,4 +1,6 @@
 @import '../../partials/components/chat-list/chat-list.css';
+@import '../../partials/components/dialog-window/dialog-window.css';
+
 :root {
 	--bg-main: #7D6E6E;
 }
@@ -6,6 +8,14 @@
 .chat-page {
 	display: flex;
 	align-items: flex-start;
+	height: 100%;
+	min-height: 100%;
+
+	&__dialog {
+		height: 100%;
+		min-height: 100%;
+		width:100%;
+	}
 }
 
 .full-page {

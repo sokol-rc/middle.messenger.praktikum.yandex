@@ -1,0 +1,123 @@
+.dialog-window {
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
+	display: flex;
+
+	&__inner {
+		height: 100%;
+		min-height: 100%;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
+
+	&__header {
+		flex: 0;
+	}
+
+	&__body {
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+
+	}
+
+	&__controls {
+		width: 100%;
+	}
+}
+
+.dialog-window__body--bg-dialog {
+	background-color: rgb(100, 110, 85);
+}
+
+.dialog-header {
+	width: 100%;
+}
+
+.dialog-header__profile {
+	height: 100px;
+	padding: 20px 16px;
+}
+
+.profile-info {
+	display: flex;
+	flex-direction: row;
+}
+
+.profile-info__avatar {
+	margin-right: 16px;
+}
+
+.message-send {
+	width: 100%;
+	padding: 16px 20px;
+}
+
+.send-form {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+
+	&__input-group {
+		flex-grow: 1;
+	}
+}
+.dialog-scrollable-content {
+	padding-bottom: 20px;
+}
+.bubbles-day-section {
+	max-width: 90%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.bubbles-group {
+	width: 100%;
+	display: flex;
+	margin-bottom: 8px;
+}
+
+.bubble {
+	width: 100%;
+	display: flex;
+	position: relative;
+	&__inner {
+		max-width: 85%;
+		display: flex;
+		padding: 8px 10px;
+		border-radius: 10px;
+	}
+	&__tail-in {
+		fill: #fff;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		transform: translate(-9px,0);
+	}
+	&__tail-out {
+		fill: rgb(247, 216, 177);
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		transform: translate(9px,0);
+	}
+}
+
+.bubble__inner {
+
+}
+.bubble-out {
+	flex-direction: row-reverse;
+}
+.bubble-in .bubble__inner {
+	background-color: #fff;
+}
+
+.bubble-out .bubble__inner {
+	background-color: rgb(247, 216, 177);
+}

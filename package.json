@@ -2,9 +2,8 @@
   "name": "test",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "dev": "parcel index.hbs",
+    "dev": "parcel ./src/index.html --no-cache",
     "build": "parcel build index.hbs"
   },
   "keywords": [],
@@ -12,6 +11,14 @@
   "license": "ISC",
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "^1.0.9",
-    "parcel": "^2.7.0"
-  }
+    "autoprefixer": "^10.4.8",
+    "express": "^4.18.1",
+    "handlebars": "^4.7.7",
+    "parcel": "^2.7.0",
+    "postcss": "^8.4.16",
+    "postcss-cssnext": "^3.1.1",
+    "postcss-import": "^15.0.0",
+    "postcss-nested": "^5.0.6"
+  },
+  "dependencies": {}
 }
