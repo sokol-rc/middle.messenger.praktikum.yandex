@@ -1,0 +1,35 @@
+:root {
+	--link-color-standart: #AAAAFF;
+	--btn-bg-submit-color: #6850F8;
+}
+
+.visually-hidden {
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+}
+
+.link--standart {
+
+	text-decoration: underline;
+	color: var(--link-color-standart);
+}
+
+.btn {
+	padding: 8px 40px;
+	border-radius: 10px;
+	font-family: Roboto Condensed !important;
+	font-weight: 300;
+	font-size: 22px;
+	line-height: 26px;
+}
+
+.btn--submit-style {
+	background-color: var(--btn-bg-submit-color);
+	color: #fff;
+
+}

@@ -1,0 +1,5 @@
+.person-name {
+	&__text {
+		font-weight: 600;
+	}
+}

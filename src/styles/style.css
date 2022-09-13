@@ -1,0 +1,5 @@
+@import '../common/default.css';
+@import '../common/common.css';
+@import '../pages/login/login.css';
+@import '../pages/registration/registration.css';
+@import '../pages/chat/chat.css';

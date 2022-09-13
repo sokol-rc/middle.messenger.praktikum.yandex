@@ -1,0 +1,10 @@
+@import './chat-item/chat-item.css';
+.hr-bottom::after {
+	content: '';
+	display: block;
+	width: 100%;
+	font-size: 0;
+	line-height: 0;
+	border: 1px solid #888686;
+	filter: blur(1px);
+}
