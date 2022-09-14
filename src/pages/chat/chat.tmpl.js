@@ -5,7 +5,7 @@ export const chatPageTemplate = `
 		<div class="nav-sidebar__inner nav-sidebar--bg-main">
 			<div class="nav-sidebar__profile">
 				<div class="profile-info">
-					<div class="profile-info__avatar">
+					<div class="profile-info__avatar button-image" onclick ="sidebarRight.toogle(event,'chat-page__right-sidebar')">
 						{{> avatar}}
 					</div>
 				</div>
@@ -18,8 +18,10 @@ export const chatPageTemplate = `
 	<section class="chat-page__dialog">
 		{{> dialog-window}}
 	</section>
-	<div class="right-sidebar"></div>
+	<div class="chat-page__right-sidebar chat-page__right-sidebar--hidden right-sidebar">
+		{{> right-sidebar}}
+	</div>
 </main>
 
-{{> footer}}
+{{!> footer}}
 `;

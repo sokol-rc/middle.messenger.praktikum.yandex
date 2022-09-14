@@ -1,0 +1,9 @@
+.avatar {
+	&__img-wrapper{
+		display: flex;
+		align-items: flex-start;
+	}
+	&__img {
+		border-radius: 50%;
+	}
+}

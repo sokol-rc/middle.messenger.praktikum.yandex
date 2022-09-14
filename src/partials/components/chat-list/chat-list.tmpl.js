@@ -6,7 +6,7 @@ const chatList = `
 		<div class="chat-list__item hr-bottom">
 			{{> chat-item}}
 		</div>
-		<div class="chat-list__item hr-bottom">
+		<div class="chat-list__item hr-bottom chat-list__item--active">
 			{{> chat-item}}
 		</div>
 		<div class="chat-list__item hr-bottom">

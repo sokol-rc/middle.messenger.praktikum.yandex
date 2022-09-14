@@ -14,7 +14,6 @@
 }
 
 .link--standart {
-
 	text-decoration: underline;
 	color: var(--link-color-standart);
 }
@@ -32,4 +31,13 @@
 	background-color: var(--btn-bg-submit-color);
 	color: #fff;
 
+}
+
+.hr-bottom::after {
+	content: '';
+	display: block;
+	width: 100%;
+	font-size: 0;
+	line-height: 0;
+	border-bottom: 1px solid #888686;
 }

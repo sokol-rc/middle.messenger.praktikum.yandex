@@ -1,10 +1,14 @@
 @import './chat-item/chat-item.css';
-.hr-bottom::after {
-	content: '';
-	display: block;
-	width: 100%;
-	font-size: 0;
-	line-height: 0;
-	border: 1px solid #888686;
-	filter: blur(1px);
+
+:root {
+	--chat-item-hover-bg-color: rgb(255, 246, 254);
+	--chat-item-active-bg-color: rgb(255, 228, 251);
+}
+
+.chat-list__item:hover {
+	background-color: var(--chat-item-hover-bg-color);
+}
+
+.chat-list__item--active {
+	background-color: var(--chat-item-active-bg-color);
 }
