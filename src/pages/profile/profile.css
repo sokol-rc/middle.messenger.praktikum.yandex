@@ -1,0 +1,64 @@
+.profile-page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 10%;
+
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 20px 30px;
+		border: 1px solid #000;
+		border-radius: 20px;
+	}
+	&__avatar {
+		margin-bottom: 20px;
+	}
+	&__data--hidden, &__avatar--hidden {
+		display: none;
+	}
+	&__form--hidden {
+		display: none;
+	}
+	&__form--opened {
+		display: block;
+	}
+}
+.person-data {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.person-data__item + .person-data__item {
+	margin-top: 16px;
+}
+.person-data-form {
+	display: flex;
+	flex-direction: column;
+
+	&__avatar {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-bottom: 16px;
+	}
+	&__person-data {
+		margin-bottom: 16px;
+	}
+	&__item {
+		border: 1px solid rgb(175, 175, 175);
+	}
+	&__submit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+	}
+}
+.privacy-data-form {
+	margin-bottom: 16px;
+	&__item {
+		border: 1px solid rgb(175, 175, 175);
+	}
+}

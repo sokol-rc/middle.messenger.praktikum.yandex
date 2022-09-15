@@ -3,7 +3,7 @@
 	--dark2-bg-color: #5C2E44;
 }
 
-.auth-page-container {
+.layout-container {
 	display: flex;
 	align-items: center;
 	height: 100%;

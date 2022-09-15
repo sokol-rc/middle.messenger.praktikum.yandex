@@ -1,6 +1,5 @@
 export const loginPageTemplate = `
-{{> header}}
-<main class="auth-content auth-page-container">
+<main class="auth-content layout-container">
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">
 		<div class="form-header auth-content__header">
 			<h1 class="form-header__title">Вход</h1>
@@ -36,5 +35,4 @@ export const loginPageTemplate = `
 		</form>
 	</div>
 </main>
-{{> footer}}
 `;

@@ -1,4 +1,7 @@
 .avatar {
+	max-width: 60px;
+	max-height: 60px;
+	object-fit: cover;
 	&__img-wrapper{
 		display: flex;
 		align-items: flex-start;

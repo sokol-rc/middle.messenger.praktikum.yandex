@@ -1,6 +1,5 @@
 export const registrationPageTemplate = `
-{{> header}}
-<main class="auth-content auth-page-container">
+<main class="auth-content layout-container">
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">
 		<div class="form-header auth-content__header">
 			<h1 class="form-header__title">Регистрация</h1>
@@ -51,5 +50,4 @@ export const registrationPageTemplate = `
 		</form>
 	</div>
 </main>
-{{> footer}}
 `;
