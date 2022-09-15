@@ -11,7 +11,7 @@ const rightSidebarTemplate = `
 			</div>
 			<div class="chat-info__control">
 				<button class="chat-info__control-item chat-edit button-text" onclick="window.routing('/profile')">Редактировать</button>
-				<button class="chat-info__control-item chat-delete button-text">Удалить чат</button>
+				<button class="chat-info__control-item chat-delete button-text" onclick="window.modalConfirm.open()">Удалить чат</button>
 			</div>
 		</div>
 	</div>

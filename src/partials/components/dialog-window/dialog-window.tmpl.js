@@ -103,7 +103,7 @@ const dialogWindow = `
 				<form class="send-form" action="">
 					<div class="send-form__input-group send-form-input">
 						<label class="send-form-input__label visually-hidden" for="messageSend">Напишите здесь</label>
-						<input class="send-form-input__input" id="messageSend" type="text"
+						<input class="send-form-input__input" id="messageSend" type="text" name="message"
 							placeholder="Напишите здесь...">
 					</div>
 					<div class="send-form__submit">

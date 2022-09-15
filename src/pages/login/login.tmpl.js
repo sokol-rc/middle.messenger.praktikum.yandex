@@ -7,11 +7,11 @@ export const loginPageTemplate = `
 		<form class="auth-form form form-container" action="">
 			<div class="form-input">
 				<label class="form-input__label" for="authFormEmail">Email</label>
-				<input class="form-input__input" id="authFormEmail" type="email" placeholder="your-email@mail.com">
+				<input class="form-input__input" id="authFormEmail" type="email" placeholder="your-email@mail.com" name="login">
 			</div>
 			<div class="form-input">
 				<label class="form-input__label" for="authFormPassword">Пароль</label>
-				<input class="form-input__input" id="authFormPassword" type="password" placeholder="пароль">
+				<input class="form-input__input" id="authFormPassword" type="password" placeholder="пароль" name="password">
 			</div>
 			<div class="form__check policy-check">
 				<input class="policy-check__input" id="authFormPolicy" type="checkbox">

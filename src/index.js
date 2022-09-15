@@ -15,6 +15,7 @@ import './partials/components/dialog-window/dialog-window.tmpl';
 import './partials/elements/controls/sidebar-button/sidebar-button.tmpl';
 import './partials/components/right-sidebar/right-sidebar.tmpl';
 import './partials/components/errors/error-page.tmpl';
+import './partials/components/modal/modal-confirm.tmpl
 
 const links = {
 	'/login': loginPageTemplate,

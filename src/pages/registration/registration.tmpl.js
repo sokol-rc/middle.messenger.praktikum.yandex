@@ -8,28 +8,28 @@ export const registrationPageTemplate = `
 			<div class="form__two-inputs">
 				<div class="form-input">
 					<label class="form-input__label" for="regFormFirstname">Имя</label>
-					<input class="form-input__input" id="regFormFirstname" type="text" placeholder="Ваше имя">
+					<input class="form-input__input" id="regFormFirstname" type="text" placeholder="Ваше имя" name="first_name">
 				</div>
 				<div class="form-input">
 					<label class="form-input__label" for="regFormLastname">Фамилия</label>
-					<input class="form-input__input" id="regFormLastname" type="text" placeholder="Ваша фамилия">
+					<input class="form-input__input" id="regFormLastname" type="text" placeholder="Ваша фамилия" name="second_name">
 				</div>
 			</div>
 			<div class="form-input">
 				<label class="form-input__label" for="regFormLogin">Логин</label>
-				<input class="form-input__input" id="regFormLogin" type="text" placeholder="your-nickname">
+				<input class="form-input__input" id="regFormLogin" type="text" placeholder="your-nickname" name="login">
 			</div>
 			<div class="form-input">
 				<label class="form-input__label" for="regFormEmail">Email</label>
-				<input class="form-input__input" id="regFormEmail" type="email" placeholder="your-email@mail.com">
+				<input class="form-input__input" id="regFormEmail" type="email" placeholder="your-email@mail.com" name="email">
 			</div>
 			<div class="form-input">
 				<label class="form-input__label" for="regFormPhone">Телефон</label>
-				<input class="form-input__input" id="regFormPhone" type="phone" placeholder="+7-911-911-91-91">
+				<input class="form-input__input" id="regFormPhone" type="phone" placeholder="+7-911-911-91-91" name="phone">
 			</div>
 			<div class="form-input">
 				<label class="form-input__label" for="authFormPassword">Пароль</label>
-				<input class="form-input__input" id="authFormPassword" type="password" placeholder="пароль">
+				<input class="form-input__input" id="authFormPassword" type="password" placeholder="пароль" name="password">
 			</div>
 			<div class="form__check policy-check">
 				<input class="policy-check__input" id="authFormEmail" type="checkbox">

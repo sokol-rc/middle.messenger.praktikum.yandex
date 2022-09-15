@@ -21,4 +21,5 @@ export const chatPageTemplate = `
 		{{> right-sidebar}}
 	</div>
 </main>
+{{> modal-confirm}}
 `;
