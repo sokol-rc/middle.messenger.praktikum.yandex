@@ -2,7 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding-top: 10%;
+	padding-top: 30px;
 
 	&__inner {
 		display: flex;
@@ -15,11 +15,11 @@
 	&__avatar {
 		margin-bottom: 20px;
 	}
-	&__data--hidden, &__avatar--hidden {
+	&__view--hidden {
 		display: none;
 	}
 	&__form--hidden {
-		display: none;
+		display: none !important;
 	}
 	&__form--opened {
 		display: block;

@@ -1,2 +1,3 @@
 export const serviceUnavailableTemplate = `
-500 error`;
+	{{> error-page value='500'}}
+`;

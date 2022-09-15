@@ -1,3 +1,4 @@
 export const notFoundPageTemplate = `
-	404 error
+	{{> error-page value='404'}}
 `;
+
