@@ -1,4 +1,4 @@
-import Handlebars from 'handlebars';
+import Handlebars from "../node_modules/handlebars";
 import { loginPageTemplate } from './pages/login/login.tmpl'
 import { registrationPageTemplate } from './pages/registration/registration.tmpl';
 import { chatPageTemplate } from './pages/chat/chat.tmpl';

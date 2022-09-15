@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "parcel ./src/index.html --no-cache",
-    "build": "parcel build index.hbs"
+    "start": "npm run build && node ./src/server.js",
+    "build": "parcel build ./src/index.html"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +17,6 @@
     "handlebars": "^4.7.7",
     "parcel": "^2.7.0",
     "postcss": "^8.4.16",
-    "postcss-cssnext": "^3.1.1",
     "postcss-import": "^15.0.0",
     "postcss-nested": "^5.0.6"
   },
