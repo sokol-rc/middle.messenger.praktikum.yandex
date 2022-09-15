@@ -1,5 +1,4 @@
 export const chatPageTemplate = `
-{{!> header}}
 <main class="chat-page full-page">
 	<nav class="nav-sidebar">
 		<div class="nav-sidebar__inner nav-sidebar--bg-main">
@@ -22,6 +21,4 @@ export const chatPageTemplate = `
 		{{> right-sidebar}}
 	</div>
 </main>
-
-{{!> footer}}
 `;

@@ -23,6 +23,7 @@ const dialogWindow = `
 		<div class="dialog-window__body dialog-window__body--bg-dialog hr-bottom">
 			<div class="dialog-scrollable-content">
 				<div class="bubbles-day-section">
+					<div class="day-title">10 сентября</div>
 					<div class="bubbles-group">
 						<div class="bubble bubble-in">
 							<div class="bubble__inner">
