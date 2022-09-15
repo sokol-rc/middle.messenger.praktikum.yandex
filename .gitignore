@@ -1,0 +1,6 @@
+node_modules
+.parcel-cache
+dist
+utils
+sprint_1.code-workspace
+middle.messenger.praktikum.yandex
