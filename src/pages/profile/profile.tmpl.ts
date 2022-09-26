@@ -1,4 +1,4 @@
-export const profileTemplate = `
+export const profileTemplate: string = `
 <main class="profile-page layout-container">
 	<div class="profile-page__inner">
 		<div class="profile-page__view profile-page__view--hidden">

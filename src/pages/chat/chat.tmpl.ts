@@ -1,4 +1,4 @@
-export const chatPageTemplate = `
+export const chatPageTemplate: string = `
 <main class="chat-page full-page">
 	<nav class="nav-sidebar">
 		<div class="nav-sidebar__inner nav-sidebar--bg-main">

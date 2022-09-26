@@ -1,4 +1,4 @@
-export const registrationPageTemplate = `
+export const registrationPageTemplate: string = `
 <main class="auth-content layout-container">
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">
 		<div class="form-header auth-content__header">
