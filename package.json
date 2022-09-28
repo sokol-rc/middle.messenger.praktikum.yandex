@@ -8,7 +8,8 @@
         "build": "parcel build ./src/index.html"
     },
     "alias": {
-        "core": "./src/core"
+        "core": "./src/core",
+        "utils": "./src/utils"
     },
     "engines": {
         "node": "14.17.6"
