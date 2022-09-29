@@ -72,7 +72,7 @@ export default class Block<P = any> {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
 
-    _componentDidMount(props: P) {
+	_componentDidMount(props: P) {
         this.componentDidMount(props);
     }
 
