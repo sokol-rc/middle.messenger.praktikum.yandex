@@ -2,20 +2,20 @@
 import Block from 'core/Block';
 
 interface ButtonProps {
-    label: string;
+	label: string;
+	disable: boolean;
 	className: string;
     onClick?: () => void;
 }
 
 export class Button extends Block {
-	constructor({ label, className = '',  onClick }: ButtonProps) {
-		super({ label, className,  events: { click: onClick } });
+	constructor({...props}: ButtonProps) {
+		super({ ...props, events: { click: props.onClick } });
+		const isDisable = props.disable ? '' : 'disable';
     }
-    static get componentName(): string {
-        return 'Button';
-    }
+	static componentName = 'Button';
 
 	protected render(): string {
-        return `<button class="form-btns__submit btn btn--submit-style {{className}}" type="submit">{{label}}</button> `;
+        return `<button class="form-btns__submit btn btn--submit-style {{className}}" type="submit" isDisable>{{label}}</button> `;
     }
 }

@@ -1,43 +1,33 @@
 /* eslint-disable */
 import Block from 'core/Block';
 import { getFormValues } from 'utils/formTools';
-import { formValidate, showErrors, showSuccess } from 'utils/validate';
+import {
+    formValidate,
+    inputValidate,
+    showErrors,
+    showSuccess,
+    showValidateResult,
+} from 'utils/validate';
 
 export class LoginPage extends Block {
     constructor() {
         super();
         this.setProps({
 			handleClick: this.handleClick.bind(this),
-			onBlur: this.onBlur.bind(this),
-			onFocus: this.onFocus.bind(this),
         });
-	}
-	
-	onBlur(event: Event): void { 
+    }
 
-	}
+	handleClick(event: MouseEvent): void {
 
-	onFocus(event: FocusEvent): void { 
+		event.preventDefault();
+		
+		const loginProps: ValidateInputProps = this.refs.loginInputRef.getProps();
+		const PasswordProps: ValidateInputProps = this.refs.passwordInputRef.getProps();
 
-	}
+		formValidate([loginProps, PasswordProps]);
 
-    handleClick(event: MouseEvent): void {
-        event.preventDefault();
-        const formElement = document.querySelector(
-            '.auth-form'
-		) as HTMLFormElement;
-		const formValues = getFormValues(formElement);
-		console.log(formValues);
-        const validation = formValidate(formElement);
-
-        if (
-            validation.error !== 0 &&
-            typeof validation.elements !== 'undefined'
-		) {
-            showErrors(formElement, validation.elements);
-		} else {
-            showSuccess(formElement);
-        }
+		const formValues = getFormValues([loginProps, PasswordProps]);
+		console.log(formValues); // нужно вывести по ТЗ
     }
 
     render() {
@@ -49,22 +39,20 @@ export class LoginPage extends Block {
 		</div>
 		<form class="auth-form form form-container" action="">
 			{{{Input 
-				type="email" 
+				type="text" 
 				name="login" 
 				label="Email" 
-				value=""
-				placeholder="your-email@mail.com" 
+				placeholder="Ваш login" 
 				validateType="login"
-				onBlur=onBlur
-				onFocus=onFocus
+				ref="loginInputRef"
 			}}}
 			{{{Input 
 				type="password" 
 				name="password" 
-				value=""
 				label="Пароль" 
 				placeholder="пароль" 
 				validateType="password"
+				ref="passwordInputRef"
 			}}}
 
 			<div class="form__check policy-check">
@@ -81,6 +69,7 @@ export class LoginPage extends Block {
 				{{{Button 
 					label="Войти" 
 					class="qwe" 
+					disable=isValidate
 					onClick=handleClick
 				}}}
 			</div>

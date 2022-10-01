@@ -17,9 +17,7 @@ export default class Block<P = any> {
         FLOW_RENDER: 'flow:render',
     } as const;
 
-    static get componentName(): string {
-        return '';
-    }
+	static componentName: string;
 
     public id = nanoid(6);
     private readonly _meta: BlockMeta;
@@ -31,7 +29,7 @@ export default class Block<P = any> {
     eventBus: () => EventBus<Events>;
 
     protected state: any = {};
-    protected refs: { [key: string]: HTMLElement } = {};
+    protected refs: { [key: string]: Block } = {};
 
     public constructor(props?: P) {
         const eventBus = new EventBus<Events>();
@@ -88,7 +86,10 @@ export default class Block<P = any> {
 
     componentDidUpdate(oldProps: P, newProps: P) {
         return true;
-    }
+	}
+	getProps = () => { 
+		return this.props;
+	}
 
     setProps = (nextProps: P) => {
         if (!nextProps) {
