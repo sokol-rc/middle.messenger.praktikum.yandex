@@ -159,6 +159,7 @@
 }
 
 .time {
+	display: inline-block;
 	&__inner {
 		position: absolute;
 		right: 0;

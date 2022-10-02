@@ -41,6 +41,9 @@ export class RegistrationPage extends Block {
 				<form class="auth-form form form-container" action="">
 					<div class="form__two-inputs">
 						{{{Input 
+							wrapperClassName="form-input"
+							labelClassName="form-input__label"
+							className="form-input__label"
 							type="text" 
 							name="first_name" 
 							label="Имя" 
@@ -49,6 +52,9 @@ export class RegistrationPage extends Block {
 							ref="firstNameInputRef"
 						}}}
 						{{{Input 
+							wrapperClassName="form-input"
+							labelClassName="form-input__label"
+							className="form-input__label"
 							type="text" 
 							name="second_name" 
 							label="Фамилия" 
@@ -58,6 +64,9 @@ export class RegistrationPage extends Block {
 						}}}
 					</div>
 					{{{Input 
+						wrapperClassName="form-input"
+						labelClassName="form-input__label"
+						className="form-input__label"
 						type="text" 
 						name="login" 
 						label="Логин" 
@@ -66,6 +75,9 @@ export class RegistrationPage extends Block {
 						ref="loginInputRef"
 					}}}
 					{{{Input 
+						wrapperClassName="form-input"
+						labelClassName="form-input__label"
+						className="form-input__label"
 						type="text" 
 						name="email" 
 						label="Email" 
@@ -74,6 +86,9 @@ export class RegistrationPage extends Block {
 						ref="emailInputRef"
 					}}}
 					{{{Input 
+						wrapperClassName="form-input"
+						labelClassName="form-input__label"
+						className="form-input__label"
 						type="phone" 
 						name="phone" 
 						label="Телефон" 
@@ -82,6 +97,9 @@ export class RegistrationPage extends Block {
 						ref="phoneInputRef"
 					}}}
 					{{{Input 
+						wrapperClassName="form-input"
+						labelClassName="form-input__label"
+						className="form-input__label"
 						type="password" 
 						name="password" 
 						label="Пароль" 
@@ -97,6 +115,7 @@ export class RegistrationPage extends Block {
 					<div class="form__control form-btns form-single-btn">
 						{{{Button 
 							label="Зарегистрироваться" 
+							className="btn btn--submit-style" 
 							disable=isValidate
 							onClick=handleClick
 						}}}

@@ -13,23 +13,7 @@
         min-height: 100%;
         width: 100%;
     }
-    &__right-sidebar {
-        width: 100%;
-        &--hidden {
-            display: none;
-        }
-        &--hiddening {
-            width: 0px;
-            overflow: hidden;
-        }
-        &--opening {
-            width: 0px;
-            overflow: hidden;
-        }
-        &--opened {
-            width: 100%;
-        }
-    }
+
 }
 .button-image {
     cursor: pointer;

@@ -4,7 +4,8 @@ import Block from 'core/Block';
 interface InputProps {
     type: string;
     id: number;
-    name: string;
+	name: string;
+	className?: string;
     placeholder?: string;
     validateType?: string;
     onBlur?: () => void;
@@ -12,24 +13,10 @@ interface InputProps {
 }
 
 export class InputInner extends Block {
-    constructor({
-        type,
-        name,
-        id,
-        placeholder,
-        validateType,
-        onBlur,
-        onFocus,
-    }: InputProps) {
-        super({
-            type,
-            name,
-            id,
-            placeholder,
-            validateType,
-            events: {
-                blur: onBlur,
-                focus: onFocus,
+    constructor({...props}: InputProps) {
+        super({...props, events: {
+                blur: props.onBlur,
+                focus: props.onFocus,
             },
 		});
 		this.setProps({value: ''})
@@ -42,12 +29,12 @@ export class InputInner extends Block {
         const id = this.id;
         return `
 			<input
-			class="form-input__input"
-			id="{{id}}"
-			type="{{type}}"
-			placeholder="{{placeholder}}"
-			name="{{name}}"
-			data-validate="{{validateType}}"
-			value="{{value}}">`;
+			class="${this.props.className}"
+			id="${this.props.id}"
+			type="${this.props.type}"
+			placeholder="${this.props.placeholder}"
+			name="${this.props.name}"
+			data-validate="${this.props.validateType}"
+			value="${this.props.value}">`;
     }
 }

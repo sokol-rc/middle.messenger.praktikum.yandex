@@ -15,6 +15,10 @@ declare global {
 		validateType: string;
 		value: string;
 	}
+	export interface BlockConstructable<Props = any> {
+		componentName: string;
+		new (props: Props): Block;
+	}
 
 }
 

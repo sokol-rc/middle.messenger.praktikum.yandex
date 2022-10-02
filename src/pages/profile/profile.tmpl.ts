@@ -10,10 +10,10 @@ export const profileTemplate: string = `
 					<div class="person-data__item person-data__first-name">
 						Имя: Евгений
 					</div>
-					<div class="person-data__item person-data__second_name">
+					<div class="person-data__item person-data__second-name">
 						Фамилия: Соколовский
 					</div>
-					<div class="person-data__item person-data__display_name">
+					<div class="person-data__item person-data__display-name">
 						Отображаемое имя: sokoljd872ews
 					</div>
 					<div class="person-data__item person-data__login">

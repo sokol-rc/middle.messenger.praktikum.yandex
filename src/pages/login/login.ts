@@ -34,6 +34,9 @@ export class LoginPage extends Block {
 		</div>
 		<form class="auth-form form form-container" action="">
 			{{{Input 
+				wrapperClassName="form-input"
+				labelClassName="form-input__label"
+				className="form-input__label"
 				type="text" 
 				name="login" 
 				label="Email" 
@@ -42,6 +45,9 @@ export class LoginPage extends Block {
 				ref="loginInputRef"
 			}}}
 			{{{Input 
+				wrapperClassName="form-input"
+				labelClassName="form-input__label"
+				className="form-input__label"
 				type="password" 
 				name="password" 
 				label="Пароль" 
@@ -62,8 +68,8 @@ export class LoginPage extends Block {
 					<a class="link link--standart" href="#">Забыли пароль?</a>
 				</div>
 				{{{Button 
-					label="Войти" 
-					class="qwe" 
+					label="Войти"
+					className="btn btn--submit-style"
 					disable=isValidate
 					onClick=handleClick
 				}}}

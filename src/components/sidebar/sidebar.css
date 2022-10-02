@@ -32,3 +32,11 @@
 .button-text:hover {
 	text-decoration: underline;
 }
+.right-sidebar {
+	display: none;
+	width: 100%;
+	&--opened {
+		display: block;
+		width: 100%;
+	}
+}

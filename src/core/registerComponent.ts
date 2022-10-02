@@ -2,10 +2,6 @@
 import Block from './Block';
 import Handlebars, { HelperOptions } from 'handlebars';
 
-interface BlockConstructable<Props = any> {
-    componentName: string;
-    new (props: Props): Block;
-}
 
 export default function registerComponent<Props extends any>(
     Component: BlockConstructable<Props>

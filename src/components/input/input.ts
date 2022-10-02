@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Block from 'core/Block';
-import { inputValidate } from 'utils/validate';
+import { inputValidate, ValidateTypes } from 'utils/validate';
 
 import './input.css';
 
@@ -12,6 +12,7 @@ interface InputProps {
     validateType?: string;
     className?: string;
     setLoginValidateStatus?: () => void;
+    passwordsValidate?: () => void;
 }
 
 export class Input extends Block {
@@ -43,7 +44,11 @@ export class Input extends Block {
 
 		this.setInputValue(currentValue);
 
-        inputValidate(inputProps, this.setErrorMessage.bind(this));
+		inputValidate(inputProps, this.setErrorMessage.bind(this));
+		
+		if (inputProps.validateType === ValidateTypes.REPEAT_PASSWORD) { 
+			this.props.passwordsValidate();
+		}
     }
 
 	onBlur(event: FocusEvent): void {
@@ -54,7 +59,11 @@ export class Input extends Block {
         const inputProps: ValidateInputProps =
             this.refs.inputInnerRef.getProps();
 
-        inputValidate(inputProps, this.setErrorMessage.bind(this));
+		inputValidate(inputProps, this.setErrorMessage.bind(this));
+		
+		if (inputProps.validateType === ValidateTypes.REPEAT_PASSWORD) { 
+			this.props.passwordsValidate();
+		}
     }
 
     setInputValue(currentValue: string) {
@@ -68,16 +77,18 @@ export class Input extends Block {
     }
 
     protected render(): string {
-        const id = this.id;
+		const id = this.id;
+		
         return `
-		<div class="form-input {{className}}">
-			<label class="form-input__label" for="${id}">{{label}}</label>
+		<div class="{{wrapperClassName}}">
+			<label class="{{labelClassName}}" for="${id}">${this.props.label}</label>
 			{{{InputInner
 				id="${id}" 
-				type="{{type}}" 
-				placeholder="{{placeholder}}" 
-				name="{{name}}" 
-				validateType="{{validateType}}"
+				type="${this.props.type}" 
+				className="${this.props.className}"
+				placeholder="${this.props.placeholder}" 
+				name="${this.props.name}" 
+				validateType="${this.props.validateType}"
 				onBlur=onBlur
 				onFocus=onFocus
 				ref="inputInnerRef"
@@ -87,5 +98,24 @@ export class Input extends Block {
 				ref="errorRef"
 			}}}
 		</div>`;
+
+        // return `
+		// <div class="form-input {{className}}">
+		// 	<label class="form-input__label" for="${id}">{{label}}</label>
+		// 	{{{InputInner
+		// 		id="${id}" 
+		// 		type="{{type}}" 
+		// 		placeholder="{{placeholder}}" 
+		// 		name="{{name}}" 
+		// 		validateType="{{validateType}}"
+		// 		onBlur=onBlur
+		// 		onFocus=onFocus
+		// 		ref="inputInnerRef"
+		// 	}}}
+		// 	{{{InputError
+		// 		errorMessage="${this.props.errorMessage}"
+		// 		ref="errorRef"
+		// 	}}}
+		// </div>`;
     }
 }

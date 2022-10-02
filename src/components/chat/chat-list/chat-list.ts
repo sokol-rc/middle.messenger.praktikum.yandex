@@ -13,8 +13,8 @@ export class ChatList extends Block {
 			<div class="chat-list__item hr-bottom">
 				{{{ChatItem}}}
 			</div>
-			<div class="chat-list__item hr-bottom chat-list__item--active">
-				{{{ChatItem}}}
+			<div class="chat-list__item hr-bottom">
+				{{{ChatItem isActive=true}}}
 			</div>
 			<div class="chat-list__item hr-bottom">
 				{{{ChatItem}}}

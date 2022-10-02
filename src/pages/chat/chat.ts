@@ -5,7 +5,19 @@ import personAvatar from '../../assets/avatar.png';
 import './chat.css';
 
 export class ChatPage extends Block {
-	
+    constructor() {
+        super();
+        this.setProps({
+            toogleSidebar: this.toogleSidebar.bind(this),
+        });
+    }
+
+    toogleSidebar() {
+        this.refs.SidebarRef.setProps({
+            isVisible: !this.refs.SidebarRef.getProps().isVisible,
+        });
+    }
+
     render() {
         return `
 		<div>
@@ -25,10 +37,10 @@ export class ChatPage extends Block {
 		{{{ChatList}}}
 	</section>
 	<section class="chat-page__dialog">
-		{{{Dialog}}}
+		{{{Dialog toogleSidebar=toogleSidebar}}}
 	</section>
-	<div class="chat-page__right-sidebar chat-page__right-sidebar--hidden right-sidebar">
-		{{{Sidebar}}}
+	<div class="chat-page__right-sidebar">
+		{{{Sidebar ref="SidebarRef"}}}
 	</div>
 </main>
 {{{ModalConfirm}}}

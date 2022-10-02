@@ -99,3 +99,20 @@
 		font-size: 48px;
 	}
 }
+.btn--submit-style {
+	background-color: var(--btn-bg-submit-color);
+	color: #fff;
+
+}
+.form-btns {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	&__forgot-password {
+		font-weight: 300;
+		font-size: 22px;
+		line-height: 26px;
+	}
+}

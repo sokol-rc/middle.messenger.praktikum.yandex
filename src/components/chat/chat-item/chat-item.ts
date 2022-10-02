@@ -3,12 +3,23 @@ import Block from 'core/Block';
 import './chat-item.css';
 import personAvatar from '../../../assets/avatar.png';
 
+interface ChatItemProps { 
+	isActive?: boolean
+}
+
 export class ChatItem extends Block {
+	constructor(props: ChatItemProps) { 
+		super(props);
+	}
 
     static componentName = 'ChatItem';
 
-    protected render(): string {
-        return `<div class="chat-preview">
+	protected render(): string {
+		
+		let classActive: string = '';
+		if (this.props.isActive) { classActive = 'chat-preview--active' }
+		
+        return `<div class="chat-preview ${classActive}">
 		<div class="chat-preview__avatar">
 			{{{Avatar image="${personAvatar}"}}}
 		</div>

@@ -1,13 +1,43 @@
 /* eslint-disable */
 import Block from 'core/Block';
+import { getFormValues } from 'utils/formTools';
+import { formValidate } from 'utils/validate';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
+interface DialogProps {
+    toogleSidebar?: () => void;
+}
+
 export class Dialog extends Block {
+    constructor(props: DialogProps) {
+        super(props);
+        this.setProps({
+            handleClick: this.handleClick.bind(this),
+            sendButtonClick: this.sendButtonClick.bind(this),
+        });
+    }
 
     static componentName = 'Dialog';
 
+    handleClick() {
+        this.props.toogleSidebar();
+    }
+
+	sendButtonClick(e: MouseEvent) {
+		e.preventDefault();
+
+		const messageInput: ValidateInput = this.refs.messageInputRef;
+
+        formValidate([messageInput]);
+
+        const formValues = getFormValues([messageInput]);
+        console.log(formValues); // нужно вывести по ТЗ
+    }
+
     protected render(): string {
+        const sendBtnLabel: string = '<span>';
+
         return `
 		<div class="dialog-window">
 	<div class="dialog-window__inner">
@@ -24,7 +54,7 @@ export class Dialog extends Block {
 				</div>
 			</div>
 			<div class="dialog-header__control">
-				{{{SidebarButton}}}
+				{{{SidebarButton onClick=handleClick}}}
 			</div>
 		</div>
 		<div class="dialog-window__body dialog-window__body--bg-dialog hr-bottom">
@@ -108,16 +138,23 @@ export class Dialog extends Block {
 		<div class="dialog-window__controls hr-left">
 			<div class="message-send">
 				<form class="send-form" action="">
-					<div class="send-form__input-group send-form-input">
-						<label class="send-form-input__label visually-hidden" for="messageSend">Напишите здесь</label>
-						<input class="send-form-input__input" id="messageSend" type="text" name="message"
-							placeholder="Напишите здесь...">
-					</div>
+							{{{Input
+								type="text"
+								wrapperClassName="send-form__input-group send-form-input"
+								labelClassName="send-form-input__label visually-hidden"
+								className="send-form-input__input"
+								name="message"
+								label="Напишите здесь"
+								placeholder="Напишите здесь..." 
+								validateType="message"
+								ref="messageInputRef"
+							}}}
 					<div class="send-form__submit">
 						<div class="send-message-control">
-							<button class="send-message-btn">
-								<span class="send-icon"><img src="${sendIcon}" alt=""></span>
-							</button>
+						{{{Button
+							label="<span class=\\"send-icon\\"><img src=\\"${sendIcon}\\" alt=\\"\\"></span>"
+							onClick=sendButtonClick
+						}}}
 						</div>
 					</div>
 				</form>
