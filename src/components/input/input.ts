@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Block from 'core/Block';
-import { nanoid } from 'nanoid';
 import { inputValidate } from 'utils/validate';
+
+import './input.css';
 
 interface InputProps {
     type: string;
@@ -18,7 +19,7 @@ export class Input extends Block {
         super({ ...props, events: {} });
         this.setProps({
             onBlur: this.onBlur.bind(this),
-            onInput: this.onInput.bind(this),
+            onFocus: this.onFocus.bind(this),
             setErrorMessage: this.setErrorMessage.bind(this),
             value: '',
         });
@@ -27,18 +28,39 @@ export class Input extends Block {
         return 'Input';
     }
 
-    onInput(e: InputEvent): void {}
+    onFocus(event: FocusEvent): void | undefined {
+        const inputProps: ValidateInputProps =
+            this.refs.inputInnerRef.getProps();
+        const currentValue: string = (event.target as HTMLInputElement).value;
 
-    onBlur(event: FocusEvent): void {
-        this.setProps({ value: (event.target as HTMLInputElement).value });
-        this.refs.inputInnerRef.setProps({
-            value: (event.target as HTMLInputElement).value,
-        });
+        //чтобы не было ререндера сразу
+        if (
+            typeof inputProps.value === 'undefined' ||
+            inputProps.value === currentValue
+        ) {
+            return;
+		}
+
+		this.setInputValue(currentValue);
+
+        inputValidate(inputProps, this.setErrorMessage.bind(this));
+    }
+
+	onBlur(event: FocusEvent): void {
+		const currentValue: string = (event.target as HTMLInputElement).value;
+
+		this.setInputValue(currentValue);
 
         const inputProps: ValidateInputProps =
             this.refs.inputInnerRef.getProps();
 
         inputValidate(inputProps, this.setErrorMessage.bind(this));
+    }
+
+    setInputValue(currentValue: string) {
+        this.refs.inputInnerRef.setProps({
+            value: currentValue,
+        });
     }
 
     setErrorMessage(props: { errorMessage: string }): void {
@@ -58,7 +80,6 @@ export class Input extends Block {
 				validateType="{{validateType}}"
 				onBlur=onBlur
 				onFocus=onFocus
-				onInput=onInput
 				ref="inputInnerRef"
 			}}}
 			{{{InputError

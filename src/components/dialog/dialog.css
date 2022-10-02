@@ -1,5 +1,3 @@
-@import '../../elements/controls/sidebar-button/sidebar-button.css';
-
 :root {
 	--message-status-received: #51b050;
 	--message-status-readed: green;

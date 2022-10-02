@@ -1,5 +1,3 @@
-@import '../../../elements/person/name/name.css';
-@import '../../../elements/message/preview/preview.css';
 .chat-preview {
 	display: flex;
 	align-items: center;

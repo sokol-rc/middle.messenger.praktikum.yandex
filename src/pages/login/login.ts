@@ -1,33 +1,28 @@
 /* eslint-disable */
 import Block from 'core/Block';
 import { getFormValues } from 'utils/formTools';
-import {
-    formValidate,
-    inputValidate,
-    showErrors,
-    showSuccess,
-    showValidateResult,
-} from 'utils/validate';
+import { formValidate } from 'utils/validate';
+
+import './login.css';
 
 export class LoginPage extends Block {
     constructor() {
         super();
         this.setProps({
-			handleClick: this.handleClick.bind(this),
+            handleClick: this.handleClick.bind(this),
         });
     }
 
-	handleClick(event: MouseEvent): void {
+    handleClick(event: MouseEvent): void {
+        event.preventDefault();
 
-		event.preventDefault();
-		
-		const loginProps: ValidateInputProps = this.refs.loginInputRef.getProps();
-		const PasswordProps: ValidateInputProps = this.refs.passwordInputRef.getProps();
+        const loginInput: ValidateInput = this.refs.loginInputRef;
+        const passwordInput: ValidateInput = this.refs.passwordInputRef;
 
-		formValidate([loginProps, PasswordProps]);
+        formValidate([loginInput, passwordInput]);
 
-		const formValues = getFormValues([loginProps, PasswordProps]);
-		console.log(formValues); // нужно вывести по ТЗ
+        const formValues = getFormValues([loginInput, passwordInput]);
+        console.log(formValues); // нужно вывести по ТЗ
     }
 
     render() {

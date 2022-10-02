@@ -18,21 +18,6 @@
 	color: var(--link-color-standart);
 }
 
-.btn {
-	padding: 8px 40px;
-	border-radius: 10px;
-	font-family: Roboto Condensed !important;
-	font-weight: 300;
-	font-size: 22px;
-	line-height: 26px;
-}
-
-.btn--submit-style {
-	background-color: var(--btn-bg-submit-color);
-	color: #fff;
-
-}
-
 .hr-bottom::after {
 	content: '';
 	display: block;

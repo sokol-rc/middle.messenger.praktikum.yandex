@@ -7,8 +7,8 @@ interface InputProps {
     name: string;
     placeholder?: string;
     validateType?: string;
-	onBlur?: () => void;
-	onInput?: () => void;
+    onBlur?: () => void;
+    onFocus?: () => void;
 }
 
 export class InputInner extends Block {
@@ -19,7 +19,7 @@ export class InputInner extends Block {
         placeholder,
         validateType,
         onBlur,
-        onInput,
+        onFocus,
     }: InputProps) {
         super({
             type,
@@ -29,9 +29,10 @@ export class InputInner extends Block {
             validateType,
             events: {
                 blur: onBlur,
-                input: onInput,
+                focus: onFocus,
             },
-        });
+		});
+		this.setProps({value: ''})
     }
     static get componentName(): string {
         return 'InputInner';

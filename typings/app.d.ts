@@ -8,6 +8,14 @@ declare global {
 		value: string;
 		[x: string | number | symbol]: any;
 	}
+	export interface ValidateInput {
+		[x: string | number | symbol]: any;
+	}
+	export interface ValidateInputProps extends ValidateInput {
+		validateType: string;
+		value: string;
+	}
+
 }
 
 export {};

@@ -3,6 +3,9 @@ import Block from 'core/Block';
 import { getFormValues } from 'utils/formTools';
 import { formValidate } from 'utils/validate';
 
+import '../login/login.css';
+import './registration.css';
+
 export class RegistrationPage extends Block {
     constructor() {
         super();
@@ -15,16 +18,16 @@ export class RegistrationPage extends Block {
 
 		event.preventDefault();
 		
-		const firstNameProps: ValidateInputProps = this.refs.firstNameInputRef.getProps();
-		const secondNameProps: ValidateInputProps = this.refs.secondNameInputRef.getProps();
-		const loginInputProps: ValidateInputProps = this.refs.loginInputRef.getProps();
-		const emailInputProps: ValidateInputProps = this.refs.emailInputRef.getProps();
-		const phoneInputProps: ValidateInputProps = this.refs.phoneInputRef.getProps();
-		const passwordInputProps: ValidateInputProps = this.refs.passwordInputRef.getProps();
+		const firstName: ValidateInput = this.refs.firstNameInputRef;
+		const secondName: ValidateInput = this.refs.secondNameInputRef;
+		const loginInput: ValidateInput = this.refs.loginInputRef;
+		const emailInput: ValidateInput = this.refs.emailInputRef;
+		const phoneInput: ValidateInput = this.refs.phoneInputRef;
+		const passwordInput: ValidateInput = this.refs.passwordInputRef;
 
-		formValidate([firstNameProps, secondNameProps, loginInputProps, emailInputProps, phoneInputProps, passwordInputProps]);
+		formValidate([firstName, secondName, loginInput, emailInput, phoneInput, passwordInput]);
 
-		const formValues = getFormValues([firstNameProps, secondNameProps, loginInputProps, emailInputProps, phoneInputProps, passwordInputProps]);
+		const formValues = getFormValues([firstName, secondName, loginInput, emailInput, phoneInput, passwordInput]);
 		console.log(formValues); // нужно вывести по ТЗ
 	}
 
