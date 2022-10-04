@@ -18,8 +18,7 @@ export class Button extends Block {
     static componentName = 'Button';
 
 	protected render(): string {
-		const isDisable = this.props.disable ? '' : 'disable';
 
-        return `<button class="{{className}}" type="submit" ${isDisable}>${this.props.label}</button> `;
+        return `<button class="{{className}}" type="submit">${this.props.label}</button> `;
     }
 }

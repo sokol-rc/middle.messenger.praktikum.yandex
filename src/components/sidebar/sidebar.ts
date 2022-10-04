@@ -3,7 +3,8 @@ import Block from 'core/Block';
 import './sidebar.css';
 
 interface SidebarProps {
-    isVisible?: boolean;
+	isVisible?: boolean;
+	toogleModal?: () => void;
 }
 export class Sidebar extends Block {
 	constructor(props: SidebarProps) { 
@@ -11,7 +12,11 @@ export class Sidebar extends Block {
 		this.setProps({isVisible: true});
 	}
 
-    static componentName = 'Sidebar';
+	static componentName = 'Sidebar';
+	
+	toogleModal() { 
+		this.props.toogleModal();
+	}
 
 	protected render(): string {
 		let classVisible: string = '';
@@ -25,8 +30,16 @@ export class Sidebar extends Block {
 					{{{PersonName name="Дворник Частный"}}}
 				</div>
 				<div class="chat-info__control">
-					<button class="chat-info__control-item chat-edit button-text" onclick="window.routing('/profile')">Редактировать</button>
-					<button class="chat-info__control-item chat-delete button-text" onclick="window.modalConfirm.open()">Удалить чат</button>
+					{{{Link
+						href="/profile"
+						label="Редактировать"
+						className="chat-info__control-item chat-edit"
+					}}}
+					{{{Button
+						label="Удалить чат"
+						className="chat-info__control-item chat-delete button-text"
+						onClick=toogleModal
+					}}}
 				</div>
 			</div>
 		</div>

@@ -2,17 +2,50 @@
 import Block from 'core/Block';
 import './modal-confirm.css';
 
+interface InputProps {
+	label: string;
+	description?: string;
+	isVisible?: boolean;
+	onConfirm?: () => void;
+	onDecline?: () => void;
+}
+
 export class ModalConfirm extends Block {
+	constructor(props: InputProps) { 
+		super(props);
+	}
+
+	onConfirm() { 
+		this.props.onConfirm();
+	}
+
+	onDecline() { 
+		this.props.onDecline();
+	}
+
     static componentName: string = 'ModalConfirm';
-    render() {
-        return `<div class="modal modal-confirm modal--hidden">
+	render() {
+		let classVisible: string = '';
+		if (this.props.isVisible) { classVisible = 'modal--opened'}
+
+        return `<div class="modal modal-confirm ${classVisible}">
 		<div class="modal__shadow"></div>
 		<div class="modal__inner">
 			<div class="modal__window ">
-				<div class="modal__title">Удалить чат?</div>
+				<div class="modal__title">{{label}}</div>
+				<div class="modal__description">{{description}}</div>
 				<div class="modal__control">
-					<button class="modal__yes modal__button" onclick="window.modalConfirm.close()">Да</button>
-					<button class="modal__no modal__button" onclick="window.modalConfirm.close()">Нет</button>
+				{{{Button 
+					label="Да" 
+					className="modal__yes modal__button" 
+					onClick=onConfirm
+				}}}
+				{{{Button 
+					label="Нет" 
+					className="modal__no modal__button" 
+					onClick=onDecline
+				}}}
+
 				</div>
 	
 			</div>

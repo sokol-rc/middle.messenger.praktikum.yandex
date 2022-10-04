@@ -3,10 +3,6 @@ import EventBus from './EventBus';
 import { nanoid } from 'nanoid';
 import Handlebars from 'handlebars';
 
-interface BlockMeta<P = any> {
-    props: P;
-}
-
 type Events = Values<typeof Block.EVENTS>;
 
 export default class Block<P = any> {
@@ -20,7 +16,6 @@ export default class Block<P = any> {
 	static componentName: string;
 
     public id = nanoid(6);
-    private readonly _meta: BlockMeta;
 
     protected _element: Nullable<HTMLElement> = null;
     protected readonly props: P;
@@ -28,20 +23,12 @@ export default class Block<P = any> {
 
     eventBus: () => EventBus<Events>;
 
-    protected state: any = {};
     protected refs: { [key: string]: Block } = {};
 
     public constructor(props?: P) {
         const eventBus = new EventBus<Events>();
 
-        this._meta = {
-            props,
-        };
-
-        this.getStateFromProps(props);
-
         this.props = this._makePropsProxy(props || ({} as P));
-        this.state = this._makePropsProxy(this.state);
 
         this.eventBus = () => eventBus;
 
@@ -59,10 +46,6 @@ export default class Block<P = any> {
 
     _createResources() {
         this._element = this._createDocumentElement('div');
-    }
-
-    protected getStateFromProps(props: any): void {
-        this.state = {};
     }
 
     init() {
@@ -87,24 +70,21 @@ export default class Block<P = any> {
     componentDidUpdate(oldProps: P, newProps: P) {
         return true;
 	}
-	getProps = () => { 
+
+	getRefs() { 
+		return this.refs;
+	}
+
+	getProps() { 
 		return this.props;
 	}
 
-    setProps = (nextProps: P) => {
+    setProps(nextProps: P) {
         if (!nextProps) {
             return;
         }
 
         Object.assign(this.props, nextProps);
-    };
-
-    setState = (nextState: any) => {
-        if (!nextState) {
-            return;
-        }
-
-        Object.assign(this.state, nextState);
     };
 
     get element() {
@@ -209,7 +189,6 @@ export default class Block<P = any> {
          */
         const template = Handlebars.compile(this.render());
         fragment.innerHTML = template({
-            ...this.state,
             ...this.props,
             children: this.children,
             refs: this.refs,
@@ -239,10 +218,10 @@ export default class Block<P = any> {
             /**
              * Ищем элемент layout-а, куда вставлять детей
              */
-            const layoutContent = content.querySelector('[data-layout="1"]');
-
-            if (layoutContent && stubChilds.length) {
-                layoutContent.append(...stubChilds);
+            const layoutContent = content.querySelector('[data-cont="1"]');
+			if (layoutContent && stubChilds.length) {
+					content.append(...stubChilds);
+					layoutContent.remove();
             }
         });
 

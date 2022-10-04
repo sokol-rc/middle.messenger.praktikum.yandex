@@ -11,8 +11,8 @@ import ProfilePage from './pages/profile';
 //components
 import { Button } from './components/controls/button';
 import { Input } from './components/input';
-import { InputInner } from './components/input/inputInner';
-import { InputError } from './components/input/error';
+import { InputInner } from './components/input/input-inner';
+import { InputError } from './components/input/input-error';
 import { Avatar } from './components/person/avatar/avatar';
 import { Error } from './components/error/error';
 import { ChatList } from './components/chat/chat-list';
@@ -23,6 +23,10 @@ import { SidebarButton } from './components/controls/sidebar-button/sidebar-butt
 import { Sidebar } from './components/sidebar';
 import { ModalConfirm } from './components/modals/modal-confirm/';
 import { Dialog } from './components/dialog';
+import { Form } from './components/form';
+import { Link } from './components/controls/link';
+import { DayContainer } from './components/message/day-container';
+import { Message } from './components/message/message';
 
 import './styles/common/default.css';
 import './styles/common/common.css';
@@ -41,6 +45,10 @@ registerComponent(MessagePreview);
 registerComponent(SidebarButton);
 registerComponent(Sidebar);
 registerComponent(ModalConfirm);
+registerComponent(Form);
+registerComponent(Link);
+registerComponent(DayContainer);
+registerComponent(Message);
 
 const links: { [x: string]: any } = {
     '/login': LoginPage,
@@ -48,7 +56,6 @@ const links: { [x: string]: any } = {
     '/': ChatPage,
     '/profile': ProfilePage,
     '/404': ErrorPage,
-    '/500': ErrorPage,
 };
 
 const routing = (route: string | Event) => {
@@ -58,10 +65,12 @@ const routing = (route: string | Event) => {
     } else {
         href = document.location.pathname;
     }
-    if (href in links) {
-        renderDOM(new links[href]());
-    } else {
-        renderDOM(new links[href]({ errorNumber: 404 }));
+	if (href in links) {
+		renderDOM(new links[href]());
+	} else if (href === '/500') { 
+		renderDOM(new links['/404']({ errorNumber: 500 }));
+	} else {
+        renderDOM(new links['/404']({ errorNumber: 404 }));
     }
 };
 

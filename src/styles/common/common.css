@@ -1,28 +1,50 @@
 :root {
-	--link-color-standart: #AAAAFF;
-	--btn-bg-submit-color: #6850F8;
+    --link-color-standart: #aaaaff;
+    --btn-bg-submit-color: #6850f8;
 }
 
 .visually-hidden {
-	height: 1px;
-	overflow: hidden;
-	position: absolute;
-	white-space: nowrap;
-	width: 1px;
-	clip: rect(0 0 0 0);
-	clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
 }
 
 .link--standart {
-	text-decoration: underline;
-	color: var(--link-color-standart);
+    text-decoration: underline;
+    color: var(--link-color-standart);
 }
 
 .hr-bottom::after {
-	content: '';
-	display: block;
+    content: '';
+    display: block;
+    width: 100%;
+    font-size: 0;
+    line-height: 0;
+    border-bottom: 1px solid #888686;
+}
+
+.dev-header {
+    position: static;
+    background-color: beige;
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+}
+.dev-header__inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 1280px;
 	width: 100%;
-	font-size: 0;
-	line-height: 0;
-	border-bottom: 1px solid #888686;
+}
+.dev-link {
+    cursor: pointer;
+    color: #0000ee;
+}
+.dev-link:visited {
+    color: #551a8b;
 }
