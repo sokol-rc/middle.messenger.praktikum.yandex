@@ -6,7 +6,7 @@ import './input.css';
 type ErrorName = 'errorMessage';
 
 type Props = {
-	type?: string;
+    type?: string;
     name?: string;
     label?: string;
     placeholder?: string;
@@ -14,12 +14,12 @@ type Props = {
     className?: string;
     setLoginValidateStatus?: () => void;
     passwordsValidate: () => void;
-	onBlur: (event: FocusEvent) => void;
-	onFocus: () => void;
-	setErrorMessage: (props: Record<ErrorName, string>) => void;
-	value: string;
-	errorMessage: string;
-}
+    onBlur: (event: FocusEvent) => void;
+    onFocus: () => void;
+    setErrorMessage: (props: Record<ErrorName, string>) => void;
+    value: string;
+    errorMessage: string;
+};
 
 export default class Input extends Block<Props> {
     constructor(props: Props) {
@@ -28,9 +28,9 @@ export default class Input extends Block<Props> {
             onBlur: this.onBlur.bind(this),
             onFocus: this.onFocus.bind(this),
             setErrorMessage: this.setErrorMessage.bind(this),
-			passwordsValidate: this.props.passwordsValidate,
-			value: '',
-			errorMessage: '',
+            passwordsValidate: this.props.passwordsValidate,
+            value: '',
+            errorMessage: '',
         });
     }
 
@@ -38,12 +38,11 @@ export default class Input extends Block<Props> {
         return 'Input';
     }
 
-    onFocus(){
-        const inputProps: ValidateInput =
-            this.refs.inputInnerRef.getProps();
+    onFocus() {
+        const inputProps: ValidateInput = this.refs.inputInnerRef.getProps();
 
         inputValidate(inputProps, this.setErrorMessage.bind(this));
-		
+
         if (inputProps.validateType === ValidateTypes.REPEAT_PASSWORD) {
             this.props.passwordsValidate();
         }
@@ -54,11 +53,10 @@ export default class Input extends Block<Props> {
 
         this.setInputValue(currentValue);
 
-        const inputProps: ValidateInput =
-			this.refs.inputInnerRef.getProps();
+        const inputProps: ValidateInput = this.refs.inputInnerRef.getProps();
 
         inputValidate(inputProps, this.setErrorMessage.bind(this));
-		
+
         if (inputProps.validateType === ValidateTypes.REPEAT_PASSWORD) {
             this.props.passwordsValidate();
         }
@@ -70,14 +68,14 @@ export default class Input extends Block<Props> {
         });
     }
 
-	setErrorMessage(props: { errorMessage: string }): void {
-		console.log(props);
-		
+    setErrorMessage(props: { errorMessage: string }): void {
+        console.log(props);
+
         this.refs.errorRef.setProps(props);
     }
 
     protected render(): string {
-        const {id} = this;
+        const { id } = this;
 
         return `
 		<div class="{{wrapperClassName}}">

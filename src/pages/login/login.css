@@ -1,118 +1,118 @@
 :root {
-	--dark-bg-color: #4A545A;
-	--dark2-bg-color: #5C2E44;
+    --dark-bg-color: #4a545a;
+    --dark2-bg-color: #5c2e44;
 }
 
 .layout-container {
-	display: flex;
-	align-items: center;
-	height: 100%;
-	height: auto;
-	height: 100vh;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    height: auto;
+    height: 100vh;
 }
 
 .form-wrapper {
-	border-radius: 20px;
+    border-radius: 20px;
 }
 
 .auth-content {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-	&__header {
-		display: flex;
-		justify-content: center;
-	}
+    &__header {
+        display: flex;
+        justify-content: center;
+    }
 
-	&__form {
-		width: 690px;
-		padding: 50px;
-		position: relative;
-		padding-bottom: 110px;
-	}
+    &__form {
+        width: 690px;
+        padding: 50px;
+        position: relative;
+        padding-bottom: 110px;
+    }
 
-	&__form--main-bg {
-		background: var(--dark-bg-color);
-	}
+    &__form--main-bg {
+        background: var(--dark-bg-color);
+    }
 }
 
 .form-container {
-	max-width: 380px;
-	margin: 0 auto;
+    max-width: 380px;
+    margin: 0 auto;
 }
 
 .form {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+    &__footer {
+        width: 100%;
+        height: 80px;
+        position: absolute;
+        bottom: 0;
+        border-radius: 0 0 10px 10px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+    }
 
-	&__footer {
-		width: 100%;
-		height: 80px;
-		position: absolute;
-		bottom: 0;
-		border-radius: 0 0 10px 10px;
-		color: #fff;
-		display: flex;
-		align-items: center;
-	}
+    &__footer--bg-dark2 {
+        background-color: var(--dark2-bg-color);
+    }
 
-	&__footer--bg-dark2 {
-		background-color: var(--dark2-bg-color);
-	}
-
-	&__text {
-		font-weight: 300;
-		font-size: 16px;
-		line-height: 19px;
-		text-align: center;
-	}
+    &__text {
+        font-weight: 300;
+        font-size: 16px;
+        line-height: 19px;
+        text-align: center;
+    }
 }
 
 .form__check {
-	margin: 10px 0 20px;
+    margin: 10px 0 20px;
 }
 
 .policy-check {
-	display: flex;
+    display: flex;
 
-	&__input {
-		margin-right: 10px;
-	}
+    &__input {
+        margin-right: 10px;
+    }
 
-	&__label {
-		color: #fff;
-		font-weight: 300;
-		font-size: 16px;
-		line-height: 19px;
-	}
+    &__label {
+        color: #fff;
+        font-weight: 300;
+        font-size: 16px;
+        line-height: 19px;
+    }
 }
 
 .form-header {
-	margin-bottom: 30px;
+    margin-bottom: 30px;
 
-	&__title {
-		color: #fff;
-		font-weight: 400;
-		font-size: 48px;
-	}
+    &__title {
+        color: #fff;
+        font-weight: 400;
+        font-size: 48px;
+    }
 }
+
 .btn--submit-style {
-	background-color: var(--btn-bg-submit-color);
-	color: #fff;
-
+    background-color: var(--btn-bg-submit-color);
+    color: #fff;
 }
-.form-btns {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 
-	&__forgot-password {
-		font-weight: 300;
-		font-size: 22px;
-		line-height: 26px;
-	}
+.form-btns {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__forgot-password {
+        font-weight: 300;
+        font-size: 22px;
+        line-height: 26px;
+    }
 }

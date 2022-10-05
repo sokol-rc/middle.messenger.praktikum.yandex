@@ -13,11 +13,12 @@
         min-height: 100%;
         width: 100%;
     }
-
 }
+
 .button-image {
     cursor: pointer;
 }
+
 .full-page {
     height: 100vh;
 }

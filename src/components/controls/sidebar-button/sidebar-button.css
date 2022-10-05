@@ -3,9 +3,11 @@
     max-width: 30px;
     cursor: pointer;
 }
+
 .sidebar-button__btn {
     padding: 12px 16px;
 }
+
 .disk-menu-style {
     width: 6px;
     height: 6px;

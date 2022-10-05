@@ -1,25 +1,24 @@
 .form {
-	&__two-inputs {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: nowrap;
-		margin-bottom: 30px;
-	}
-	&__two-inputs .form-input:first-child {
-		flex: 1 0 auto;
-		max-width: 150px;
-		margin-right: 10px;
-		
-	}
-	&__two-inputs .form-input:last-child {
-		width: 100%;
-		margin-top: 0px;
-	}
+    &__two-inputs {
+        display: flex;
+        flex-flow: row nowrap;
+        margin-bottom: 30px;
+    }
 
+    &__two-inputs .form-input:first-child {
+        flex: 1 0 auto;
+        max-width: 150px;
+        margin-right: 10px;
+    }
+
+    &__two-inputs .form-input:last-child {
+        width: 100%;
+        margin-top: 0;
+    }
 }
 
 .form-single-btn {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
