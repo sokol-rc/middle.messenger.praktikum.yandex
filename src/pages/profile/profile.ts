@@ -5,9 +5,9 @@ import { formValidate, repeatPasswordValidate } from 'utils/validate';
 import './profile.css';
 
 type Props = {
-	onSubmit: (event: SubmitEvent) => void;
-	passwordsValidate: () => void;
-}
+    onSubmit: (event: SubmitEvent) => void;
+    passwordsValidate: () => void;
+};
 
 export default class ProfilePage extends Block<Props> {
     constructor() {
@@ -93,7 +93,7 @@ export default class ProfilePage extends Block<Props> {
 				</div>
 			</div>
 			{{#Form
-				className="profile-page__form person-data-form"
+				className="profile-page__form person-data-form profile-page__form--opened"
 				onSubmit=onSubmit
 				ref="formRef"
 			}}

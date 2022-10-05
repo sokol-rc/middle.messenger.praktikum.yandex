@@ -23,7 +23,7 @@ export default class ChatItem extends Block<Props> {
 		<div class="chat-preview__body">
 			<div class="chat-preview__title">
 				{{{PersonName name="Дейв Черный"}}}
-				<span class="time__text chat-preview-info">14:45</span>
+				<time class="time__text chat-preview-info">14:45</time>
 			</div>
 			<div class="chat-preview__message">
 				{{{MessagePreview}}}

@@ -69,8 +69,6 @@ export default class Input extends Block<Props> {
     }
 
     setErrorMessage(props: { errorMessage: string }): void {
-        console.log(props);
-
         this.refs.errorRef.setProps(props);
     }
 
@@ -96,24 +94,5 @@ export default class Input extends Block<Props> {
 				ref="errorRef"
 			}}}
 		</div>`;
-
-        // return `
-        // <div class="form-input {{className}}">
-        // 	<label class="form-input__label" for="${id}">{{label}}</label>
-        // 	{{{InputInner
-        // 		id="${id}"
-        // 		type="{{type}}"
-        // 		placeholder="{{placeholder}}"
-        // 		name="{{name}}"
-        // 		validateType="{{validateType}}"
-        // 		onBlur=onBlur
-        // 		onFocus=onFocus
-        // 		ref="inputInnerRef"
-        // 	}}}
-        // 	{{{InputError
-        // 		errorMessage="${this.props.errorMessage}"
-        // 		ref="errorRef"
-        // 	}}}
-        // </div>`;
     }
 }

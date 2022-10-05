@@ -1,7 +1,5 @@
 import Block from 'core/Block';
 
-import './form.css';
-
 type IncomingProps = {
     className?: string;
     onSubmit: () => void;

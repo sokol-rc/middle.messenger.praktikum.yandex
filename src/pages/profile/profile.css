@@ -13,6 +13,10 @@
         border-radius: 20px;
     }
 
+    &__form {
+        display: none;
+    }
+
     &__avatar {
         margin-bottom: 20px;
     }
@@ -21,12 +25,8 @@
         display: none;
     }
 
-    &__form--hidden {
-        display: none !important;
-    }
-
     &__form--opened {
-        display: block;
+        display: flex;
     }
 }
 
@@ -48,7 +48,6 @@
 }
 
 .person-data-form {
-    display: flex;
     flex-direction: column;
 
     &__avatar {

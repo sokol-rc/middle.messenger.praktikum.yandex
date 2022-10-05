@@ -1,5 +1,4 @@
 import Block from 'core/Block';
-import './chat-list.css';
 
 export default class ChatList extends Block<{}> {
     static componentName = 'ChatList';

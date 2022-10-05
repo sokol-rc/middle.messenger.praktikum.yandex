@@ -6,7 +6,6 @@ import ErrorPage from './pages/errorPage';
 import ChatPage from './pages/chat';
 import ProfilePage from './pages/profile';
 
-// components
 import Button from './components/controls/button';
 import Input from './components/input';
 import InputInner from './components/input/input-inner/input-inner';

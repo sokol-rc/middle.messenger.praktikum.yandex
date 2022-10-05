@@ -114,9 +114,8 @@ export default class Block<P extends Record<string, any>> {
         return this.element!;
     }
 
-    _makePropsProxy(props: any): any {
-        // Можно и так передать this
-        // Такой способ больше не применяется с приходом ES6+
+	_makePropsProxy(props: any): any {
+		
         const self = this;
 
         return new Proxy(props as unknown as object, {
@@ -127,8 +126,6 @@ export default class Block<P extends Record<string, any>> {
             set(target: Record<string, unknown>, prop: string, value: unknown) {
                 target[prop] = value;
 
-                // Запускаем обновление компоненты
-                // Плохой cloneDeep, в след итерации нужно заставлять добавлять cloneDeep им самим
                 self.eventBus().emit(
                     Block.EVENTS.FLOW_CDU,
                     { ...target },

@@ -1,6 +1,6 @@
 import Block from 'core/Block';
 import getFormValues  from 'utils/formTools';
-import formValidate  from 'utils/validate';
+import { formValidate }  from 'utils/validate';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
@@ -66,24 +66,6 @@ export default class Dialog extends Block<Props> {
 			{{#DayContainer
 				day="10 сентября"
 			}}
-			<div class="bubbles-group">
-			<div class="bubble bubble-in">
-				<div class="bubble__inner">
-					<div class="bubble__text">Первое сообщение
-						<span class="bubble__time time">
-							<span
-								class="time__inner time__inner--font-size-s time__inner--font-style-italic">14:40</span>
-						</span>
-					</div>
-					<svg class="bubble__tail-in" width="20" height="13" viewBox="0 0 20 13" fill="none"
-						xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M0 13H19.9554C18.53 13 12.899 -7.31267 9.265 2.84388C5.63095 13.0004 0.625661 12.4839 0 13Z" />
-					</svg>
-
-				</div>
-			</div>
-		</div>
 		{{{Message
 			time="14:40"
 			text="Второе сообщение Второе сообщение Второе сообщение"
