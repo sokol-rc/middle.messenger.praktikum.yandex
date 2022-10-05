@@ -1,4 +1,3 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import messageReceivedSvg from '../../../assets/message-received.svg';
 import messageReadedSvg from '../../../assets/message-readed.svg';
@@ -6,49 +5,52 @@ import messageTailOutSvg from '../../../assets/message-tail-out.svg';
 import messageTailInSvg from '../../../assets/message-tail-in.svg';
 
 interface InputProps {
-	time: string;
-	direction?: string;
-    label?: string;
-    className?: string;
-    target?: string;
-    messageReceived?: boolean;
-    messageReaded?: boolean;
+    time: string;
+    direction: string;
+    label: string;
+    className: string;
+    target: string;
+    messageReceived: boolean;
+    messageReaded: boolean;
 }
 
-export class Message extends Block {
-    constructor(props: InputProps) {
-        super(props);
+type Props = InputProps & {
+	messageReceived: boolean;
+	messageReaded: boolean;
+}
 
-        this.setProps({
-            messageReceived: true,
+export default class Message extends Block<Props> {
+    constructor(props: InputProps) {
+		super({
+			...props,
+			messageReceived: true,
             messageReaded: true,
-        });
+		});
     }
+
     static componentName = 'Message';
 
-	render(): string {
+    render(): string {
+        let messageStatus: string = '';
+        let directionClass: string = 'bubble-out';
+        let isIncoming: boolean = false;
+        let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
 
-		let messageStatus: string = '';
-		let directionClass: string = 'bubble-out';
-		let isIncoming: boolean = false;
-		let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
-
-
-		if (this.props.direction === 'incoming') { 
-			directionClass = 'bubble-in';
-			isIncoming = true;
-			messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
-		}
+        if (this.props.direction === 'incoming') {
+            directionClass = 'bubble-in';
+            isIncoming = true;
+            messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
+        }
 
         if (this.props.messageReceived && !isIncoming) {
             messageStatus = `<img class="bubble__sending-status sending-status received" src="${messageReceivedSvg}" />`;
-		}
-		
-		if (this.props.messageReaded && !isIncoming) {
+        }
+
+        if (this.props.messageReaded && !isIncoming) {
             messageStatus = `<img class="bubble__sending-status sending-status readed" src="${messageReadedSvg}" />`;
         }
 
-		return `
+        return `
 			<div class="bubbles-group">
 				<div class="bubble ${directionClass}">
 					<div class="bubble__inner">

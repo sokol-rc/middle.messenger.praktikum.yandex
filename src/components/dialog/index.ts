@@ -1,1 +1,3 @@
-export { Dialog } from './dialog';
+import Dialog from "./dialog";
+
+export default Dialog;

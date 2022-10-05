@@ -1,1 +1,3 @@
-export { Message } from './message';
+import Message from "./message";
+
+export default Message;

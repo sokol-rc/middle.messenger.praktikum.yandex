@@ -1,17 +1,14 @@
-/* eslint-disable */
 import Block from 'core/Block';
 
-interface InputProps {
+type Props = {
     href: string;
     label?: string;
     className?: string;
     target?: string;
 }
 
-export class Link extends Block {
-    constructor(props: InputProps) {
-        super(props);
-    }
+export default class Link extends Block<Props> {
+
     static componentName = 'Link';
 
     render(): string {

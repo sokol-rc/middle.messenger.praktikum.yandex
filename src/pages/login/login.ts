@@ -1,11 +1,14 @@
-/* eslint-disable */
 import Block from 'core/Block';
-import { getFormValues } from 'utils/formTools';
+import getFormValues from 'utils/formTools';
 import { formValidate } from 'utils/validate';
 
 import './login.css';
 
-export class LoginPage extends Block {
+type Props = {
+    onSubmit: (event: SubmitEvent) => void;
+};
+
+export default class LoginPage extends Block<Props> {
     constructor() {
         super();
         this.setProps({
@@ -16,10 +19,8 @@ export class LoginPage extends Block {
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
 
-		const loginInput: ValidateInput =
-            this.refs.loginInputRef;
-        const passwordInput: ValidateInput =
-            this.refs.passwordInputRef;
+        const loginInput: ValidateInput = this.refs.loginInputRef;
+        const passwordInput: ValidateInput = this.refs.passwordInputRef;
 
         formValidate([loginInput, passwordInput]);
 

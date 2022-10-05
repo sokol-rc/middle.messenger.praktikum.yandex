@@ -1,47 +1,67 @@
-/* eslint-disable */
 import Block from 'core/Block';
-import { getFormValues } from 'utils/formTools';
+import getFormValues from 'utils/formTools';
 import { formValidate, repeatPasswordValidate } from 'utils/validate';
 
 import './profile.css';
 
-export class ProfilePage extends Block {
+type Props = {
+	onSubmit: (event: SubmitEvent) => void;
+	passwordsValidate: () => void;
+}
+
+export default class ProfilePage extends Block<Props> {
     constructor() {
         super();
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             passwordsValidate: this.passwordsValidate.bind(this),
         });
-	}
-	
-	passwordsValidate() { 
-		const oldPasswordInput: ValidateInput = this.refs.oldPasswordInputRef;
-		const newPasswordInput: ValidateInput = this.refs.newPasswordInputRef;
-		repeatPasswordValidate(oldPasswordInput, newPasswordInput);
-	}
+    }
+
+    passwordsValidate() {
+        const oldPasswordInput: ValidateInput = this.refs.oldPasswordInputRef;
+        const newPasswordInput: ValidateInput = this.refs.newPasswordInputRef;
+        repeatPasswordValidate(oldPasswordInput, newPasswordInput);
+    }
 
     onSubmit(event: SubmitEvent): void {
-		event.preventDefault();
+        event.preventDefault();
 
-		const firstNameInput: ValidateInput = this.refs.firstNameInputRef;
-		const secondNameInput: ValidateInput = this.refs.secondNameInputRef;
-		const displayNameInput: ValidateInput = this.refs.displayNameInputRef;
-		const loginInput: ValidateInput = this.refs.loginInputRef;
-		const emailInput: ValidateInput = this.refs.emailInputRef;
-		const phoneInput: ValidateInput = this.refs.phoneInputRef;
-		const oldPasswordInput: ValidateInput = this.refs.oldPasswordInputRef;
-		const newPasswordInput: ValidateInput = this.refs.newPasswordInputRef;
+        const firstNameInput: ValidateInput = this.refs.firstNameInputRef;
+        const secondNameInput: ValidateInput = this.refs.secondNameInputRef;
+        const displayNameInput: ValidateInput = this.refs.displayNameInputRef;
+        const loginInput: ValidateInput = this.refs.loginInputRef;
+        const emailInput: ValidateInput = this.refs.emailInputRef;
+        const phoneInput: ValidateInput = this.refs.phoneInputRef;
+        const oldPasswordInput: ValidateInput = this.refs.oldPasswordInputRef;
+        const newPasswordInput: ValidateInput = this.refs.newPasswordInputRef;
 
-		formValidate([firstNameInput, secondNameInput, displayNameInput, loginInput, emailInput, phoneInput, oldPasswordInput]);
-		
-		repeatPasswordValidate(oldPasswordInput, newPasswordInput);
+        formValidate([
+            firstNameInput,
+            secondNameInput,
+            displayNameInput,
+            loginInput,
+            emailInput,
+            phoneInput,
+            oldPasswordInput,
+        ]);
 
-        const formValues = getFormValues([firstNameInput, secondNameInput, displayNameInput, loginInput, emailInput, phoneInput, oldPasswordInput, newPasswordInput]);
+        repeatPasswordValidate(oldPasswordInput, newPasswordInput);
+
+        const formValues = getFormValues([
+            firstNameInput,
+            secondNameInput,
+            displayNameInput,
+            loginInput,
+            emailInput,
+            phoneInput,
+            oldPasswordInput,
+            newPasswordInput,
+        ]);
         console.log(formValues);
     }
 
-	render() {
-		
+    render() {
         return `
 		<main class="profile-page layout-container">
 		<div class="profile-page__inner">

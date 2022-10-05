@@ -1,1 +1,3 @@
-export { ModalConfirm } from './modal-confirm';
+import ModalConfirm from "./modal-confirm";
+
+export default ModalConfirm;

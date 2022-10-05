@@ -1,1 +1,3 @@
-export { RegistrationPage as default } from './registration';
+import RegistrationPage from "./registration";
+
+export default RegistrationPage;

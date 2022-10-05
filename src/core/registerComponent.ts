@@ -1,5 +1,3 @@
-/* eslint-disable */
-import Block from './Block';
 import Handlebars, { HelperOptions } from 'handlebars';
 
 
@@ -8,6 +6,7 @@ export default function registerComponent<Props extends any>(
 ) {
     Handlebars.registerHelper(
         Component.componentName || Component.name,
+        // eslint-disable-next-line func-names
         function (
             this: Props,
             { hash: { ref, ...hash }, data, fn }: HelperOptions
@@ -20,16 +19,12 @@ export default function registerComponent<Props extends any>(
                 data.root.refs = {};
             }
 
-            const { children, refs } = data.root;
-
-            /**
-             * Костыль для того, чтобы передавать переменные
-             * внутрь блоков вручную подменяя значение
-             */
+			const { children, refs } = data.root;
+			
             (Object.keys(hash) as any).forEach((key: keyof Props) => {
                 if (this[key] && typeof this[key] === 'string') {
                     hash[key] = hash[key].replace(
-                        new RegExp(`{{${key}}}`, 'i'),
+                        new RegExp(`{{${String(key)}}}`, 'i'),
                         this[key]
                     );
                 }

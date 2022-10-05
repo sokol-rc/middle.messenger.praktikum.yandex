@@ -1,37 +1,45 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import personAvatar from '../../assets/avatar.png';
 
 import './chat.css';
 
-export class ChatPage extends Block {
-    constructor() {
-        super();
+type Props = {
+    isVisible: any;
+    toogleSidebar: () => void;
+    toogleModal: () => void;
+    onConfirm: () => void;
+    onDecline: () => void;
+};
+
+export default class ChatPage extends Block<Props> {
+    constructor(props: Props) {
+        super(props);
         this.setProps({
-			toogleSidebar: this.toogleSidebar.bind(this),
-			toogleModal: this.toogleModal.bind(this),
-			onConfirm: this.onConfirm.bind(this),
-			onDecline: this.onDecline.bind(this),
+            toogleSidebar: this.toogleSidebar.bind(this),
+            toogleModal: this.toogleModal.bind(this),
+            onConfirm: this.onConfirm.bind(this),
+            onDecline: this.onDecline.bind(this),
+            isVisible: true,
         });
-	}
-	
-	toogleModal() { 
-		this.refs.ModalConfirmRef.setProps({
-            isVisible: !this.refs.ModalConfirmRef.getProps().isVisible,
+    }
+
+    toogleModal() {
+        this.refs.ModalConfirmRef.setProps({
+            isVisible: !(this.refs.ModalConfirmRef.getProps() as any).isVisible,
         });
-	}
+    }
 
-	onConfirm() { 
-		this.toogleModal();
-	}
+    onConfirm() {
+        this.toogleModal();
+    }
 
-	onDecline() { 
-		this.toogleModal();
-	}
+    onDecline() {
+        this.toogleModal();
+    }
 
     toogleSidebar() {
         this.refs.SidebarRef.setProps({
-            isVisible: !this.refs.SidebarRef.getProps().isVisible,
+            isVisible: !(this.refs.SidebarRef.getProps() as any).isVisible,
         });
     }
 

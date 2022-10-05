@@ -1,10 +1,7 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import './chat-list.css';
 
-
-export class ChatList extends Block {
-
+export default class ChatList extends Block<{}> {
     static componentName = 'ChatList';
 
     protected render(): string {

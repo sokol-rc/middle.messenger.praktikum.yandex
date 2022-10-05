@@ -3,23 +3,22 @@ declare global {
 
     export type Keys<T extends Record<string, unknown>> = keyof T;
 	export type Values<T extends Record<string, unknown>> = T[Keys<T>];
-	export interface ValidateInputProps {
-		validateType: string;
-		value: string;
-		[x: string | number | symbol]: any;
-	}
 	export interface ValidateInput {
 		[x: string | number | symbol]: any;
-	}
-	export interface ValidateInputProps extends ValidateInput {
-		validateType: string;
-		value: string;
 	}
 	export interface BlockConstructable<Props = any> {
 		componentName: string;
 		new (props: Props): Block;
 	}
-
+	declare module "*.png" {
+		const value: any;
+		export default value;
+	}
+	declare module "*.svg" {
+		const value: any;
+		export default value;
+	 }
 }
+
 
 export {};

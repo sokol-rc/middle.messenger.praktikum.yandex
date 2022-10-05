@@ -1,32 +1,31 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import './modal-confirm.css';
 
-interface InputProps {
-	label: string;
-	description?: string;
-	isVisible?: boolean;
-	onConfirm?: () => void;
-	onDecline?: () => void;
+interface Props {
+    label: string;
+    description: string;
+    isVisible: boolean;
+    onConfirm: () => void;
+    onDecline: () => void;
 }
 
-export class ModalConfirm extends Block {
-	constructor(props: InputProps) { 
-		super(props);
-	}
+export default class ModalConfirm extends Block<Props> {
+	
+    onConfirm() {
+        this.props.onConfirm();
+    }
 
-	onConfirm() { 
-		this.props.onConfirm();
-	}
-
-	onDecline() { 
-		this.props.onDecline();
-	}
+    onDecline() {
+        this.props.onDecline();
+    }
 
     static componentName: string = 'ModalConfirm';
-	render() {
-		let classVisible: string = '';
-		if (this.props.isVisible) { classVisible = 'modal--opened'}
+
+    render() {
+        let classVisible: string = '';
+        if (this.props.isVisible) {
+            classVisible = 'modal--opened';
+        }
 
         return `<div class="modal modal-confirm ${classVisible}">
 		<div class="modal__shadow"></div>
@@ -45,12 +44,9 @@ export class ModalConfirm extends Block {
 					className="modal__no modal__button" 
 					onClick=onDecline
 				}}}
-
 				</div>
-	
 			</div>
 		</div>
-	
 	</div>`;
     }
 }

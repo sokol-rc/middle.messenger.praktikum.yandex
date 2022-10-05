@@ -1,11 +1,10 @@
-/* eslint-disable */
-import EventBus from './EventBus';
 import { nanoid } from 'nanoid';
 import Handlebars from 'handlebars';
+import EventBus from './EventBus';
 
 type Events = Values<typeof Block.EVENTS>;
 
-export default class Block<P = any> {
+export default class Block<P extends Record<string, any>> {
     static EVENTS = {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
@@ -13,17 +12,19 @@ export default class Block<P = any> {
         FLOW_RENDER: 'flow:render',
     } as const;
 
-	static componentName: string;
+    static componentName: string;
 
     public id = nanoid(6);
 
     protected _element: Nullable<HTMLElement> = null;
+
     protected readonly props: P;
-    protected children: { [id: string]: Block } = {};
+
+	protected children: { [id: string]: Block<{}> } = {};
 
     eventBus: () => EventBus<Events>;
 
-    protected refs: { [key: string]: Block } = {};
+	protected refs: { [key: string]: Block<{}> } = {};
 
     public constructor(props?: P) {
         const eventBus = new EventBus<Events>();
@@ -39,7 +40,6 @@ export default class Block<P = any> {
 
     _registerEvents(eventBus: EventBus<Events>) {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
-        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
         eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
@@ -53,31 +53,21 @@ export default class Block<P = any> {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
 
-	_componentDidMount(props: P) {
-        this.componentDidMount(props);
-    }
-
-    componentDidMount(props: P) {}
-
-    _componentDidUpdate(oldProps: P, newProps: P) {
-        const response = this.componentDidUpdate(oldProps, newProps);
+    _componentDidUpdate() {
+        const response = true;
         if (!response) {
             return;
         }
         this._render();
     }
 
-    componentDidUpdate(oldProps: P, newProps: P) {
-        return true;
-	}
+    getRefs() {
+        return this.refs;
+    }
 
-	getRefs() { 
-		return this.refs;
-	}
-
-	getProps() { 
-		return this.props;
-	}
+    getProps() {
+        return this.props;
+    }
 
     setProps(nextProps: P) {
         if (!nextProps) {
@@ -85,7 +75,7 @@ export default class Block<P = any> {
         }
 
         Object.assign(this.props, nextProps);
-    };
+    }
 
     get element() {
         return this._element;
@@ -108,7 +98,6 @@ export default class Block<P = any> {
     }
 
     getContent(): HTMLElement {
-        // Хак, чтобы вызвать CDM только после добавления в DOM
         if (
             this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE
         ) {
@@ -158,49 +147,46 @@ export default class Block<P = any> {
     }
 
     _removeEvents() {
-        const events: Record<string, () => void> = (this.props as any).events;
+        const { events } = this.props as any;
 
         if (!events || !this._element) {
             return;
         }
 
-        Object.entries(events).forEach(([event, listener]) => {
-            this._element!.removeEventListener(event, listener);
+        Object.keys(events).forEach((eventKey) => {
+            if (this._element) {
+                this._element.removeEventListener(eventKey, events[eventKey]);
+            }
         });
     }
 
     _addEvents() {
-        const events: Record<string, () => void> = (this.props as any).events;
+        const { events = {} } = this.props as any;
 
         if (!events) {
             return;
         }
 
-        Object.entries(events).forEach(([event, listener]) => {
-            this._element!.addEventListener(event, listener);
+        Object.keys(events).forEach((eventKey) => {
+            if (this._element) {
+                this._element.addEventListener(eventKey, events[eventKey]);
+            }
         });
     }
 
-    _compile(): DocumentFragment {
+	_compile(): DocumentFragment {
+		
         const fragment = document.createElement('template');
-
-        /**
-         * Рендерим шаблон
-         */
-        const template = Handlebars.compile(this.render());
+		const template = Handlebars.compile(this.render());
+		
         fragment.innerHTML = template({
             ...this.props,
             children: this.children,
             refs: this.refs,
         });
 
-        /**
-         * Заменяем заглушки на компоненты
-         */
-        Object.entries(this.children).forEach(([id, component]) => {
-            /**
-             * Ищем заглушку по id
-             */
+		Object.entries(this.children).forEach(([id, component]) => {
+			
             const stub = fragment.content.querySelector(`[data-id="${id}"]`);
 
             if (!stub) {
@@ -209,25 +195,16 @@ export default class Block<P = any> {
 
             const stubChilds = stub.childNodes.length ? stub.childNodes : [];
 
-            /**
-             * Заменяем заглушку на component._element
-             */
             const content = component.getContent();
             stub.replaceWith(content);
 
-            /**
-             * Ищем элемент layout-а, куда вставлять детей
-             */
             const layoutContent = content.querySelector('[data-cont="1"]');
-			if (layoutContent && stubChilds.length) {
-					content.append(...stubChilds);
-					layoutContent.remove();
+            if (layoutContent && stubChilds.length) {
+                content.append(...stubChilds);
+                layoutContent.remove();
             }
         });
 
-        /**
-         * Возвращаем фрагмент
-         */
         return fragment.content;
     }
 

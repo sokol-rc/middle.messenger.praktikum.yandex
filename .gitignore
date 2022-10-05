@@ -1,6 +1,7 @@
 node_modules
 .parcel-cache
 dist
-utils
+utils/mydash
 sprint_1.code-workspace
 middle.messenger.praktikum.yandex
+partials

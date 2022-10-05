@@ -1,11 +1,11 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import './person-name.css';
 
-export class PersonName extends Block {
-	constructor(props:{ name: string}) { 
-		super(props);
-	}
+type Props = {
+	name: string;
+}
+
+export default class PersonName extends Block<Props> {
 
     static componentName = 'PersonName';
 

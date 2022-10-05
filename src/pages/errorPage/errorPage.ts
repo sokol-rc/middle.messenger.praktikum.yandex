@@ -1,13 +1,10 @@
-/* eslint-disable */
 import Block from 'core/Block';
-interface InputProps {
+
+interface Props {
     errorNumber: number;
 }
 
-export class ErrorPage extends Block {
-    constructor({ errorNumber }: InputProps) {
-        super({ errorNumber });
-    }
+export default class ErrorPage extends Block<Props> {
 
     render() {
         return `{{{Error 

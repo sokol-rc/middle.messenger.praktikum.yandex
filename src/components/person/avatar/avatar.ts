@@ -1,20 +1,17 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import './avatar.css';
 import personAvatar from '../../../assets/avatar.png';
 
-interface AvatarProps {
-	image?: string;
+interface Props {
+    image: string;
 }
 
-export class Avatar extends Block {
-    constructor({ ...props }: AvatarProps) {
-		super({ ...props });
-    }
+export default class Avatar extends Block<Props> {
+
     static componentName = 'Avatar';
 
-	protected render(): string {
-		let avatar: string = this.props.image || personAvatar;
+    protected render(): string {
+        const avatar: string = this.props.image || personAvatar;
 
         return `<div class="avatar">
 		<div class="avatar__img-wrapper">

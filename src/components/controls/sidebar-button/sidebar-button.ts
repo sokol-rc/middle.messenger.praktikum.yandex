@@ -1,16 +1,20 @@
-/* eslint-disable */
 import Block from 'core/Block';
 
 import './sidebar-button.css';
 
-interface SidebarButtonProps { 
-	onClick?: () => void;
+type IncomingProps = {
+    onClick?: () => void;
+};
+interface Props {
+    events?: {
+        click?: () => void;
+    };
 }
 
-export class SidebarButton extends Block {
-	constructor({ ...props}: SidebarButtonProps) { 
-		super({ ...props, events: {click: props.onClick} });
-	}
+export default class SidebarButton extends Block<Props> {
+    constructor({ ...props }: IncomingProps) {
+        super({ ...props, events: { click: props.onClick } });
+    }
 
     static componentName = 'SidebarButton';
 

@@ -1,12 +1,15 @@
-/* eslint-disable */
 import Block from 'core/Block';
-import { getFormValues } from 'utils/formTools';
+import getFormValues from 'utils/formTools';
 import { formValidate } from 'utils/validate';
 
 import '../login/login.css';
 import './registration.css';
 
-export class RegistrationPage extends Block {
+type Props = {
+    onSubmit: (event: SubmitEvent) => void;
+};
+
+export default class RegistrationPage extends Block<Props> {
     constructor() {
         super();
         this.setProps({
@@ -44,8 +47,7 @@ export class RegistrationPage extends Block {
         console.log(formValues);
     }
 
-	render() {
-		
+    render() {
         return `
 		<main class="auth-content layout-container">
 			<div class="auth-content__form form-wrapper auth-content__form--main-bg">

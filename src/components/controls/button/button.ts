@@ -1,24 +1,30 @@
-/* eslint-disable */
 import Block from 'core/Block';
 
 import './button.css';
 
-interface ButtonProps {
+type IncomingProps = {
     label?: string;
     disable?: boolean;
-	className?: string;
+    className?: string;
     onClick?: () => void;
-}
+};
+type Props = {
+    label?: string;
+    disable?: boolean;
+    className?: string;
+    events?: {
+        click?: () => void;
+    };
+};
 
-export class Button extends Block {
-    constructor({ ...props }: ButtonProps) {
+export default class Button extends Block<Props> {
+    constructor({ ...props }: IncomingProps) {
         super({ ...props, events: { click: props.onClick } });
-       
     }
+
     static componentName = 'Button';
 
-	protected render(): string {
-
+    protected render(): string {
         return `<button class="{{className}}" type="submit">${this.props.label}</button> `;
     }
 }

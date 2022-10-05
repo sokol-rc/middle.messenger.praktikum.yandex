@@ -1,22 +1,25 @@
-/* eslint-disable */
 import Block from 'core/Block';
 
 import './form.css';
 
-interface FormProps {
-	className?: string;
-    onSubmit?: () => void;
-}
+type IncomingProps = {
+    className?: string;
+    onSubmit: () => void;
+};
+type Props = IncomingProps & {
+    events: {
+        submit: () => void;
+    };
+};
 
-export class Form extends Block {
-    constructor({ ...props }: FormProps) {
+export default class Form extends Block<Props> {
+    constructor({ ...props }: IncomingProps) {
         super({ ...props, events: { submit: props.onSubmit } });
-       
     }
+
     static componentName = 'Form';
 
-	protected render(): string {
-
+    protected render(): string {
         return `<form class="{{className}}" action="">
 		<div data-cont="1"></div>
 

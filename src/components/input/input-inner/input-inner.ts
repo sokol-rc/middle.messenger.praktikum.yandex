@@ -1,32 +1,38 @@
-/* eslint-disable */
 import Block from 'core/Block';
 
-interface InputProps {
-    type: string;
+type IncomingProps = {
+	type: string;
     id: number;
-	name: string;
-	className?: string;
-    placeholder?: string;
-    validateType?: string;
-    onBlur?: () => void;
-    onFocus?: () => void;
+    name: string;
+    className: string;
+    placeholder: string;
+    validateType: string;
+    onBlur: () => void;
+	onFocus: () => void;
 }
 
-export class InputInner extends Block {
-    constructor({...props}: InputProps) {
-        super({...props, events: {
+type Props = IncomingProps & {
+	value: string;
+	events: { [x: string]: () => void; }
+}
+
+export default class InputInner extends Block<Props> {
+    constructor({ ...props }: IncomingProps) {
+        super({
+            ...props,
+            events: {
                 blur: props.onBlur,
                 focus: props.onFocus,
-            },
-		});
-		this.setProps({value: ''})
+			},
+			value: ''
+        });
     }
+
     static get componentName(): string {
         return 'InputInner';
     }
 
     protected render(): string {
-        const id = this.id;
         return `
 			<input
 			class="${this.props.className}"

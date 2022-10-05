@@ -1,1 +1,3 @@
-export { SidebarButton as default } from './sidebar-button';
+import SidebarButton from "./sidebar-button";
+
+export default SidebarButton;

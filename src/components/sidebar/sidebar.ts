@@ -1,26 +1,26 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import './sidebar.css';
 
-interface SidebarProps {
-	isVisible?: boolean;
-	toogleModal?: () => void;
+interface Props {
+    isVisible: boolean;
+    toogleModal: () => void;
 }
-export class Sidebar extends Block {
-	constructor(props: SidebarProps) { 
-		super(props);
-		this.setProps({isVisible: true});
-	}
+export default class Sidebar extends Block<Props> {
+    constructor(props: Props) {
+        super({ ...props, isVisible: true });
+    }
 
-	static componentName = 'Sidebar';
-	
-	toogleModal() { 
-		this.props.toogleModal();
-	}
+    static componentName = 'Sidebar';
 
-	protected render(): string {
-		let classVisible: string = '';
-		if (this.props.isVisible) { classVisible = 'right-sidebar--opened'}
+    toogleModal() {
+        this.props.toogleModal();
+    }
+
+    protected render(): string {
+        let classVisible: string = '';
+        if (this.props.isVisible) {
+            classVisible = 'right-sidebar--opened';
+        }
 
         return `<aside class="right-sidebar hr-left ${classVisible}">
 		<div class="right-sidebar__inner">

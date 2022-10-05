@@ -1,16 +1,13 @@
-/* eslint-disable */
 import Block from 'core/Block';
 import './chat-item.css';
 import personAvatar from '../../../assets/avatar.png';
 
-interface ChatItemProps { 
-	isActive?: boolean
+type Props = {
+	isActive: boolean
 }
 
-export class ChatItem extends Block {
-	constructor(props: ChatItemProps) { 
-		super(props);
-	}
+
+export default class ChatItem extends Block<Props> {
 
     static componentName = 'ChatItem';
 

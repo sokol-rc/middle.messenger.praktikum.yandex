@@ -1,20 +1,26 @@
-/* eslint-disable */
 import Block from 'core/Block';
-import { getFormValues } from 'utils/formTools';
-import { formValidate } from 'utils/validate';
+import getFormValues  from 'utils/formTools';
+import formValidate  from 'utils/validate';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
-interface DialogProps {
-    toogleSidebar?: () => void;
-}
+type IncomingProps = {
+    toogleSidebar: () => void;
+};
 
-export class Dialog extends Block {
-    constructor(props: DialogProps) {
+type Props = IncomingProps & {
+    toogleSidebar: () => void;
+    handleClick?: () => void;
+    sendButtonClick?: (event: MouseEvent) => void;
+};
+
+export default class Dialog extends Block<Props> {
+    constructor(props: IncomingProps) {
         super(props);
         this.setProps({
             handleClick: this.handleClick.bind(this),
             sendButtonClick: this.sendButtonClick.bind(this),
+            toogleSidebar: this.props.toogleSidebar,
         });
     }
 
@@ -24,19 +30,18 @@ export class Dialog extends Block {
         this.props.toogleSidebar();
     }
 
-	sendButtonClick(e: MouseEvent) {
-		e.preventDefault();
+    sendButtonClick(event: MouseEvent) {
+        event.preventDefault();
 
-		const messageInput: ValidateInput = this.refs.messageInputRef;
+        const messageInput: ValidateInput = this.refs.messageInputRef;
 
         formValidate([messageInput]);
 
         const formValues = getFormValues([messageInput]);
-        console.log(formValues); // нужно вывести по ТЗ
+        console.log(formValues);
     }
 
     protected render(): string {
-
         return `
 		<div class="dialog-window">
 	<div class="dialog-window__inner">
