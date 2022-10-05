@@ -88,11 +88,16 @@ export default class LoginPage extends Block<Props> {
 				disable=isValidate
 			}}}
 		</div>
-		<div class="form__footer form__footer--bg-dark2">
-			<div class="form-container">
+		<div class="form__footer footer form__footer--bg-dark2">
+			<div class="form-container footer__container">
 				<p class="form__text">
-					Нет аккаунта? <a class="link link--standart" href="#">Зарегистрироваться</a>
+					Нет аккаунта?
 				</p>
+				{{{Link
+					href="#"
+					label="Зарегистрироваться"
+					className="link link--standart"
+				}}}
 			</div>
 		</div>
 		{{/Form}}

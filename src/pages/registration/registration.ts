@@ -144,16 +144,16 @@ export default class RegistrationPage extends Block<Props> {
 						className="btn btn--submit-style" 
 					}}}
 				</div>
-				<div class="form__footer form__footer--bg-dark2">
-					<div class="form-container">
+				<div class="form__footer footer form__footer--bg-dark2">
+					<div class="form-container footer__container">
 						<p class="form__text">
 							Есть аккаунт?
-							{{{Link
-								href="#"
-								label="Войти"
-								className="link link--standart"
-							}}}
 						</p>
+						{{{Link
+							href="#"
+							label="Войти"
+							className="link link--standart"
+						}}}
 					</div>
 				</div>
 				{{/Form}}
