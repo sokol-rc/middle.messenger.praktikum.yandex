@@ -1,8 +1,2 @@
 @import './common/default.css';
 @import './common/common.css';
-@import '../pages/login/login.css';
-@import '../pages/registration/registration.css';
-@import '../pages/chat/chat.css';
-@import '../pages/profile/profile.css';
-@import '../pages/404/404.css';
-@import '../pages/500/500.css';

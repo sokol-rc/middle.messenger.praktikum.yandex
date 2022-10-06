@@ -1,0 +1,55 @@
+:root {
+    --chat-item-hover-bg-color: rgb(255 246 254);
+    --chat-item-active-bg-color: rgb(255 228 251);
+}
+
+.chat-preview {
+    display: flex;
+    align-items: center;
+    padding: 20px 16px;
+    cursor: pointer;
+    height: 100px;
+    overflow: hidden;
+    max-width: 460px;
+
+    &__avatar {
+        margin-right: 16px;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    &__title,
+    &__message {
+        display: flex;
+        height: 27px;
+    }
+
+    &__title .person-name,
+    &__message .last-message {
+        flex-grow: 1;
+    }
+
+    &__message .message-preview {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #747474;
+    }
+
+    &--active {
+        background-color: var(--chat-item-active-bg-color);
+    }
+
+    &:hover {
+        background-color: var(--chat-item-hover-bg-color);
+    }
+}
+
+.chat-preview-info {
+    min-width: 30px;
+    margin-left: 8px;
+}
