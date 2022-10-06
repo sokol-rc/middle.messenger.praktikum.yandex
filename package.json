@@ -1,65 +1,30 @@
 {
-    "name": "yandex.praktikum.messenger",
-    "version": "1.0.0",
-    "description": "Проектная работа Яндекс.Практикум. Курс мидл фронтенд-разработчик.",
-    "scripts": {
-        "dev": "parcel ./src/index.html --no-cache",
-        "start": "npm run build && node ./src/server.ts",
-        "build": "parcel build ./src/index.html",
-        "lint": "eslint ./src/**/*.ts && stylelint ./src/**/*.css"
-    },
-    "alias": {
-        "core": "./src/core",
-        "utils": "./src/utils"
-    },
-    "engines": {
-        "node": "14.17.6"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "@anikin/parcel-transformer-handlebars": "1.0.9",
-        "@types/node": "18.7.21",
-        "@typescript-eslint/eslint-plugin": "5.39.0",
-        "@typescript-eslint/parser": "5.39.0",
-        "eslint": "8.2.0",
-        "eslint-config-airbnb-base": "15.0.0",
-        "eslint-config-airbnb-typescript": "17.0.0",
-        "eslint-config-prettier": "8.5.0",
-        "eslint-config-standard-with-typescript": "23.0.0",
-        "eslint-plugin-import": "2.25.2",
-        "eslint-plugin-n": "15.3.0",
-        "eslint-plugin-promise": "6.0.1",
-        "express": "4.18.1",
-        "parcel": "2.7.0",
-        "parcel-plugin-handlebars-precompile": "1.0.2",
-        "parcel-reporter-static-files-copy": "1.4.0",
-        "postcss": "8.4.16",
-        "postcss-import": "15.0.0",
-        "postcss-nested": "5.0.6",
-        "prettier": "2.7.1",
-        "stylelint": "14.13.0",
-        "stylelint-config-prettier": "9.0.3",
-        "stylelint-config-standard": "28.0.0",
-        "stylelint-use-nesting": "4.0.0",
-        "typescript": "4.8.4"
-    },
-    "dependencies": {
-        "@swc/helpers": "0.4.11",
-        "babel-core": "6.26.3",
-        "handlebars": "4.7.7",
-        "nanoid": "4.0.0"
-    },
-    "staticFiles": {
-        "staticPath": "static"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/sokol-rc/netlify-example.git"
-    },
-    "bugs": {
-        "url": "https://github.com/sokol-rc/netlify-example/issues"
-    },
-    "homepage": "https://github.com/sokol-rc/netlify-example#readme"
+  "name": "yandex.praktikum.messenger",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "parcel ./src/index.html --no-cache",
+    "start": "npm run build && node ./src/server.js",
+    "build": "parcel build ./src/index.html"
+  },
+  "engines": {
+    "node": "14.17.6"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@anikin/parcel-transformer-handlebars": "^1.0.9",
+    "express": "^4.18.1",
+    "handlebars": "^4.7.7",
+    "parcel": "^2.7.0",
+    "parcel-reporter-static-files-copy": "^1.4.0",
+    "postcss": "^8.4.16",
+    "postcss-import": "^15.0.0",
+    "postcss-nested": "^5.0.6"
+  },
+  "dependencies": {},
+  "staticFiles": {
+    "staticPath": "static"
+  }
 }
