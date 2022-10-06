@@ -1,12 +1,13 @@
 import Block from 'core/Block';
 
 type IncomingProps = {
-	type: string;
     id: number;
-    name: string;
-    className: string;
-    placeholder: string;
-    validateType: string;
+	type?: string;
+    name?: string;
+    className?: string;
+    placeholder?: string;
+    pattern?: RegExp;
+    validateType?: string;
     onBlur: () => void;
 	onFocus: () => void;
 }
@@ -24,9 +25,10 @@ export default class InputInner extends Block<Props> {
                 blur: props.onBlur,
                 focus: props.onFocus,
 			},
-			value: ''
-        });
-    }
+			value: '',
+		});
+		
+	}
 
     static get componentName(): string {
         return 'InputInner';

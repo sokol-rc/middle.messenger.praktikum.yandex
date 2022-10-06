@@ -1,11 +1,14 @@
 import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
-import { formValidate } from 'utils/validate';
+import { inputValidate } from 'utils/validate';
 
 import './login.css';
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
+    validateOnBlur: (input: ValidateInput) => void;
+    loginPattern: RegExp;
+    passwordPattern: RegExp;
 };
 
 export default class LoginPage extends Block<Props> {
@@ -13,21 +16,51 @@ export default class LoginPage extends Block<Props> {
         super();
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
+            validateOnBlur: this.validateOnBlur.bind(this),
+            loginPattern: this.patterns.loginPattern,
+            passwordPattern: this.patterns.passwordPattern,
         });
+    }
+
+    inputsRefs: ValidateInput[] = [this.refs.loginInputRef, this.refs.passwordInputRef];
+
+    protected patterns = {
+        loginPattern: /^(?=.*[a-zA-Z-_])[0-9a-zA-Z_-]{3,20}$/,
+        passwordPattern: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s\S]{8,40}$/,
+    };
+
+    validateOnFocus(input: ValidateInput): void {
+        this._displayError(input);
+	}
+	
+	validateOnBlur(input: ValidateInput): void {
+        this._displayError(input);
     }
 
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
 
-        const loginInput: ValidateInput = this.refs.loginInputRef;
-        const passwordInput: ValidateInput = this.refs.passwordInputRef;
+		const formValues = getFormValues(this.inputsRefs);
+		
+		this.inputsRefs.forEach((inputRef: ValidateInput) => { 
+			this._displayError(inputRef);
+		})
 
-        formValidate([loginInput, passwordInput]);
-
-        const formValues = getFormValues([loginInput, passwordInput]);
-        console.log(formValues);
+        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
     }
 
+    private _displayError(inputRef: ValidateInput) {
+            const isValid: boolean = inputValidate(
+                inputRef.refs.inputInnerRef.getProps()
+            );
+
+            if (!isValid) {
+                inputRef.getProps().showError();
+            } else {
+                inputRef.getProps().clearError();
+            }
+	}
+	
     render() {
         return `
 <main class="auth-content layout-container">
@@ -46,9 +79,12 @@ export default class LoginPage extends Block<Props> {
 			className="form-input__label"
 			type="text" 
 			name="login" 
-			label="Email" 
+			label="Login" 
 			placeholder="Ваш login" 
+			validateOnBlur=validateOnBlur
 			validateType="login"
+			pattern=loginPattern
+			errorMessage="Логин не валидный"
 			ref="loginInputRef"
 		}}}
 		{{{Input 
@@ -59,7 +95,10 @@ export default class LoginPage extends Block<Props> {
 			name="password" 
 			label="Пароль" 
 			placeholder="пароль" 
+			validateOnBlur=validateOnBlur
 			validateType="password"
+			pattern=passwordPattern
+			errorMessage="Пароль не валидный"
 			ref="passwordInputRef"
 		}}}
 		<div class="form__check policy-check">

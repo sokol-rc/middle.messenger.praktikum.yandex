@@ -1,24 +1,24 @@
 import Block from 'core/Block';
-import { inputValidate, ValidateTypes } from 'utils/validate';
 
 import './input.css';
-
-type ErrorName = 'errorMessage';
 
 type Props = {
     type?: string;
     name?: string;
     label?: string;
     placeholder?: string;
+    pattern?: RegExp;
     validateType?: string;
     className?: string;
-    setLoginValidateStatus?: () => void;
-    passwordsValidate: () => void;
-    onBlur: (event: FocusEvent) => void;
-    onFocus: () => void;
-    setErrorMessage: (props: Record<ErrorName, string>) => void;
     value: string;
     errorMessage: string;
+    onFocus?: () => void;
+    showError?: () => void;
+    clearError?: () => void;
+    validateOnBlur: (input: ValidateInput) => void;
+    passwordsValidate: () => void;
+    setLoginValidateStatus?: () => void;
+    onBlur: (event: FocusEvent) => void;
 };
 
 export default class Input extends Block<Props> {
@@ -26,11 +26,12 @@ export default class Input extends Block<Props> {
         super(props);
         this.setProps({
             onBlur: this.onBlur.bind(this),
-            onFocus: this.onFocus.bind(this),
-            setErrorMessage: this.setErrorMessage.bind(this),
+            showError: this.showError.bind(this),
+            clearError: this.clearError.bind(this),
             passwordsValidate: this.props.passwordsValidate,
+            validateOnBlur: this.props.validateOnBlur,
             value: '',
-            errorMessage: '',
+            errorMessage: props.errorMessage,
         });
     }
 
@@ -38,27 +39,13 @@ export default class Input extends Block<Props> {
         return 'Input';
     }
 
-    onFocus() {
-        const inputProps: ValidateInput = this.refs.inputInnerRef.getProps();
-
-        inputValidate(inputProps, this.setErrorMessage.bind(this));
-
-        if (inputProps.validateType === ValidateTypes.REPEAT_PASSWORD) {
-            this.props.passwordsValidate();
-        }
-    }
-
-    onBlur(event: FocusEvent) {
+    onBlur(event: FocusEvent): void {
         const currentValue: string = (event.target as HTMLInputElement).value;
+        console.log(this.props);
 
         this.setInputValue(currentValue);
-
-        const inputProps: ValidateInput = this.refs.inputInnerRef.getProps();
-
-        inputValidate(inputProps, this.setErrorMessage.bind(this));
-
-        if (inputProps.validateType === ValidateTypes.REPEAT_PASSWORD) {
-            this.props.passwordsValidate();
+        if (typeof this.props.validateOnBlur === 'function') {
+            this.props.validateOnBlur(this);
         }
     }
 
@@ -68,23 +55,26 @@ export default class Input extends Block<Props> {
         });
     }
 
-    setErrorMessage(props: { errorMessage: string }): void {
-        this.refs.errorRef.setProps(props);
+    showError(): void {
+        this.refs.errorRef.setProps({ isShowed: true });
+    }
+
+    clearError(): void {
+        this.refs.errorRef.setProps({ isShowed: false });
     }
 
     protected render(): string {
-        const { id } = this;
-
         return `
 		<div class="{{wrapperClassName}}">
-			<label class="{{labelClassName}}" for="${id}">${this.props.label}</label>
+			<label class="{{labelClassName}}" for="${this.id}">${this.props.label}</label>
 			{{{InputInner
-				id="${id}" 
+				id="${this.id}" 
 				type="${this.props.type}" 
 				className="${this.props.className}"
 				placeholder="${this.props.placeholder}" 
 				name="${this.props.name}" 
 				validateType="${this.props.validateType}"
+				pattern=pattern
 				onBlur=onBlur
 				onFocus=onFocus
 				ref="inputInnerRef"
