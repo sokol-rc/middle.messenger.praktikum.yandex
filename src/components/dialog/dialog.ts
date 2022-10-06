@@ -9,7 +9,6 @@ type IncomingProps = {
 };
 
 type Props = IncomingProps & {
-    toogleSidebar: () => void;
     handleClick?: () => void;
     sendButtonClick?: (event: MouseEvent) => void;
 };
