@@ -1,0 +1,36 @@
+.form-input {
+    background-color: #fff;
+    border-radius: 10px;
+    position: relative;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    &__label {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+    }
+
+    &__input {
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 21px;
+    }
+
+    &__input[type='email'] {
+        text-decoration-line: underline;
+    }
+}
+
+.form-input + .form-input {
+    margin-top: 30px;
+}
+
+.error-message {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
