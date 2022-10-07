@@ -1,13 +1,7 @@
-enum METHOD {
-    GET = 'GET',
-    POST = 'POST',
-    PUT = 'PUT',
-    PATCH = 'PATCH',
-    DELETE = 'DELETE',
-}
+type METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 type Options = {
-    method?: string;
+    method?: METHOD;
     data?: any;
     timeout?: number;
     headers?: Record<string, string>;
@@ -33,21 +27,21 @@ class HTTPTransport {
         }
         return this.request(
             url,
-            { ...options, method: METHOD.GET },
+            { ...options, method: 'GET' },
             options.timeout
         );
     };
 
     put = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: METHOD.PUT }, options.timeout);
+        this.request(url, { ...options, method: 'PUT' }, options.timeout);
 
     post = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: METHOD.POST }, options.timeout);
+        this.request(url, { ...options, method: 'POST' }, options.timeout);
 
     delete = (url: string, options: Options = {}) =>
         this.request(
             url,
-            { ...options, method: METHOD.DELETE },
+            { ...options, method: 'DELETE' },
             options.timeout
         );
 
@@ -80,7 +74,7 @@ class HTTPTransport {
                 reject();
             };
 
-            if (method === METHOD.GET || !data) {
+            if (method === 'GET' || !data) {
                 xhr.send();
             } else {
                 xhr.send(data);
