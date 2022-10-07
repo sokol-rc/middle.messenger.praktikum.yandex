@@ -26,7 +26,7 @@ function queryStringify(data: any) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class Got {
+class HTTPTransport {
     get = (url: string, options: Options = {}) => {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
