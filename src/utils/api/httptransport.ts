@@ -11,12 +11,10 @@ function queryStringify(data: any) {
     if (typeof data !== 'object') {
         throw new Error('Data must be object');
     }
-    let out = '?';
-    Object.keys(data).forEach((key) => {
-        out += `${key}=${data[key]}&`;
-    });
-    out = out.slice(0, -1);
-    return out.replace(/ /g, '%20');
+    const stringified = Object.entries(data)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+    return `?${stringified}`;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,11 +37,7 @@ class HTTPTransport {
         this.request(url, { ...options, method: 'POST' }, options.timeout);
 
     delete = (url: string, options: Options = {}) =>
-        this.request(
-            url,
-            { ...options, method: 'DELETE' },
-            options.timeout
-        );
+        this.request(url, { ...options, method: 'DELETE' }, options.timeout);
 
     request = (url: string, options: Options, timeout: number = 5000) => {
         const { headers = {}, data, method } = options;
