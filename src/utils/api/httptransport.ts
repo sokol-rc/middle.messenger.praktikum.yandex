@@ -25,22 +25,21 @@ class HTTPTransport {
         }
         return this.request(
             url,
-            { ...options, method: 'GET' },
-            options.timeout
+            { ...options, method: 'GET' }
         );
     };
 
     put = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: 'PUT' }, options.timeout);
+        this.request(url, { ...options, method: 'PUT' });
 
     post = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: 'POST' }, options.timeout);
+        this.request(url, { ...options, method: 'POST' });
 
     delete = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: 'DELETE' }, options.timeout);
+        this.request(url, { ...options, method: 'DELETE' });
 
-    request = (url: string, options: Options, timeout: number = 5000) => {
-        const { headers = {}, data, method } = options;
+    request = (url: string, options: Options) => {
+        const { timeout = 5000, headers = {}, data, method } = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
