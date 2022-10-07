@@ -1,12 +1,20 @@
 import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
-import { formValidate } from 'utils/validate';
+import { inputValidate } from 'utils/validate/validate';
+import Patterns from 'utils/validate/validate-pattenrs';
 
 import '../login/login.css';
 import './registration.css';
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
+    validateOnBlur: (input: ValidateInput) => void;
+    validateOnFocus: (input: ValidateInput) => void;
+    personNamePattern: RegExp;
+    loginPattern: RegExp;
+    emailPattern: RegExp;
+    phonePattern: RegExp;
+    passwordPattern: RegExp;
 };
 
 export default class RegistrationPage extends Block<Props> {
@@ -14,37 +22,59 @@ export default class RegistrationPage extends Block<Props> {
         super();
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
+            validateOnBlur: this.validateOnBlur.bind(this),
+            validateOnFocus: this.validateOnFocus.bind(this),
+            personNamePattern: this.patterns.personNamePattern,
+            loginPattern: this.patterns.loginPattern,
+            emailPattern: this.patterns.emailPattern,
+            phonePattern: this.patterns.phonePattern,
+            passwordPattern: this.patterns.passwordPattern,
         });
+    }
+
+    protected patterns = Patterns;
+
+    validateOnFocus(inputRef: ValidateInput): void {
+		const isValid = this._validateRefs(inputRef);
+		this._displayError(isValid, inputRef);
+    }
+
+    validateOnBlur(inputRef: ValidateInput): void {
+		const isValid = this._validateRefs(inputRef);
+		this._displayError(isValid, inputRef);
     }
 
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
 
-        const firstName: ValidateInput = this.refs.firstNameInputRef;
-        const secondName: ValidateInput = this.refs.secondNameInputRef;
-        const loginInput: ValidateInput = this.refs.loginInputRef;
-        const emailInput: ValidateInput = this.refs.emailInputRef;
-        const phoneInput: ValidateInput = this.refs.phoneInputRef;
-        const passwordInput: ValidateInput = this.refs.passwordInputRef;
+        const inputsRefs: ValidateInput[] = [
+            this.refs.firstNameInputRef,
+            this.refs.secondNameInputRef,
+            this.refs.loginInputRef,
+            this.refs.emailInputRef,
+            this.refs.phoneInputRef,
+            this.refs.passwordInputRef,
+        ];
+        const formValues = getFormValues(inputsRefs);
 
-        formValidate([
-            firstName,
-            secondName,
-            loginInput,
-            emailInput,
-            phoneInput,
-            passwordInput,
-        ]);
+        inputsRefs.forEach((inputRef: ValidateInput) => {
+			const isValid = this._validateRefs(inputRef);
+            this._displayError(isValid, inputRef);
+        });
 
-        const formValues = getFormValues([
-            firstName,
-            secondName,
-            loginInput,
-            emailInput,
-            phoneInput,
-            passwordInput,
-        ]);
-        console.log(formValues);
+        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+    }
+
+    private _validateRefs(inputRef: ValidateInput) {
+        return inputValidate(inputRef.refs.inputInnerRef.getProps());
+    }
+
+    private _displayError(isValid: boolean, inputRef: ValidateInput) {
+        if (!isValid) {
+            inputRef.getProps().showError();
+        } else {
+            inputRef.getProps().clearError();
+        }
     }
 
     render() {
@@ -68,7 +98,10 @@ export default class RegistrationPage extends Block<Props> {
 						name="first_name" 
 						label="Имя" 
 						placeholder="Ваше имя" 
-						validateType="personName"
+						validateOnBlur=validateOnBlur
+						validateOnFocus=validateOnFocus
+						pattern=personNamePattern
+						errorMessage="латиница и кириллица, с заглавной, без спецсимволов"
 						ref="firstNameInputRef"
 					}}}
 					{{{Input 
@@ -79,7 +112,10 @@ export default class RegistrationPage extends Block<Props> {
 						name="second_name" 
 						label="Фамилия" 
 						placeholder="Ваша фамилия" 
-						validateType="personName"
+						validateOnBlur=validateOnBlur
+						validateOnFocus=validateOnFocus
+						pattern=personNamePattern
+						errorMessage="латиница и кириллица, с заглавной, без спецсимволов"
 						ref="secondNameInputRef"
 					}}}
 				</div>
@@ -91,7 +127,10 @@ export default class RegistrationPage extends Block<Props> {
 					name="login" 
 					label="Логин" 
 					placeholder="Ваш login" 
-					validateType="login"
+					validateOnBlur=validateOnBlur
+					validateOnFocus=validateOnFocus
+					pattern=loginPattern
+					errorMessage="от 3 до 20 символов, латиница, цифры, символы:-_"
 					ref="loginInputRef"
 				}}}
 				{{{Input 
@@ -102,7 +141,10 @@ export default class RegistrationPage extends Block<Props> {
 					name="email" 
 					label="Email" 
 					placeholder="your-email@mail.com" 
-					validateType="email"
+					validateOnBlur=validateOnBlur
+					validateOnFocus=validateOnFocus
+					pattern=emailPattern
+					errorMessage="не email"
 					ref="emailInputRef"
 				}}}
 				{{{Input 
@@ -113,7 +155,10 @@ export default class RegistrationPage extends Block<Props> {
 					name="phone" 
 					label="Телефон" 
 					placeholder="+7-911-911-91-91" 
-					validateType="phone"
+					validateOnBlur=validateOnBlur
+					validateOnFocus=validateOnFocus
+					pattern=phonePattern
+					errorMessage="от 10 до 15 символов, цифры, может начинается с плюса"
 					ref="phoneInputRef"
 				}}}
 				{{{Input 
@@ -124,7 +169,10 @@ export default class RegistrationPage extends Block<Props> {
 					name="password" 
 					label="Пароль" 
 					placeholder="пароль" 
-					validateType="password"
+					validateOnBlur=validateOnBlur
+					validateOnFocus=validateOnFocus
+					pattern=passwordPattern
+					errorMessage="от 8 до 40 символов, 1 заглавная, 1 цифра"
 					ref="passwordInputRef"
 				}}}
 				<div class="form__check policy-check">

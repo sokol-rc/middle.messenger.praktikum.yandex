@@ -25,13 +25,16 @@ export const inputValidate = (inputProps: ValidateInput): boolean => {
 export const repeatPasswordValidate = (
     oldPassword: ValidateInput,
     newPassword: ValidateInput
-): void => {
+): boolean => {
+	console.log(oldPassword);
+	console.log(newPassword);
+	
+	
     if (
         oldPassword.refs.inputInnerRef.getProps().value !==
         newPassword.refs.inputInnerRef.getProps().value
     ) {
-        newPassword
-            .getProps()
-            .setErrorMessage({ errorMessage: 'пароли не совпадают' });
+        return false;
     }
+    return true;
 };

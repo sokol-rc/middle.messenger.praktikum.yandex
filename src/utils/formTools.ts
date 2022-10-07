@@ -2,13 +2,15 @@ type FormValues = {
     [key: string]: string;
 };
 
-const getFormValues = (inputsArray: Array<ValidateInput>): FormValues => {
+const getFormValues = (inputsRefs: Array<ValidateInput>): FormValues => {
     const formValues: FormValues = {};
-	inputsArray.forEach((input) => {
-		const inputProps: ValidateInput = input.refs.inputInnerRef.getProps();
-		
+
+    inputsRefs.forEach((inputRef) => {
+        const inputProps: ValidateInput =
+            inputRef.refs.inputInnerRef.getProps();
+
         if (inputProps.value !== '' && inputProps.type !== 'checkbox') {
-			formValues[inputProps.name] = inputProps.value;
+            formValues[inputProps.name] = inputProps.value;
         }
     });
 

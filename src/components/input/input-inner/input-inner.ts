@@ -2,20 +2,19 @@ import Block from 'core/Block';
 
 type IncomingProps = {
     id: number;
-	type?: string;
+    type?: string;
     name?: string;
     className?: string;
     placeholder?: string;
     pattern?: RegExp;
-    validateType?: string;
     onBlur: () => void;
-	onFocus: () => void;
-}
+    onFocus: () => void;
+};
 
 type Props = IncomingProps & {
-	value: string;
-	events: { [x: string]: () => void; }
-}
+    value: string;
+    events: { [x: string]: () => void };
+};
 
 export default class InputInner extends Block<Props> {
     constructor({ ...props }: IncomingProps) {
@@ -24,11 +23,10 @@ export default class InputInner extends Block<Props> {
             events: {
                 blur: props.onBlur,
                 focus: props.onFocus,
-			},
-			value: '',
-		});
-		
-	}
+            },
+            value: '',
+        });
+    }
 
     static get componentName(): string {
         return 'InputInner';
@@ -42,7 +40,6 @@ export default class InputInner extends Block<Props> {
 			type="${this.props.type}"
 			placeholder="${this.props.placeholder}"
 			name="${this.props.name}"
-			data-validate="${this.props.validateType}"
 			value="${this.props.value}">`;
     }
 }

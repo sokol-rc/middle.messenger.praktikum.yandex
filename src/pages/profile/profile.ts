@@ -1,12 +1,19 @@
 import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
-import { formValidate, repeatPasswordValidate } from 'utils/validate';
+import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
+import Patterns from 'utils/validate/validate-pattenrs';
 
 import './profile.css';
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
-    passwordsValidate: () => void;
+    validateOnBlur: (input: ValidateInput) => void;
+    validateOnFocus: (input: ValidateInput) => void;
+    personNamePattern: RegExp;
+    loginPattern: RegExp;
+    emailPattern: RegExp;
+    phonePattern: RegExp;
+    passwordPattern: RegExp;
 };
 
 export default class ProfilePage extends Block<Props> {
@@ -14,51 +21,92 @@ export default class ProfilePage extends Block<Props> {
         super();
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
-            passwordsValidate: this.passwordsValidate.bind(this),
+            validateOnBlur: this.validateOnBlur.bind(this),
+            validateOnFocus: this.validateOnFocus.bind(this),
+            personNamePattern: this.patterns.personNamePattern,
+            loginPattern: this.patterns.loginPattern,
+            emailPattern: this.patterns.emailPattern,
+            phonePattern: this.patterns.phonePattern,
+            passwordPattern: this.patterns.passwordPattern,
         });
     }
 
-    passwordsValidate() {
-        const oldPasswordInput: ValidateInput = this.refs.oldPasswordInputRef;
-        const newPasswordInput: ValidateInput = this.refs.newPasswordInputRef;
-        repeatPasswordValidate(oldPasswordInput, newPasswordInput);
+    protected patterns = Patterns;
+
+    validateOnFocus(inputRef: ValidateInput): void {
+        let isValid: boolean = true;
+        let ref: ValidateInput;
+
+        if (inputRef.getProps().name === 'newPassword') {
+            isValid = repeatPasswordValidate(
+                this.refs.oldPasswordInputRef,
+                this.refs.newPasswordInputRef
+			);
+			ref = this.refs.newPasswordInputRef;
+        } else {
+			isValid = this._validateRefs(inputRef);
+			ref = inputRef;
+        }
+        this._displayError(isValid, ref);
+    }
+
+    validateOnBlur(inputRef: ValidateInput): void {
+        let isValid: boolean = true;
+        let ref: ValidateInput;
+
+        if (inputRef.getProps().name === 'newPassword') {
+            isValid = repeatPasswordValidate(
+                this.refs.oldPasswordInputRef,
+                this.refs.newPasswordInputRef
+			);
+			ref = this.refs.newPasswordInputRef;
+        } else {
+			isValid = this._validateRefs(inputRef);
+			ref = inputRef;
+        }
+        this._displayError(isValid, ref);
     }
 
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
 
-        const firstNameInput: ValidateInput = this.refs.firstNameInputRef;
-        const secondNameInput: ValidateInput = this.refs.secondNameInputRef;
-        const displayNameInput: ValidateInput = this.refs.displayNameInputRef;
-        const loginInput: ValidateInput = this.refs.loginInputRef;
-        const emailInput: ValidateInput = this.refs.emailInputRef;
-        const phoneInput: ValidateInput = this.refs.phoneInputRef;
-        const oldPasswordInput: ValidateInput = this.refs.oldPasswordInputRef;
-        const newPasswordInput: ValidateInput = this.refs.newPasswordInputRef;
+        const inputsRefs: ValidateInput[] = [
+            this.refs.firstNameInputRef,
+            this.refs.secondNameInputRef,
+            this.refs.loginInputRef,
+            this.refs.emailInputRef,
+            this.refs.phoneInputRef,
+            this.refs.oldPasswordInputRef,
+            this.refs.newPasswordInputRef,
+        ];
+        const formValues = getFormValues(inputsRefs);
 
-        formValidate([
-            firstNameInput,
-            secondNameInput,
-            displayNameInput,
-            loginInput,
-            emailInput,
-            phoneInput,
-            oldPasswordInput,
-        ]);
+        inputsRefs.forEach((inputRef: ValidateInput) => {
+            const isValid = this._validateRefs(inputRef);
+            this._displayError(isValid, inputRef);
+        });
 
-        repeatPasswordValidate(oldPasswordInput, newPasswordInput);
+        const matchPassword = repeatPasswordValidate(
+            this.refs.oldPasswordInputRef,
+            this.refs.newPasswordInputRef
+        );
+        console.log(matchPassword);
 
-        const formValues = getFormValues([
-            firstNameInput,
-            secondNameInput,
-            displayNameInput,
-            loginInput,
-            emailInput,
-            phoneInput,
-            oldPasswordInput,
-            newPasswordInput,
-        ]);
-        console.log(formValues);
+        this._displayError(matchPassword, this.refs.newPasswordInputRef);
+
+        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+    }
+
+    private _validateRefs(inputRef: ValidateInput) {
+        return inputValidate(inputRef.refs.inputInnerRef.getProps());
+    }
+
+    private _displayError(isValid: boolean, inputRef: ValidateInput) {
+        if (!isValid) {
+            inputRef.getProps().showError();
+        } else {
+            inputRef.getProps().clearError();
+        }
     }
 
     render() {
@@ -111,7 +159,10 @@ export default class ProfilePage extends Block<Props> {
 			name="first_name" 
 			label="Имя" 
 			placeholder=""
-			validateType="personName"
+			validateOnBlur=validateOnBlur
+			validateOnFocus=validateOnFocus
+			pattern=personNamePattern
+			errorMessage="латиница и кириллица, с заглавной, без спецсимволов"
 			ref="firstNameInputRef"
 		}}}
 		{{{Input 
@@ -122,7 +173,10 @@ export default class ProfilePage extends Block<Props> {
 			name="second_name" 
 			label="Фамилия" 
 			placeholder=""
-			validateType="personName"
+			validateOnBlur=validateOnBlur
+			validateOnFocus=validateOnFocus
+			pattern=personNamePattern
+			errorMessage="латиница и кириллица, с заглавной, без спецсимволов"
 			ref="secondNameInputRef"
 		}}}
 		{{{Input 
@@ -132,7 +186,10 @@ export default class ProfilePage extends Block<Props> {
 			type="text" 
 			name="display_name" 
 			label="Отображаемое имя" 
-			validateType="login"
+			validateOnBlur=validateOnBlur
+			validateOnFocus=validateOnFocus
+			pattern=loginPattern
+			errorMessage="от 3 до 20 символов, латиница, цифры, символы:-_"
 			placeholder=""
 			ref="displayNameInputRef"
 		}}}
@@ -144,7 +201,10 @@ export default class ProfilePage extends Block<Props> {
 			name="login" 
 			label="Логин" 
 			placeholder=""
-			validateType="login"
+			validateOnBlur=validateOnBlur
+			validateOnFocus=validateOnFocus
+			pattern=loginPattern
+			errorMessage="от 3 до 20 символов, латиница, цифры, символы:-_"
 			ref="loginInputRef"
 		}}}
 		{{{Input 
@@ -155,7 +215,10 @@ export default class ProfilePage extends Block<Props> {
 			name="email" 
 			label="Email"
 			placeholder="" 
-			validateType="email"
+			validateOnBlur=validateOnBlur
+			validateOnFocus=validateOnFocus
+			pattern=emailPattern
+			errorMessage="не email"
 			ref="emailInputRef"
 		}}}
 		{{{Input 
@@ -166,7 +229,10 @@ export default class ProfilePage extends Block<Props> {
 			name="phone" 
 			label="Телефон"
 			placeholder="" 
-			validateType="phone"
+			validateOnBlur=validateOnBlur
+			validateOnFocus=validateOnFocus
+			pattern=phonePattern
+			errorMessage="от 10 до 15 символов, цифры, может начинается с плюса"
 			ref="phoneInputRef"
 		}}}
 		</div>
@@ -179,7 +245,10 @@ export default class ProfilePage extends Block<Props> {
 				name="oldPassword" 
 				label="Старый пароль"
 				placeholder="" 
-				validateType="password"
+				validateOnBlur=validateOnBlur
+				validateOnFocus=validateOnFocus
+				pattern=passwordPattern
+				errorMessage="от 8 до 40 символов, 1 заглавная, 1 цифра"
 				ref="oldPasswordInputRef"
 			}}}
 			{{{Input 
@@ -190,8 +259,9 @@ export default class ProfilePage extends Block<Props> {
 				name="newPassword" 
 				label="Новый пароль"
 				placeholder="" 
-				validateType="repeatPassword"
-				passwordsValidate=passwordsValidate
+				validateOnBlur=validateOnBlur
+				validateOnFocus=validateOnFocus
+				errorMessage="пароли не совпадают"
 				ref="newPasswordInputRef"
 			}}}
 		</div>

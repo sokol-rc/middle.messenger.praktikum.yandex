@@ -8,7 +8,6 @@ type Props = {
     label?: string;
     placeholder?: string;
     pattern?: RegExp;
-    validateType?: string;
     className?: string;
     value: string;
     errorMessage: string;
@@ -16,7 +15,6 @@ type Props = {
     showError?: () => void;
     clearError?: () => void;
     validateOnBlur: (input: ValidateInput) => void;
-    passwordsValidate: () => void;
     setLoginValidateStatus?: () => void;
     onBlur: (event: FocusEvent) => void;
 };
@@ -28,7 +26,6 @@ export default class Input extends Block<Props> {
             onBlur: this.onBlur.bind(this),
             showError: this.showError.bind(this),
             clearError: this.clearError.bind(this),
-            passwordsValidate: this.props.passwordsValidate,
             validateOnBlur: this.props.validateOnBlur,
             value: '',
             errorMessage: props.errorMessage,
@@ -41,7 +38,6 @@ export default class Input extends Block<Props> {
 
     onBlur(event: FocusEvent): void {
         const currentValue: string = (event.target as HTMLInputElement).value;
-        console.log(this.props);
 
         this.setInputValue(currentValue);
         if (typeof this.props.validateOnBlur === 'function') {
@@ -73,7 +69,6 @@ export default class Input extends Block<Props> {
 				className="${this.props.className}"
 				placeholder="${this.props.placeholder}" 
 				name="${this.props.name}" 
-				validateType="${this.props.validateType}"
 				pattern=pattern
 				onBlur=onBlur
 				onFocus=onFocus

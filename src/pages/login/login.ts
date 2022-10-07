@@ -1,12 +1,14 @@
 import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
-import { inputValidate } from 'utils/validate';
+import { inputValidate } from 'utils/validate/validate';
+import Patterns from 'utils/validate/validate-pattenrs';
 
 import './login.css';
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
+    validateOnFocus: (input: ValidateInput) => void;
     loginPattern: RegExp;
     passwordPattern: RegExp;
 };
@@ -17,50 +19,53 @@ export default class LoginPage extends Block<Props> {
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
+            validateOnFocus: this.validateOnFocus.bind(this),
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
         });
     }
 
-    inputsRefs: ValidateInput[] = [this.refs.loginInputRef, this.refs.passwordInputRef];
+    protected patterns = Patterns;
 
-    protected patterns = {
-        loginPattern: /^(?=.*[a-zA-Z-_])[0-9a-zA-Z_-]{3,20}$/,
-        passwordPattern: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d\s\S]{8,40}$/,
-    };
+    validateOnFocus(inputRef: ValidateInput): void {
+		const isValid = this._validateRefs(inputRef);
+		this._displayError(isValid, inputRef);
+    }
 
-    validateOnFocus(input: ValidateInput): void {
-        this._displayError(input);
-	}
-	
-	validateOnBlur(input: ValidateInput): void {
-        this._displayError(input);
+    validateOnBlur(inputRef: ValidateInput): void {
+		const isValid = this._validateRefs(inputRef);
+		this._displayError(isValid, inputRef);
     }
 
     onSubmit(event: SubmitEvent): void {
-        event.preventDefault();
-
-		const formValues = getFormValues(this.inputsRefs);
+		event.preventDefault();
+		const inputsRefs: ValidateInput[] = [
+			this.refs.loginInputRef,
+			this.refs.passwordInputRef,
+		];
 		
-		this.inputsRefs.forEach((inputRef: ValidateInput) => { 
-			this._displayError(inputRef);
-		})
+        const formValues = getFormValues(inputsRefs);
+
+        inputsRefs.forEach((inputRef: ValidateInput) => {
+			const isValid = this._validateRefs(inputRef);
+            this._displayError(isValid, inputRef);
+        });
 
         console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
     }
 
-    private _displayError(inputRef: ValidateInput) {
-            const isValid: boolean = inputValidate(
-                inputRef.refs.inputInnerRef.getProps()
-            );
+    private _validateRefs(inputRef: ValidateInput) {
+        return inputValidate(inputRef.refs.inputInnerRef.getProps());
+    }
 
-            if (!isValid) {
-                inputRef.getProps().showError();
-            } else {
-                inputRef.getProps().clearError();
-            }
-	}
-	
+    private _displayError(isValid: boolean, inputRef: ValidateInput) {
+        if (!isValid) {
+            inputRef.getProps().showError();
+        } else {
+            inputRef.getProps().clearError();
+        }
+    }
+
     render() {
         return `
 <main class="auth-content layout-container">
@@ -82,9 +87,9 @@ export default class LoginPage extends Block<Props> {
 			label="Login" 
 			placeholder="Ваш login" 
 			validateOnBlur=validateOnBlur
-			validateType="login"
+			validateOnFocus=validateOnFocus
 			pattern=loginPattern
-			errorMessage="Логин не валидный"
+			errorMessage="от 3 до 20 символов, латиница, цифры, символы:-_"
 			ref="loginInputRef"
 		}}}
 		{{{Input 
@@ -96,9 +101,9 @@ export default class LoginPage extends Block<Props> {
 			label="Пароль" 
 			placeholder="пароль" 
 			validateOnBlur=validateOnBlur
-			validateType="password"
+			validateOnFocus=validateOnFocus
 			pattern=passwordPattern
-			errorMessage="Пароль не валидный"
+			errorMessage="от 8 до 40 символов, 1 заглавная, 1 цифра"
 			ref="passwordInputRef"
 		}}}
 		<div class="form__check policy-check">

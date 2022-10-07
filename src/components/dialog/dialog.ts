@@ -1,43 +1,70 @@
 import Block from 'core/Block';
 import getFormValues  from 'utils/formTools';
-import { formValidate }  from 'utils/validate';
+import { inputValidate } from 'utils/validate/validate';
+import Patterns from 'utils/validate/validate-pattenrs';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
-type IncomingProps = {
-    toogleSidebar: () => void;
-};
-
-type Props = IncomingProps & {
-    handleClick?: () => void;
-    sendButtonClick?: (event: MouseEvent) => void;
+type Props = {
+	handleClick?: () => void;
+	toogleSidebar: () => void;
+	sendButtonClick?: (event: MouseEvent) => void;
+	validateOnBlur: (input: ValidateInput) => void;
+	validateOnFocus: (input: ValidateInput) => void;
+	messagePattern: RegExp;
 };
 
 export default class Dialog extends Block<Props> {
-    constructor(props: IncomingProps) {
+    constructor(props: Props) {
         super(props);
         this.setProps({
             handleClick: this.handleClick.bind(this),
-            sendButtonClick: this.sendButtonClick.bind(this),
+			sendButtonClick: this.sendButtonClick.bind(this),
+			validateOnBlur: this.validateOnBlur.bind(this),
+			validateOnFocus: this.validateOnFocus.bind(this),
+			messagePattern: this.patterns.messagePattern,
             toogleSidebar: this.props.toogleSidebar,
         });
     }
 
-    static componentName = 'Dialog';
+	static componentName = 'Dialog';
+	
+	protected patterns = Patterns;
 
     handleClick() {
         this.props.toogleSidebar();
+	}
+
+	validateOnFocus(input: ValidateInput): void {
+        this._displayError(input);
     }
+
+    validateOnBlur(input: ValidateInput): void {
+        this._displayError(input);
+    }
+
 
     sendButtonClick(event: MouseEvent) {
         event.preventDefault();
 
         const messageInput: ValidateInput = this.refs.messageInputRef;
 
-        formValidate([messageInput]);
+		this._displayError(messageInput);
 
         const formValues = getFormValues([messageInput]);
-        console.log(formValues);
+        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+	}
+	
+	private _displayError(inputRef: ValidateInput) {
+        const isValid: boolean = inputValidate(
+            inputRef.refs.inputInnerRef.getProps()
+        );
+
+        if (!isValid) {
+            inputRef.getProps().showError();
+        } else {
+            inputRef.getProps().clearError();
+        }
     }
 
     protected render(): string {
@@ -88,7 +115,10 @@ export default class Dialog extends Block<Props> {
 								name="message"
 								label="Напишите здесь"
 								placeholder="Напишите здесь..." 
-								validateType="message"
+								validateOnBlur=validateOnBlur
+								validateOnFocus=validateOnFocus
+								pattern=messagePattern
+								errorMessage="не пустое"
 								ref="messageInputRef"
 							}}}
 					<div class="send-form__submit">
