@@ -27,6 +27,7 @@ import Message from './components/message/message';
 
 import './styles/common/default.css';
 import './styles/common/common.css';
+import Router from 'utils/routing/router';
 
 require('babel-core/register');
 
@@ -49,29 +50,36 @@ registerComponent(Link);
 registerComponent(DayContainer);
 registerComponent(Message);
 
-const links: { [x: string]: any } = {
-    '/login': LoginPage,
-    '/registration': RegistrationPage,
-    '/': ChatPage,
-    '/profile': ProfilePage,
-    '/404': ErrorPage,
-};
+const router = new Router(".app");
+  router
+	.use("/", ChatPage)
+	.use("/login", LoginPage)
+	.start();
 
-const routing = (route: string | Event) => {
-    let href: string = '';
-    if (typeof route === 'string') {
-        href = route;
-    } else {
-        href = document.location.pathname;
-    }
-    if (href in links) {
-        renderDOM(new links[href]());
-    } else if (href === '/500') {
-        renderDOM(new links['/404']({ errorNumber: 500 }));
-    } else {
-        renderDOM(new links['/404']({ errorNumber: 404 }));
-    }
-};
 
-(window as any).routing = routing;
-document.addEventListener('DOMContentLoaded', routing);
+//document.addEventListener('DOMContentLoaded', routing);
+
+// const links: { [x: string]: any } = {
+//     '/login': LoginPage,
+//     '/registration': RegistrationPage,
+//     '/': ChatPage,
+//     '/profile': ProfilePage,
+//     '/404': ErrorPage,
+// };
+// const routing = (route: string | Event) => {
+//     let href: string = '';
+//     if (typeof route === 'string') {
+//         href = route;
+//     } else {
+//         href = document.location.pathname;
+//     }
+//     if (href in links) {
+//         renderDOM(new links[href]());
+//     } else if (href === '/500') {
+//         renderDOM(new links['/404']({ errorNumber: 500 }));
+//     } else {
+//         renderDOM(new links['/404']({ errorNumber: 404 }));
+//     }
+// };
+
+// (window as any).routing = routing;

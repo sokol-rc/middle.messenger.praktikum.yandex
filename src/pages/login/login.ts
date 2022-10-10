@@ -22,7 +22,9 @@ export default class LoginPage extends Block<Props> {
             validateOnFocus: this.validateOnFocus.bind(this),
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
-        });
+		});
+		console.log(this.props);
+		
     }
 
     protected patterns = Patterns;
