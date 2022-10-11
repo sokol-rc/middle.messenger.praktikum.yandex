@@ -1,3 +1,4 @@
+import connect from "core/connectHoc";
 import LoginPage from "./login";
 
-export default LoginPage;
+export default connect(LoginPage);
