@@ -1,6 +1,10 @@
-import { renderDOM, registerComponent } from './core';
+import Router from 'utils/routing/router';
+import { Store } from 'core/store/store';
+import initialStore from 'core/store/initial-store';
+import { registerComponent } from './core';
 
 import LoginPage from './pages/login';
+import LoginPageContainer from './pages/login/loginContainer';
 import RegistrationPage from './pages/registration';
 import ErrorPage from './pages/errorPage';
 import ChatPage from './pages/chat';
@@ -24,10 +28,10 @@ import Form from './components/form';
 import Link from './components/controls/link';
 import DayContainer from './components/message/day-container';
 import Message from './components/message/message';
+import Loader from './components/loader';
 
 import './styles/common/default.css';
 import './styles/common/common.css';
-import Router from 'utils/routing/router';
 
 require('babel-core/register');
 
@@ -49,15 +53,31 @@ registerComponent(Form);
 registerComponent(Link);
 registerComponent(DayContainer);
 registerComponent(Message);
+registerComponent(Loader);
 
-const router = new Router(".app");
-  router
-	.use("/", ChatPage)
-	.use("/login", LoginPage)
-	.start();
+document.addEventListener('DOMContentLoaded', () => {
+    window.store = new Store<any>(initialStore);
+    window.router = new Router('.app');
 
+    window.router
+        .use('/', ChatPage)
+        .use('/login', LoginPageContainer)
+        .use('/registration', RegistrationPage)
+        .use('/profile', ProfilePage)
+        .use('/404', ErrorPage, { errorNumber: 404 })
+        .use('/500', ErrorPage, { errorNumber: 500 })
+		.start();
+	
+		window.store.on('changed', (prevState, nextState) => {
+			  console.log(
+				'%cstore updated',
+				'background: #222; color: #bada55',
+				nextState,
+			  );
+		  });
+});
 
-//document.addEventListener('DOMContentLoaded', routing);
+// document.addEventListener('DOMContentLoaded', routing);
 
 // const links: { [x: string]: any } = {
 //     '/login': LoginPage,

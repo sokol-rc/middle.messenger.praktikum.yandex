@@ -11,45 +11,59 @@ type Props = {
     validateOnFocus: (input: ValidateInput) => void;
     loginPattern: RegExp;
     passwordPattern: RegExp;
+	store: any;
+    isLoading: () => boolean;
+	onLoading: () => void;
 };
 
 export default class LoginPage extends Block<Props> {
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
             validateOnFocus: this.validateOnFocus.bind(this),
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
-		});
-		console.log(this.props);
-		
+            isLoading: props.isLoading,
+            store: props.store,
+            onLoading: this.onLoading.bind(this),
+        });
     }
 
     protected patterns = Patterns;
 
     validateOnFocus(inputRef: ValidateInput): void {
-		const isValid = this._validateRefs(inputRef);
-		this._displayError(isValid, inputRef);
+        const isValid = this._validateRefs(inputRef);
+        this._displayError(isValid, inputRef);
     }
 
     validateOnBlur(inputRef: ValidateInput): void {
-		const isValid = this._validateRefs(inputRef);
-		this._displayError(isValid, inputRef);
+        const isValid = this._validateRefs(inputRef);
+        this._displayError(isValid, inputRef);
+    }
+
+	onLoading() {
+		console.log(this.props);
+		
+        this.props.store.dispatch({ isLoading: true });
+
+        setTimeout(() => {
+            this.props.store.dispatch({ isLoading: false });
+        }, 2000);
     }
 
     onSubmit(event: SubmitEvent): void {
-		event.preventDefault();
-		const inputsRefs: ValidateInput[] = [
-			this.refs.loginInputRef,
-			this.refs.passwordInputRef,
-		];
-		
+        event.preventDefault();
+        const inputsRefs: ValidateInput[] = [
+            this.refs.loginInputRef,
+            this.refs.passwordInputRef,
+        ];
+
         const formValues = getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
-			const isValid = this._validateRefs(inputRef);
+            const isValid = this._validateRefs(inputRef);
             this._displayError(isValid, inputRef);
         });
 
@@ -69,8 +83,11 @@ export default class LoginPage extends Block<Props> {
     }
 
     render() {
+
         return `
 <main class="auth-content layout-container">
+{{{Button onClick=onLoading}}}
+{{{Loader isLoading=isLoading}}}
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">
 		<div class="form-header auth-content__header">
 			<h1 class="form-header__title">Вход</h1>

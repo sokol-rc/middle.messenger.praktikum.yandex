@@ -1,8 +1,5 @@
 import { renderDOM } from "core";
-
-function isEqual(lhs: string, rhs: string) {
-	return lhs === rhs;
-  }
+import isEqual from "utils/helpers/isequal";
 
 export default class Route {
     constructor(pathname, view, props) {
@@ -32,7 +29,7 @@ export default class Route {
 	render() {
 		
         if (!this._block) {
-            this._block = new this._blockClass();
+            this._block = new this._blockClass(this._props);
             renderDOM(this._block);
             return;
         }

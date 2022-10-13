@@ -14,12 +14,12 @@
 <body>
 	<div class="dev-header">
 		<div class="dev-header__inner">
-			<a class="dev-link" onclick="">логин</a>
-			<a class="dev-link" href="/registration">регистрация</a>
-			<a class="dev-link" href="/">чат</a>
-			<a class="dev-link" href="/profile">профиль</a>
-			<a class="dev-link" href="/4044">404</a>
-			<a class="dev-link" href="/500">500</a>
+			<a class="dev-link" onclick="window.router.go('/login')">логин</a>
+			<a class="dev-link" onclick="window.router.go('/registration')">регистрация</a>
+			<a class="dev-link" onclick="window.router.go('/')">чат</a>
+			<a class="dev-link" onclick="window.router.go('/profile')">профиль</a>
+			<a class="dev-link" onclick="window.router.go('/404')">404</a>
+			<a class="dev-link" onclick="window.router.go('/500')">500</a>
 		</div>
 	</div>
 	<div id="root"></div>

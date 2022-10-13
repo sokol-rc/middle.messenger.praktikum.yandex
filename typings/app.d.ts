@@ -10,6 +10,10 @@ declare global {
 		componentName: string;
 		new (props: Props): Block;
 	}
+	interface Window {
+		store: Store<AppState>;
+		router: HashRouter;
+	  }
 	declare module "*.png" {
 		const value: any;
 		export default value;
@@ -17,7 +21,10 @@ declare global {
 	declare module "*.svg" {
 		const value: any;
 		export default value;
-	 }
+	}
+	export type Indexed<T = unknown> = {
+		[key in string]: T;
+	};
 }
 
 

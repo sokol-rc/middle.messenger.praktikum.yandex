@@ -1,4 +1,4 @@
-import Route from "./route";
+import Route from './route';
 
 export default class Router {
     constructor(rootQuery) {
@@ -14,8 +14,9 @@ export default class Router {
         Router.__instance = this;
     }
 
-    use(pathname, block) {
-        const route = new Route(pathname, block, {
+	use(pathname, block, props = {}) {
+		const route = new Route(pathname, block, {
+			...props,
             rootQuery: this._rootQuery,
         });
         this.routes.push(route);
@@ -33,6 +34,14 @@ export default class Router {
 
     _onRoute(pathname) {
         const route = this.getRoute(pathname);
+        const errorPageRoute = this.getRoute('/404');
+		console.log(route);
+		
+        if (typeof route === 'undefined') {
+            this.history.pushState({}, '', pathname);
+            errorPageRoute.render(errorPageRoute, pathname);
+            return;
+        }
 
         if (this._currentRoute) {
             this._currentRoute.leave();
