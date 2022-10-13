@@ -10,7 +10,9 @@
     },
     "alias": {
         "core": "./src/core",
-        "utils": "./src/utils"
+        "utils": "./src/utils",
+        "services": "./src/services",
+        "hoc": "./src/hoc"
     },
     "engines": {
         "node": "14.17.6"

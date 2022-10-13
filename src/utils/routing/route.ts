@@ -1,5 +1,5 @@
-import { renderDOM } from "core";
-import isEqual from "utils/helpers/isequal";
+import { renderDOM } from 'core';
+import isEqual from 'utils/helpers/isequal';
 
 export default class Route {
     constructor(pathname, view, props) {
@@ -18,16 +18,15 @@ export default class Route {
 
     leave() {
         if (this._block) {
-            this._block.hide();
+            //    this._block.hide();
         }
     }
 
-	match(pathname) {
-		return isEqual(pathname, this._pathname);
+    match(pathname) {
+        return isEqual(pathname, this._pathname);
     }
 
-	render() {
-		
+    render() {
         if (!this._block) {
             this._block = new this._blockClass(this._props);
             renderDOM(this._block);
@@ -35,5 +34,6 @@ export default class Route {
         }
 
         this._block.show();
+        renderDOM(this._block);
     }
 }

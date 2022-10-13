@@ -41,6 +41,7 @@ export default class Block<P extends Record<string, any>> {
     _registerEvents(eventBus: EventBus<Events>) {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
 
@@ -51,7 +52,14 @@ export default class Block<P extends Record<string, any>> {
     init() {
         this._createResources();
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
-    }
+	}
+	
+	_componentDidMount(props: P) { 
+		this.componentDidMount(props);
+	}
+	componentDidMount(props: P) {
+
+	}
 
     _componentDidUpdate() {
         const response = true;
@@ -108,7 +116,7 @@ export default class Block<P extends Record<string, any>> {
                 ) {
                     this.eventBus().emit(Block.EVENTS.FLOW_CDM);
                 }
-            }, 100);
+            }, 1);
         }
 
         return this.element!;

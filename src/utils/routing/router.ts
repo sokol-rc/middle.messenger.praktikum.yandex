@@ -35,7 +35,6 @@ export default class Router {
     _onRoute(pathname) {
         const route = this.getRoute(pathname);
         const errorPageRoute = this.getRoute('/404');
-		console.log(route);
 		
         if (typeof route === 'undefined') {
             this.history.pushState({}, '', pathname);
@@ -43,10 +42,10 @@ export default class Router {
             return;
         }
 
-        if (this._currentRoute) {
+		if (this._currentRoute) {
             this._currentRoute.leave();
         }
-
+		
         this._currentRoute = route;
         route.render(route, pathname);
     }

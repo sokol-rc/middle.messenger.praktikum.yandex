@@ -55,8 +55,8 @@ registerComponent(DayContainer);
 registerComponent(Message);
 registerComponent(Loader);
 
+window.store = new Store<any>(initialStore);
 document.addEventListener('DOMContentLoaded', () => {
-    window.store = new Store<any>(initialStore);
     window.router = new Router('.app');
 
     window.router
