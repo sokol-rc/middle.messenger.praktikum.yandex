@@ -2,6 +2,7 @@ type METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export type Options = {
     method?: METHOD;
+    credentials?: boolean;
     data?: any;
     timeout?: number;
     headers?: Record<string, string>;
@@ -23,10 +24,7 @@ class HTTPTransport {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
         }
-        return this.request(
-            url,
-            { ...options, method: 'GET' }
-        );
+        return this.request(url, { ...options, method: 'GET' });
     };
 
     put = (url: string, options: Options = {}) =>
@@ -39,7 +37,13 @@ class HTTPTransport {
         this.request(url, { ...options, method: 'DELETE' });
 
     request = (url: string, options: Options) => {
-        const { credentials, timeout = 5000, headers = {}, data, method } = options;
+        const {
+            credentials,
+            timeout = 5000,
+            headers = {},
+            data,
+            method,
+        } = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -47,10 +51,8 @@ class HTTPTransport {
                 xhr.open(method, url);
             }
 
-			xhr.timeout = timeout;
-			if (credentials) { 
-				xhr.withCredentials = true;
-			}
+            xhr.timeout = timeout;
+            xhr.withCredentials = true;
 
             Object.keys(headers).forEach((key) => {
                 xhr.setRequestHeader(key, headers[key]);

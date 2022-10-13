@@ -11,7 +11,7 @@ type TAuthApi = {
 
 const AuthApi: TAuthApi = {
     apiUrl: 'https://ya-praktikum.tech/api/v2/',
-    headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+    headers: { 'accept': 'application/json', 'Content-Type': 'application/json' },
     signin(options: Options) {
 		return HTTPTransport.post(`${this.apiUrl}auth/signin`, {credentials: true, headers: this.headers ,...options});
     },
