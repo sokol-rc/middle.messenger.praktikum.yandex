@@ -74,6 +74,9 @@
         text-align: center;
         margin-right: 10px;
     }
+	&__error {
+		color: red;
+	}
 }
 
 .form__check {

@@ -26,7 +26,10 @@ export default class Route {
         return isEqual(pathname, this._pathname);
     }
 
-    render() {
+	render() {
+		console.log(this._block);
+		console.log(this._blockClass);
+		
         if (!this._block) {
             this._block = new this._blockClass(this._props);
             renderDOM(this._block);

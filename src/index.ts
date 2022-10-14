@@ -1,14 +1,7 @@
-import Router from 'utils/routing/router';
+import Router from 'core/routing/router';
 import { Store } from 'core/store/store';
 import initialStore from 'core/store/initial-store';
 import { registerComponent } from './core';
-
-import LoginPage from './pages/login';
-import LoginPageContainer from './pages/login/loginContainer';
-import RegistrationPage from './pages/registration';
-import ErrorPage from './pages/errorPage';
-import ChatPage from './pages/chat';
-import ProfilePage from './pages/profile';
 
 import Button from './components/controls/button';
 import Input from './components/input';
@@ -32,6 +25,7 @@ import Loader from './components/loader';
 
 import './styles/common/default.css';
 import './styles/common/common.css';
+import initApp, { initRouter } from 'services/initApp';
 
 require('babel-core/register');
 
@@ -55,28 +49,31 @@ registerComponent(DayContainer);
 registerComponent(Message);
 registerComponent(Loader);
 
-window.store = new Store<any>(initialStore);
-document.addEventListener('DOMContentLoaded', () => {
-    window.router = new Router('.app');
 
-    window.router
-        .use('/', ChatPage)
-        .use('/login', LoginPageContainer)
-        .use('/registration', RegistrationPage)
-        .use('/profile', ProfilePage)
-        .use('/404', ErrorPage, { errorNumber: 404 })
-        .use('/500', ErrorPage, { errorNumber: 500 })
-		.start();
+
+
+console.log('initApp');
+
+document.addEventListener('DOMContentLoaded', () => {
+	const store = new Store<any>(initialStore);
+	const router = new Router('.app');
 	
-		window.store.on('changed', (prevState, nextState) => {
+	
+	window.store = store;
+	window.router = router;
+	
+		store.on('changed', (prevState, nextState) => {
 			  console.log(
 				'%cstore updated',
-				'background: #222; color: #bada55',
+				'background: #222; color: #7B68EE',
 				nextState,
 			  );
-		  });
-});
+		});
 
+	store.dispatch(initApp);
+
+	initRouter(router, store);
+});
 // document.addEventListener('DOMContentLoaded', routing);
 
 // const links: { [x: string]: any } = {

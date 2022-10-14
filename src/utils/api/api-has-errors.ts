@@ -1,3 +1,7 @@
 export default function apiHasErrors(response: any): response is APIError {
-    return response && response.reason;
+    
+	if (response && response.status !== 200) { 
+		return true;
+	}
+	return false;
 }

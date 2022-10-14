@@ -14,12 +14,12 @@ export default class Router {
         Router.__instance = this;
     }
 
-	use(pathname, block, props = {}) {
-		const route = new Route(pathname, block, {
-			...props,
+    use(pathname, block, flags, props = {}) {
+        const route = new Route(pathname, block, {
+            ...props,
             rootQuery: this._rootQuery,
         });
-        this.routes.push(route);
+		this.routes.push({route, flags});
 
         return this;
     }
@@ -33,21 +33,35 @@ export default class Router {
     }
 
     _onRoute(pathname) {
-        const route = this.getRoute(pathname);
-        const errorPageRoute = this.getRoute('/404');
-		
-        if (typeof route === 'undefined') {
-            this.history.pushState({}, '', pathname);
-            errorPageRoute.render(errorPageRoute, pathname);
-            return;
-        }
+		const { route, flags} = this.getRoute(pathname);
 
-		if (this._currentRoute) {
+        if (typeof route === 'undefined') {
+			this.history.pushState({}, '', pathname);
+			const errorPageRoute = this.getRoute('/404');
+			this.go('/404');
+            //errorPageRoute.route.render();
+            return;
+		}
+		console.log(flags.shouldAuthorized, window.store.getState().isAuthLocal);
+		
+		if (flags.shouldAuthorized && !window.store.getState().isAuthLocal) { 
+			console.log('redirect');
+			
+			const loginPageRoute = this.getRoute('/login');
+			console.log(loginPageRoute.route);
+			
+			loginPageRoute.route.render();
+			return;
+		}
+		console.log(route);
+		
+
+        if (this._currentRoute) {
             this._currentRoute.leave();
         }
-		
+
         this._currentRoute = route;
-        route.render(route, pathname);
+        route.render();
     }
 
     go(pathname) {
@@ -64,7 +78,7 @@ export default class Router {
     }
 
     getRoute(pathname) {
-        return this.routes.find((route) => route.match(pathname));
+        return this.routes.find((route) => route.route.match(pathname));
     }
 }
 

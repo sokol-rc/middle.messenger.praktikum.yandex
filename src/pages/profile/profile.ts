@@ -1,4 +1,5 @@
 import Block from 'core/Block';
+import { logout } from 'services/auth';
 import getFormValues from 'utils/formTools';
 import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
@@ -6,6 +7,7 @@ import Patterns from 'utils/validate/validate-pattenrs';
 import './profile.css';
 
 type Props = {
+    user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
@@ -17,8 +19,8 @@ type Props = {
 };
 
 export default class ProfilePage extends Block<Props> {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
@@ -28,6 +30,7 @@ export default class ProfilePage extends Block<Props> {
             emailPattern: this.patterns.emailPattern,
             phonePattern: this.patterns.phonePattern,
             passwordPattern: this.patterns.passwordPattern,
+            user: this.props.user,
         });
     }
 
@@ -41,11 +44,11 @@ export default class ProfilePage extends Block<Props> {
             isValid = repeatPasswordValidate(
                 this.refs.oldPasswordInputRef,
                 this.refs.newPasswordInputRef
-			);
-			ref = this.refs.newPasswordInputRef;
+            );
+            ref = this.refs.newPasswordInputRef;
         } else {
-			isValid = this._validateRefs(inputRef);
-			ref = inputRef;
+            isValid = this._validateRefs(inputRef);
+            ref = inputRef;
         }
         this._displayError(isValid, ref);
     }
@@ -58,11 +61,11 @@ export default class ProfilePage extends Block<Props> {
             isValid = repeatPasswordValidate(
                 this.refs.oldPasswordInputRef,
                 this.refs.newPasswordInputRef
-			);
-			ref = this.refs.newPasswordInputRef;
+            );
+            ref = this.refs.newPasswordInputRef;
         } else {
-			isValid = this._validateRefs(inputRef);
-			ref = inputRef;
+            isValid = this._validateRefs(inputRef);
+            ref = inputRef;
         }
         this._displayError(isValid, ref);
     }
@@ -113,35 +116,35 @@ export default class ProfilePage extends Block<Props> {
         return `
 		<main class="profile-page layout-container">
 		<div class="profile-page__inner">
-			<div class="profile-page__view profile-page__view--hidden">
+			<div class="profile-page__view">
 				<div class="profile-page__avatar">
 					{{{Avatar}}}
 				</div>
 				<div class="profile-page__data">
 					<div class="person-data">
 						<div class="person-data__item person-data__first-name">
-							Имя: Евгений
+							Имя: ${this.props.user.firstName || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__second-name">
-							Фамилия: Соколовский
+							Фамилия: ${this.props.user.secondName || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__display-name">
-							Отображаемое имя: sokoljd872ews
+							Отображаемое имя: ${this.props.user.displayName || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__login">
-							Логин: sokoljd872ews
+							Логин: ${this.props.user.login || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__email">
-							Email: cokol-rc@yandex.ru
+							Email: ${this.props.user.email || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__phone">
-							Телефон: +7-911-911-91-91
+							Телефон: ${this.props.user.phone || 'пусто'}
 						</div>
 					</div>
 				</div>
 			</div>
 			{{#Form
-				className="profile-page__form person-data-form profile-page__form--opened"
+				className="profile-page__form person-data-form"
 				onSubmit=onSubmit
 				ref="formRef"
 			}}

@@ -15,6 +15,7 @@ type Props = {
     passwordPattern: RegExp;
     store: any;
     user: any;
+    loginFormError: string;
     isLoading: () => boolean;
     onLogin: () => void;
     onLogout: () => void;
@@ -27,11 +28,13 @@ export default class LoginPage extends Block<Props> {
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
             validateOnFocus: this.validateOnFocus.bind(this),
+
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
             isLoading: props.isLoading,
             store: props.store,
             user: props.user,
+            loginFormError: props.loginFormError,
             onLogin: this.onLogin.bind(this),
             onLogout: this.onLogout.bind(this),
         });
@@ -51,17 +54,13 @@ export default class LoginPage extends Block<Props> {
         this._displayError(isValid, inputRef);
     }
 
-	onLogin(loginData) {
-		console.log(loginData);
-		
+    onLogin(loginData) {
         this.props.store.dispatch(login, loginData);
-	}
+    }
 
-	onLogout() { 
-		console.log('logout');
-		
-		AuthApi.logout();
-	}
+    onLogout() {
+        this.props.store.dispatch(logout);
+    }
 
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
@@ -72,7 +71,6 @@ export default class LoginPage extends Block<Props> {
         let isFormValid: boolean = true;
 
         const formValues = getFormValues(inputsRefs);
-        console.log(formValues);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
             const isValid = this._validateRefs(inputRef);
@@ -80,12 +78,11 @@ export default class LoginPage extends Block<Props> {
                 isFormValid = false;
             }
             this._displayError(isValid, inputRef);
-		});
-		
-		if (isFormValid) { 
-			this.onLogin(formValues);
-		}
-        
+        });
+
+        if (isFormValid) {
+            this.onLogin(formValues);
+        }
     }
 
     private _validateRefs(inputRef: ValidateInput) {
@@ -100,7 +97,8 @@ export default class LoginPage extends Block<Props> {
         }
     }
 
-    render() {
+	render() {
+		
         return `
 <main class="auth-content layout-container">
 {{{Button label="Logout" onClick=onLogout}}}
@@ -114,6 +112,10 @@ export default class LoginPage extends Block<Props> {
 			onSubmit=onSubmit
 			ref="formRef"
 		}}
+		<div class="form__error">${this.props.loginFormError}</div>
+		{{{InputError
+			errorMessage=loginFormError
+			ref="authErrorRef"}}}
 		{{{Input 
 			wrapperClassName="form-input"
 			labelClassName="form-input__label"

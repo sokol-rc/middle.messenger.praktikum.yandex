@@ -1,4 +1,5 @@
 import Block from 'core/Block';
+import AuthApi from 'utils/api/auth-api';
 import personAvatar from '../../assets/avatar.png';
 
 import './chat.css';

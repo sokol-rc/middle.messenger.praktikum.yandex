@@ -1,5 +1,5 @@
 export const transformUser = (data: UserDTO): User => {
-    data = JSON.parse(data.response);
+    data = JSON.parse(data);
 
     return {
         id: data.id,

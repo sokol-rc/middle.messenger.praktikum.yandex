@@ -1,18 +1,19 @@
 type InitialStore = {
     isLoading: boolean;
     currentPage: null;
-    user: any | null;
-    isAuth: boolean;
+    user: Record<string, string>;
+	loginFormError: string;
+	isAuthSynchronized: boolean;
+	isAuthLocal: boolean;
 };
 
 const initialStore: InitialStore = {
     isLoading: false,
+    isAuthSynchronized: false,
+    isAuthLocal: false,
     currentPage: null,
-	user: {
-		login: "sokol-rc",
-		password: ""
-	},
-    isAuth: false,
+	user: {},
+	loginFormError: ''
 };
 
 export default initialStore;
@@ -27,6 +28,7 @@ export default initialStore;
 // 	"first_name": "Evgeniy",
 // 	"second_name": "Sokolovskiy",
 // 	"login": "sokol-rc",
+//	"display_name": "Petya Pupkin",
 // 	"email": "cokol-rc@yandex.ru",
 // 	"password": "123QWEjkl",
 // 	"phone": "+79313613301"
