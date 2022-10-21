@@ -2,15 +2,23 @@ import isEqual from 'utils/helpers/isequal';
 import Block from './Block';
 import { StoreEvents } from './store/store';
 
-export default function connect(mapStateToProps: (state: Indexed) => Indexed) {
+export default function connect(mapStateToProps: (state: Indexed) => Indexed, mapDispatchToProps = {}) {
+
     return function (Component: typeof Block) {
         return class extends Component<any> {
             constructor(props) {
-                const { store } = window;
-                // сохраняем начальное состояние
-                let state = mapStateToProps(store.getState());
+				const { store } = window;
 
-                super({ ...props, ...state });
+                // сохраняем начальное состояние
+				const state = mapStateToProps(store.getState());
+				
+				const actionCreators = {}
+
+				Object.keys(mapDispatchToProps).forEach((actionCreator) => { 
+					actionCreators[actionCreator] = (payload) => store.dispatch(mapDispatchToProps[actionCreator], payload)
+				})
+
+                super({ ...props, ...state, ...actionCreators });
 
                 // подписываемся на событие
                 store.on('changed', (state) => {

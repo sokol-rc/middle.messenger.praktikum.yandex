@@ -27,8 +27,6 @@ export default class Route {
     }
 
 	render() {
-		console.log(this._block);
-		console.log(this._blockClass);
 		
         if (!this._block) {
             this._block = new this._blockClass(this._props);

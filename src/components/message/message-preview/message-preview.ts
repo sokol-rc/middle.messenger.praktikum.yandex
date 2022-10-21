@@ -6,8 +6,7 @@ export default class MessagePreview extends Block<{}> {
 
     protected render(): string {
         return `<div class="message-preview">
-		<span class="message-preview__text">Привет! я тут погляжу ты чат рисуешь. А вот внизу там
-			криво, и контраст местами такой...</span>
+		<span class="message-preview__text">${this.props.message}</span>
 	</div>`;
     }
 }

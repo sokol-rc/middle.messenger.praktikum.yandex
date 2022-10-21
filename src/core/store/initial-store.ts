@@ -2,18 +2,19 @@ type InitialStore = {
     isLoading: boolean;
     currentPage: null;
     user: Record<string, string>;
+    chats: Record<string, any>;
 	loginFormError: string;
-	isAuthSynchronized: boolean;
-	isAuthLocal: boolean;
+	registrationFormError: string;
+
 };
 
 const initialStore: InitialStore = {
     isLoading: false,
-    isAuthSynchronized: false,
-    isAuthLocal: false,
     currentPage: null,
 	user: {},
-	loginFormError: ''
+	chats: {},
+	loginFormError: '',
+	registrationFormError: ''
 };
 
 export default initialStore;

@@ -12,7 +12,8 @@
         "core": "./src/core",
         "utils": "./src/utils",
         "services": "./src/services",
-        "hoc": "./src/hoc"
+        "hoc": "./src/hoc",
+        "reducers": "./src/reducers"
     },
     "engines": {
         "node": "14.17.6"

@@ -1,11 +1,9 @@
+import { StringifyOptions } from "querystring";
+
 type METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export type Options = {
-    method?: METHOD;
-    credentials?: boolean;
-    data?: any;
-    timeout?: number;
-    headers?: Record<string, string>;
+	[x: string]: METHOD | boolean | string | number | Record<string, string>;
 };
 
 function queryStringify(data: any) {

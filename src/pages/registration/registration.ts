@@ -6,20 +6,31 @@ import Patterns from 'utils/validate/validate-pattenrs';
 import '../login/login.css';
 import './registration.css';
 
+export type RegistrationData = {
+    first_name: string;
+    second_name: string;
+    login: string;
+    email: string;
+    phone: string;
+    password: string;
+};
+
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
+    doRegistrtation: (registrationData: RegistrationData) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
     emailPattern: RegExp;
     phonePattern: RegExp;
     passwordPattern: RegExp;
+    registrationFormError: string;
 };
 
 export default class RegistrationPage extends Block<Props> {
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
@@ -35,13 +46,13 @@ export default class RegistrationPage extends Block<Props> {
     protected patterns = Patterns;
 
     validateOnFocus(inputRef: ValidateInput): void {
-		const isValid = this._validateRefs(inputRef);
-		this._displayError(isValid, inputRef);
+        const isValid = this._validateRefs(inputRef);
+        this._displayError(isValid, inputRef);
     }
 
     validateOnBlur(inputRef: ValidateInput): void {
-		const isValid = this._validateRefs(inputRef);
-		this._displayError(isValid, inputRef);
+        const isValid = this._validateRefs(inputRef);
+        this._displayError(isValid, inputRef);
     }
 
     onSubmit(event: SubmitEvent): void {
@@ -54,16 +65,25 @@ export default class RegistrationPage extends Block<Props> {
             this.refs.emailInputRef,
             this.refs.phoneInputRef,
             this.refs.passwordInputRef,
-        ];
-        const formValues = getFormValues(inputsRefs);
+		];
+		let isFormValid: boolean = true;
+        const formValues: RegistrationData = getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
 			const isValid = this._validateRefs(inputRef);
+			if (!isValid) {
+                isFormValid = false;
+            }
             this._displayError(isValid, inputRef);
         });
 
         console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+
+		if (isFormValid) {
+            this.props.doRegistrtation(formValues);
+        }
     }
+
 
     private _validateRefs(inputRef: ValidateInput) {
         return inputValidate(inputRef.refs.inputInnerRef.getProps());
@@ -77,7 +97,8 @@ export default class RegistrationPage extends Block<Props> {
         }
     }
 
-    render() {
+	render() {
+		
         return `
 		<main class="auth-content layout-container">
 			<div class="auth-content__form form-wrapper auth-content__form--main-bg">
@@ -89,6 +110,8 @@ export default class RegistrationPage extends Block<Props> {
 					onSubmit=onSubmit
 					ref="formRef"
 				}}
+				{{{Loader isLoading=isLoading}}}
+				<div class="form__error">${this.props.registrationFormError}</div>
 					<div class="form__two-inputs">
 					{{{Input 
 						wrapperClassName="form-input"

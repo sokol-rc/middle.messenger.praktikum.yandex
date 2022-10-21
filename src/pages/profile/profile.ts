@@ -1,3 +1,4 @@
+import { Console } from 'console';
 import Block from 'core/Block';
 import { logout } from 'services/auth';
 import getFormValues from 'utils/formTools';
@@ -112,7 +113,8 @@ export default class ProfilePage extends Block<Props> {
         }
     }
 
-    render() {
+	render() {
+		
         return `
 		<main class="profile-page layout-container">
 		<div class="profile-page__inner">

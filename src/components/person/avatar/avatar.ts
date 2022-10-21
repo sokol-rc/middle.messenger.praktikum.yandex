@@ -15,7 +15,7 @@ export default class Avatar extends Block<Props> {
 
         return `<div class="avatar">
 		<div class="avatar__img-wrapper">
-			<img class="avatar__img" src="${avatar}" alt="">
+			<img class="avatar__img" src="https://ya-praktikum.tech/api/v2/resources/${avatar}" alt="">
 		</div>
 		</div>`;
     }

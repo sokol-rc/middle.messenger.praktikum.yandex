@@ -1,17 +1,19 @@
 import Block from 'core/Block';
-import getFormValues  from 'utils/formTools';
+import getFormValues from 'utils/formTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
 type Props = {
-	handleClick?: () => void;
-	toogleSidebar: () => void;
-	sendButtonClick?: (event: MouseEvent) => void;
-	validateOnBlur: (input: ValidateInput) => void;
-	validateOnFocus: (input: ValidateInput) => void;
-	messagePattern: RegExp;
+    handleClick?: () => void;
+    toogleSidebar: () => void;
+    createWebSocketConnection: () => void;
+    sendMessage: (message: any) => void;
+    sendButtonClick?: (event: MouseEvent) => void;
+    validateOnBlur: (input: ValidateInput) => void;
+    validateOnFocus: (input: ValidateInput) => void;
+    messagePattern: RegExp;
 };
 
 export default class Dialog extends Block<Props> {
@@ -19,23 +21,27 @@ export default class Dialog extends Block<Props> {
         super(props);
         this.setProps({
             handleClick: this.handleClick.bind(this),
-			sendButtonClick: this.sendButtonClick.bind(this),
-			validateOnBlur: this.validateOnBlur.bind(this),
-			validateOnFocus: this.validateOnFocus.bind(this),
-			messagePattern: this.patterns.messagePattern,
+            sendButtonClick: this.sendButtonClick.bind(this),
+            validateOnBlur: this.validateOnBlur.bind(this),
+            validateOnFocus: this.validateOnFocus.bind(this),
+            messagePattern: this.patterns.messagePattern,
             toogleSidebar: this.props.toogleSidebar,
         });
     }
 
-	static componentName = 'Dialog';
-	
-	protected patterns = Patterns;
+    static componentName = 'DialogContainer';
+
+    protected patterns = Patterns;
 
     handleClick() {
         this.props.toogleSidebar();
+    }
+
+	componentDidMount(props: Props): void {
+		this.props.createWebSocketConnection();
 	}
 
-	validateOnFocus(input: ValidateInput): void {
+    validateOnFocus(input: ValidateInput): void {
         this._displayError(input);
     }
 
@@ -43,19 +49,20 @@ export default class Dialog extends Block<Props> {
         this._displayError(input);
     }
 
-
     sendButtonClick(event: MouseEvent) {
         event.preventDefault();
 
         const messageInput: ValidateInput = this.refs.messageInputRef;
 
-		this._displayError(messageInput);
+        this._displayError(messageInput);
 
         const formValues = getFormValues([messageInput]);
         console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
-	}
-	
-	private _displayError(inputRef: ValidateInput) {
+
+        this.props.sendMessage(formValues);
+    }
+
+    private _displayError(inputRef: ValidateInput) {
         const isValid: boolean = inputValidate(
             inputRef.refs.inputInnerRef.getProps()
         );

@@ -1,4 +1,5 @@
 import EventBus from '../EventBus';
+import { middleware } from './middleware';
 
 export enum StoreEvents {
     Updated = 'updated',
@@ -8,10 +9,14 @@ export enum StoreEvents {
 export class Store<State extends Record<string, any>> extends EventBus {
     private state: Indexed = {};
 
-    constructor(defaultState: State) {
+    constructor(defaultState: State, rootReducer) {
         super();
         this.state = defaultState;
-        this.set(defaultState);
+		this.rootReducer = rootReducer;
+		this.isDispatching = false;
+		this.nextState = {};
+		this.set(defaultState);
+		
     }
 
     public getState() {
@@ -24,14 +29,44 @@ export class Store<State extends Record<string, any>> extends EventBus {
         this.state = { ...this.state, ...nextState };
 
         this.emit('changed', prevState, nextState);
-    }
+	}
+	
 
-	dispatch(nextStateOrAction: Partial<State> | Action<State>, payload?: any) {
+	dispatch(actionCreatorOrThunk: Action<State>, payload: any) {
+
+		const action = actionCreatorOrThunk(payload);
 		
-        if (typeof nextStateOrAction === 'function') {
-            nextStateOrAction(this.dispatch.bind(this), this.state, payload);
-        } else {
-            this.set({ ...this.state, ...nextStateOrAction });
-        }
+
+		if (this.isDispatching) {
+            throw new Error('1 action за раз');
+		}
+
+		if (typeof action === 'function') {
+			action(this.dispatch.bind(this));
+		  } else {
+			try {
+			
+				this.isDispatching = true;
+				this.nextState = this.rootReducer(this.state, action);
+			}
+			finally {
+				this.isDispatching = false;
+				this.set({
+					...this.state,
+					...this.nextState,
+				});
+			}
+		  }
+
+		
+
+        
+
+
+        // if (typeof nextStateOrAction === 'function') {
+        //     nextStateOrAction(this.dispatch.bind(this), this.state, payload);
+        // } else {
+        //     this.set({ ...this.state, ...nextStateOrAction });
+        // }
     }
 }

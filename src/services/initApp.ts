@@ -1,17 +1,17 @@
-import { checkAuth } from './auth';
 import LoginPageContainer from '../pages/login/loginContainer';
-import RegistrationPage from '../pages/registration';
+import RegistrationPageContainer from '../pages/registration/registrationContainer';
 import ErrorPage from '../pages/errorPage';
 import ChatPage from '../pages/chat';
 import ProfilePageContainer from '../pages/profile/profileContainer';
+import { checkAuth, setIsAuthLocal, setUser } from '../reducers/authReducer';
 
 const initApp = () => {
     const localUserData: string | null = localStorage.getItem('user');
     if (localUserData !== null) {
         const userDataObject = JSON.parse(localUserData);
-        window.store.dispatch({ user: userDataObject });
-        window.store.dispatch({ isAuthLocal: true });
-        window.store.dispatch(checkAuth);
+		window.store.dispatch(() => setUser(userDataObject));
+        window.store.dispatch(() => setIsAuthLocal(true));
+		window.store.dispatch(checkAuth);
 
         return undefined;
     }
@@ -27,7 +27,7 @@ export const initRouter = (router, store) => {
         },
         {
             path: '/registration',
-            component: RegistrationPage,
+            component: RegistrationPageContainer,
 			shouldAuthorized: false,
         },
         {

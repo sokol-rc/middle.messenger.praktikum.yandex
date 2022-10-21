@@ -1,5 +1,4 @@
 import Block from 'core/Block';
-import AuthApi from 'utils/api/auth-api';
 import personAvatar from '../../assets/avatar.png';
 
 import './chat.css';
@@ -22,7 +21,15 @@ export default class ChatPage extends Block<Props> {
             onDecline: this.onDecline.bind(this),
             isVisible: true,
         });
-    }
+	}
+	componentDidMount(props: Props): void {
+		console.log('chat did mount');
+
+		// TODO: перенести это
+
+
+		
+	}
 
     toogleModal() {
         this.refs.ModalConfirmRef.setProps({
@@ -44,7 +51,8 @@ export default class ChatPage extends Block<Props> {
         });
     }
 
-    render() {
+	render() {
+		
         return `
 			<div>
 				<main class="chat-page full-page">
@@ -61,10 +69,10 @@ export default class ChatPage extends Block<Props> {
 						</div>
 					</nav>
 					<section class="chat-page__list">
-						{{{ChatList}}}
+						{{{ChatListContainer}}}
 					</section>
 					<section class="chat-page__dialog">
-						{{{Dialog 
+						{{{DialogContainer 
 							toogleSidebar=toogleSidebar
 						}}}
 					</section>

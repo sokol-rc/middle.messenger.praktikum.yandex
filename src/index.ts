@@ -10,6 +10,7 @@ import InputError from './components/input/input-error/input-error';
 import Avatar from './components/person/avatar/avatar';
 import Error from './components/error/error';
 import ChatList from './components/chat/chat-list';
+import ChatListContainer from './components/chat/chat-list/chatListContainer';
 import ChatItem from './components/chat/chat-item/chat-item';
 import PersonName from './components/person/person-name';
 import MessagePreview from './components/message/message-preview';
@@ -17,6 +18,7 @@ import SidebarButton from './components/controls/sidebar-button/sidebar-button';
 import Sidebar from './components/sidebar';
 import ModalConfirm from './components/modals/modal-confirm';
 import Dialog from './components/dialog';
+import DialogContainer from './components/dialog/dialogContainer';
 import Form from './components/form';
 import Link from './components/controls/link';
 import DayContainer from './components/message/day-container';
@@ -26,6 +28,8 @@ import Loader from './components/loader';
 import './styles/common/default.css';
 import './styles/common/common.css';
 import initApp, { initRouter } from 'services/initApp';
+import { authReducer } from './reducers/authReducer';
+import { applyMiddleware, middleware } from 'core/store/middleware';
 
 require('babel-core/register');
 
@@ -36,9 +40,11 @@ registerComponent(InputError);
 registerComponent(Error);
 registerComponent(Avatar);
 registerComponent(ChatList);
+registerComponent(ChatListContainer);
 registerComponent(ChatItem);
 registerComponent(PersonName);
 registerComponent(Dialog);
+registerComponent(DialogContainer);
 registerComponent(MessagePreview);
 registerComponent(SidebarButton);
 registerComponent(Sidebar);
@@ -52,10 +58,10 @@ registerComponent(Loader);
 
 
 
-console.log('initApp');
+
 
 document.addEventListener('DOMContentLoaded', () => {
-	const store = new Store<any>(initialStore);
+	const store = new Store<any>(initialStore, authReducer);
 	const router = new Router('.app');
 	
 	
@@ -70,8 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			  );
 		});
 
-	store.dispatch(initApp);
-
+	// store.dispatch(initApp);
 	initRouter(router, store);
 });
 // document.addEventListener('DOMContentLoaded', routing);

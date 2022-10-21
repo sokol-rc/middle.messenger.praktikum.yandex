@@ -36,8 +36,6 @@ export const repeatPasswordValidate = (
     oldPassword: ValidateInput,
     newPassword: ValidateInput
 ): boolean => {
-    console.log(oldPassword);
-    console.log(newPassword);
 
     if (
         oldPassword.refs.inputInnerRef.getProps().value !==

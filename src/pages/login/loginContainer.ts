@@ -1,15 +1,14 @@
 import connect from 'core/connectHoc';
-import withAuthRedirect from '../../hoc/with-auth-redirect';
+import { disableLoader, doLogin, doLogout, enableLoader, setloginFormError } from '../../reducers/authReducer';
 import LoginPage from './login';
 
 const mstp = (state: Indexed<any>): Indexed => ({
-    isLoading: () => state.isLoading,
+    isLoading: state.isLoading,
     store: window.store,
     user: window.store.getState().user,
     loginFormError: window.store.getState().loginFormError,
 });
 
-const LoginPageWithLoader = connect(mstp);
-//const LoginPageWithAuth = withAuthRedirect(LoginPage)
+const LoginPageContainer = connect(mstp, { doLogin, doLogout, enableLoader, disableLoader, setloginFormError });
 
-export default LoginPageWithLoader(LoginPage);
+export default LoginPageContainer(LoginPage);

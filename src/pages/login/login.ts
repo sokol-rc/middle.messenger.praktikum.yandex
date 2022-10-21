@@ -1,3 +1,4 @@
+import { debug } from 'console';
 import Block from 'core/Block';
 import { login, logout } from 'services/auth';
 import AuthApi from 'utils/api/auth-api';
@@ -6,6 +7,11 @@ import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 
 import './login.css';
+
+type LoginData = {
+    login: string;
+    password: string;
+};
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
@@ -17,7 +23,7 @@ type Props = {
     user: any;
     loginFormError: string;
     isLoading: () => boolean;
-    onLogin: () => void;
+    onLogin: (loginData: LoginData) => void;
     onLogout: () => void;
 };
 
@@ -28,13 +34,10 @@ export default class LoginPage extends Block<Props> {
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
             validateOnFocus: this.validateOnFocus.bind(this),
-
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
-            isLoading: props.isLoading,
-            store: props.store,
-            user: props.user,
             loginFormError: props.loginFormError,
+            enableLoader: this.enableLoader.bind(this),
             onLogin: this.onLogin.bind(this),
             onLogout: this.onLogout.bind(this),
         });
@@ -54,12 +57,20 @@ export default class LoginPage extends Block<Props> {
         this._displayError(isValid, inputRef);
     }
 
-    onLogin(loginData) {
-        this.props.store.dispatch(login, loginData);
+    onLogin(loginData: LoginData) {
+        this.props.doLogin(loginData);
+    }
+
+    enableLoader() {
+        this.props.setloginFormError('asdasd');
+    }
+
+    disableLoader() {
+        this.props.disableLoader();
     }
 
     onLogout() {
-        this.props.store.dispatch(logout);
+        this.props.doLogout();
     }
 
     onSubmit(event: SubmitEvent): void {
@@ -97,12 +108,13 @@ export default class LoginPage extends Block<Props> {
         }
     }
 
-	render() {
-		
+    render() {
+
         return `
 <main class="auth-content layout-container">
 {{{Button label="Logout" onClick=onLogout}}}
-{{{Loader isLoading=isLoading}}}
+{{{Button label="enable loader" onClick=enableLoader}}}
+{{{Button label="disable loader" onClick=disableLoader}}}
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">
 		<div class="form-header auth-content__header">
 			<h1 class="form-header__title">Вход</h1>
@@ -112,10 +124,8 @@ export default class LoginPage extends Block<Props> {
 			onSubmit=onSubmit
 			ref="formRef"
 		}}
+		{{{Loader isLoading=isLoading}}}
 		<div class="form__error">${this.props.loginFormError}</div>
-		{{{InputError
-			errorMessage=loginFormError
-			ref="authErrorRef"}}}
 		{{{Input 
 			wrapperClassName="form-input"
 			labelClassName="form-input__label"

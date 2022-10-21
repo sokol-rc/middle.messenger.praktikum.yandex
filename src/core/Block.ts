@@ -20,11 +20,11 @@ export default class Block<P extends Record<string, any>> {
 
     protected readonly props: P;
 
-	protected children: { [id: string]: Block<{}> } = {};
+    protected children: { [id: string]: Block<{}> } = {};
 
     eventBus: () => EventBus<Events>;
 
-	protected refs: { [key: string]: Block<{}> } = {};
+    protected refs: { [key: string]: Block<{}> } = {};
 
     public constructor(props?: P) {
         const eventBus = new EventBus<Events>();
@@ -52,14 +52,12 @@ export default class Block<P extends Record<string, any>> {
     init() {
         this._createResources();
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
-	}
-	
-	_componentDidMount(props: P) { 
-		this.componentDidMount(props);
-	}
-	componentDidMount(props: P) {
+    }
 
-	}
+    _componentDidMount(props: P) {
+        this.componentDidMount(props);
+    }
+    componentDidMount(props: P) {}
 
     _componentDidUpdate() {
         const response = true;
@@ -77,7 +75,7 @@ export default class Block<P extends Record<string, any>> {
         return this.props;
     }
 
-    setProps(nextProps: P) {
+    setProps(nextProps: Partial<P>) {
         if (!nextProps) {
             return;
         }
@@ -122,9 +120,9 @@ export default class Block<P extends Record<string, any>> {
         return this.element!;
     }
 
-	_makePropsProxy(props: any): any {
-		
-        const self = this;
+    _makePropsProxy(props: any): any {
+		const self = this;
+		let waitProxy = false;
 
         return new Proxy(props as unknown as object, {
             get(target: Record<string, unknown>, prop: string) {
@@ -132,13 +130,25 @@ export default class Block<P extends Record<string, any>> {
                 return typeof value === 'function' ? value.bind(target) : value;
             },
             set(target: Record<string, unknown>, prop: string, value: unknown) {
+                if (
+                    typeof target[prop] !== 'undefined' &&
+                    value === target[prop]
+                ) {
+                    return true;
+                }
                 target[prop] = value;
+                if (!waitProxy) {
+                    waitProxy = true;
+                    setTimeout(() => {
+                        self.eventBus().emit(
+                            Block.EVENTS.FLOW_CDU,
+                            { ...target },
+                            target
+                        );
+                        waitProxy = false;
+                    }, 10);
+                }
 
-                self.eventBus().emit(
-                    Block.EVENTS.FLOW_CDU,
-                    { ...target },
-                    target
-                );
                 return true;
             },
             deleteProperty() {
@@ -179,19 +189,17 @@ export default class Block<P extends Record<string, any>> {
         });
     }
 
-	_compile(): DocumentFragment {
-		
+    _compile(): DocumentFragment {
         const fragment = document.createElement('template');
-		const template = Handlebars.compile(this.render());
-		
+        const template = Handlebars.compile(this.render());
+
         fragment.innerHTML = template({
             ...this.props,
             children: this.children,
             refs: this.refs,
         });
 
-		Object.entries(this.children).forEach(([id, component]) => {
-			
+        Object.entries(this.children).forEach(([id, component]) => {
             const stub = fragment.content.querySelector(`[data-id="${id}"]`);
 
             if (!stub) {

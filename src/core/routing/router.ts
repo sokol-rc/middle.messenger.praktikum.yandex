@@ -1,3 +1,4 @@
+import { checkAuth } from 'services/auth';
 import Route from './route';
 
 export default class Router {
@@ -19,7 +20,7 @@ export default class Router {
             ...props,
             rootQuery: this._rootQuery,
         });
-		this.routes.push({route, flags});
+        this.routes.push({ route, flags });
 
         return this;
     }
@@ -33,28 +34,22 @@ export default class Router {
     }
 
     _onRoute(pathname) {
-		const { route, flags} = this.getRoute(pathname);
+        const { route, flags } = this.getRoute(pathname);
 
         if (typeof route === 'undefined') {
-			this.history.pushState({}, '', pathname);
-			const errorPageRoute = this.getRoute('/404');
-			this.go('/404');
-            //errorPageRoute.route.render();
+            // this.history.pushState({}, '', pathname);
+            const errorPageRoute = this.getRoute('/404');
+            // this.go('/404');
+            errorPageRoute.route.render();
             return;
-		}
-		console.log(flags.shouldAuthorized, window.store.getState().isAuthLocal);
-		
-		if (flags.shouldAuthorized && !window.store.getState().isAuthLocal) { 
-			console.log('redirect');
-			
-			const loginPageRoute = this.getRoute('/login');
-			console.log(loginPageRoute.route);
-			
-			loginPageRoute.route.render();
-			return;
-		}
-		console.log(route);
-		
+        }
+        if (flags.shouldAuthorized && !checkAuth()) {
+            
+            const loginPageRoute = this.getRoute('/login');
+
+            loginPageRoute.route.render();
+            return;
+        }
 
         if (this._currentRoute) {
             this._currentRoute.leave();
