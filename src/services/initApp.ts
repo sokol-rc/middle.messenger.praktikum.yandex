@@ -1,7 +1,8 @@
 import LoginPageContainer from '../pages/login/loginContainer';
 import RegistrationPageContainer from '../pages/registration/registrationContainer';
 import ErrorPage from '../pages/errorPage';
-import ChatPage from '../pages/chat';
+import ChatPageContainer from '../pages/chat/chatContainer';
+import ChatPage from '../pages/chat/chat';
 import ProfilePageContainer from '../pages/profile/profileContainer';
 import { checkAuth, setIsAuthLocal, setUser } from '../reducers/authReducer';
 
@@ -20,13 +21,13 @@ const initApp = () => {
 export const initRouter = (router, store) => {
     const routes = [
         {
-            path: '/login',
+            path: '/',
 			component: LoginPageContainer,
 			shouldAuthorized: false,
             
         },
         {
-            path: '/registration',
+            path: '/sign-up',
             component: RegistrationPageContainer,
 			shouldAuthorized: false,
         },
@@ -47,12 +48,12 @@ export const initRouter = (router, store) => {
 			}
         },
         {
-            path: '/',
-            component: ChatPage,
+            path: '/messenger',
+            component: ChatPageContainer,
 			shouldAuthorized: true,
         },
         {
-            path: '/profile',
+            path: '/settings',
 			component: ProfilePageContainer,
 			shouldAuthorized: true,
         },

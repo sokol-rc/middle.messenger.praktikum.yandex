@@ -1,14 +1,23 @@
 import connect from "core/connectHoc";
-import { createWebSocketConnection, sendMessage } from "reducers/authReducer";
+import { createWebSocketConnection, getMessages, sendMessage } from "reducers/authReducer";
 import Dialog from "./dialog";
 
-const mstp = (state: Indexed<any>): Indexed => ({
-    isLoading: state.isLoading,
-    store: window.store,
-    user: window.store.getState().user,
-    loginFormError: window.store.getState().loginFormError,
-});
+function getopenedDialogById(objectsArray: Array<any>, id: number) {
+	const found = objectsArray.find((o) => o.chatId === id)
+	return found;
+}
+const mstp = (state: Indexed<any>): Indexed => {
+	const dialog = getopenedDialogById(state.chats.dialogs, state.chats.openedDialogId);
+	return { 
+		isLoading: state.isLoading,
+		user: state.user,
+		socket: state.chats.socket,
+		openedDialogId: state.chats.openedDialogId,
+		openedDialog: dialog
+	}
 
-const DialogContainer = connect(mstp, { createWebSocketConnection, sendMessage});
+};
+
+const DialogContainer = connect(mstp, { sendMessage, getMessages, createWebSocketConnection});
 
 export default DialogContainer(Dialog);

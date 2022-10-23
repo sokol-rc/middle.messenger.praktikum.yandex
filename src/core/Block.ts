@@ -57,7 +57,7 @@ export default class Block<P extends Record<string, any>> {
     _componentDidMount(props: P) {
         this.componentDidMount(props);
     }
-    componentDidMount(props: P) {}
+    componentDidMount() {}
 
     _componentDidUpdate() {
         const response = true;

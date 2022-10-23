@@ -1,5 +1,7 @@
 function cloneDeep<T extends object = object>(obj: T) {
-    return (function _cloneDeep(item: T): T | Date | Set<unknown> | Map<unknown, unknown> | object | T[] {
+	
+	return (function _cloneDeep(item: T): T | Date | Set<unknown> | Map<unknown, unknown> | object | T[] {
+
         // Handle:
         // * null
         // * undefined
@@ -16,6 +18,10 @@ function cloneDeep<T extends object = object>(obj: T) {
         // * Date
         if (item instanceof Date) {
             return new Date(item.valueOf());
+		}
+		
+        if (item instanceof WebSocket ) {
+            return item;
         }
 
         // Handle:

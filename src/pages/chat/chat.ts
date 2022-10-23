@@ -1,11 +1,12 @@
 import Block from 'core/Block';
-import personAvatar from '../../assets/avatar.png';
-
+import isEmpty from 'utils/helpers/isEmpty';
 import './chat.css';
 
 type Props = {
     isVisible: any;
+    user: any;
     toogleSidebar: () => void;
+    getUserInfo: () => void;
     toogleModal: () => void;
     onConfirm: () => void;
     onDecline: () => void;
@@ -22,13 +23,11 @@ export default class ChatPage extends Block<Props> {
             isVisible: true,
         });
 	}
-	componentDidMount(props: Props): void {
-		console.log('chat did mount');
 
-		// TODO: перенести это
-
-
-		
+	componentDidMount(): void {
+		if (isEmpty(this.props.user)) { 
+			this.props.getUserInfo();
+		}
 	}
 
     toogleModal() {
@@ -52,21 +51,11 @@ export default class ChatPage extends Block<Props> {
     }
 
 	render() {
-		
         return `
 			<div>
 				<main class="chat-page full-page">
 					<nav class="nav-sidebar">
-						<div class="nav-sidebar__inner nav-sidebar--bg-main">
-							<div class="nav-sidebar__profile">
-								<div class="profile-info">
-									<div class="profile-info__avatar button-image"
-										onclick="sidebarRight.toogle(event,'chat-page__right-sidebar')">
-										{{{Avatar image="${personAvatar}"}}}
-									</div>
-								</div>
-							</div>
-						</div>
+						{{{NavSidebarContainer}}}
 					</nav>
 					<section class="chat-page__list">
 						{{{ChatListContainer}}}
@@ -94,3 +83,4 @@ export default class ChatPage extends Block<Props> {
 `;
     }
 }
+

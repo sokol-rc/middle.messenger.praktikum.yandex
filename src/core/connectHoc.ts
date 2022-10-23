@@ -1,6 +1,5 @@
 import isEqual from 'utils/helpers/isequal';
 import Block from './Block';
-import { StoreEvents } from './store/store';
 
 export default function connect(mapStateToProps: (state: Indexed) => Indexed, mapDispatchToProps = {}) {
 

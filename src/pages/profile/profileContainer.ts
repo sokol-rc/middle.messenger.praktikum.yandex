@@ -1,4 +1,5 @@
 import connect from "core/connectHoc";
+import { getUserInfo, saveUserInfo } from "reducers/authReducer";
 import ProfilePage from "./profile";
 
 
@@ -8,7 +9,6 @@ const mstp = (state: Indexed<any>): Indexed => ({
     user: window.store.getState().user,
 });
 
-const ProfilePageContainer = connect(mstp);
-console.log('mstp to profile');
+const ProfilePageContainer = connect(mstp, {saveUserInfo, getUserInfo});
 
 export default ProfilePageContainer(ProfilePage);

@@ -1,13 +1,14 @@
 import { Console } from 'console';
 import Block from 'core/Block';
 import { logout } from 'services/auth';
-import getFormValues from 'utils/formTools';
+import getFormValues, { getAvatarFormValue } from 'utils/formTools';
 import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 
 import './profile.css';
 
 type Props = {
+	[x: string]: any;
     user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
@@ -36,6 +37,12 @@ export default class ProfilePage extends Block<Props> {
     }
 
     protected patterns = Patterns;
+
+	componentDidMount(): void {
+		if (this.props.user !== null) { 
+			this.props.getUserInfo();
+		}
+	}
 
     validateOnFocus(inputRef: ValidateInput): void {
         let isValid: boolean = true;
@@ -94,11 +101,16 @@ export default class ProfilePage extends Block<Props> {
             this.refs.oldPasswordInputRef,
             this.refs.newPasswordInputRef
         );
-        console.log(matchPassword);
 
         this._displayError(matchPassword, this.refs.newPasswordInputRef);
 
         console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+
+        const avatar = getAvatarFormValue('.avatar-input__input');
+        if (avatar) {
+            formValues.avatar = avatar;
+        }
+        this.props.saveUserInfo(formValues);
     }
 
     private _validateRefs(inputRef: ValidateInput) {
@@ -120,7 +132,7 @@ export default class ProfilePage extends Block<Props> {
 		<div class="profile-page__inner">
 			<div class="profile-page__view">
 				<div class="profile-page__avatar">
-					{{{Avatar}}}
+					{{{Avatar image="${this.props.user.avatar}"}}}
 				</div>
 				<div class="profile-page__data">
 					<div class="person-data">
@@ -146,14 +158,22 @@ export default class ProfilePage extends Block<Props> {
 				</div>
 			</div>
 			{{#Form
-				className="profile-page__form person-data-form"
+				className="profile-page__form person-data-form profile-page__form--opened"
 				onSubmit=onSubmit
 				ref="formRef"
 			}}
 			<div class="person-data-form__avatar avatar-input">
 			{{{Avatar}}}
-			<label class="avatar-input__label visually-hidden" for="personFormAvatar">Аватарка</label>
-			<input class="avatar-input__input" name="avatar" id="personFormAvatar" type="file" value="">
+			{{{Input 
+				wrapperClassName=""
+				labelClassName="avatar-input__label visually-hidden"
+				className="avatar-input__input"
+				type="file" 
+				name="avatar" 
+				label="Аватарка" 
+				placeholder=""
+				ref="avatarInputRef"
+			}}}
 		</div>
 		<div class="person-data-form__person-data">
 		{{{Input 

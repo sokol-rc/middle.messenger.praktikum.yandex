@@ -1,6 +1,7 @@
 import Router from 'core/routing/router';
 import { Store } from 'core/store/store';
 import initialStore from 'core/store/initial-store';
+import { initRouter } from 'services/initApp';
 import { registerComponent } from './core';
 
 import Button from './components/controls/button';
@@ -24,12 +25,12 @@ import Link from './components/controls/link';
 import DayContainer from './components/message/day-container';
 import Message from './components/message/message';
 import Loader from './components/loader';
+import NavSidebar from './components/navSidebar';
+import NavSidebarContainer from './components/navSidebar/navSidebarContainer';
 
 import './styles/common/default.css';
 import './styles/common/common.css';
-import initApp, { initRouter } from 'services/initApp';
 import { authReducer } from './reducers/authReducer';
-import { applyMiddleware, middleware } from 'core/store/middleware';
 
 require('babel-core/register');
 
@@ -54,6 +55,8 @@ registerComponent(Link);
 registerComponent(DayContainer);
 registerComponent(Message);
 registerComponent(Loader);
+registerComponent(NavSidebar);
+registerComponent(NavSidebarContainer);
 
 
 

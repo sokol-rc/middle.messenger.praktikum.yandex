@@ -34,20 +34,22 @@ export default class Router {
     }
 
     _onRoute(pathname) {
-        const { route, flags } = this.getRoute(pathname);
+        const routeWithFlags = this.getRoute(pathname);
 
-        if (typeof route === 'undefined') {
+        if (typeof routeWithFlags === 'undefined') {
             // this.history.pushState({}, '', pathname);
             const errorPageRoute = this.getRoute('/404');
             // this.go('/404');
             errorPageRoute.route.render();
             return;
         }
-        if (flags.shouldAuthorized && !checkAuth()) {
-            
-            const loginPageRoute = this.getRoute('/login');
+        const { route, flags } = routeWithFlags;
 
-            loginPageRoute.route.render();
+        if (flags.shouldAuthorized && checkAuth()) {
+            this.go('/');
+            // const loginPageRoute = this.getRoute('/');
+
+            // loginPageRoute.route.render();
             return;
         }
 

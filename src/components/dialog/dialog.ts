@@ -1,5 +1,6 @@
 import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
+import isEmpty from 'utils/helpers/isEmpty';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 import * as sendIcon from '../../assets/send.svg';
@@ -13,7 +14,9 @@ type Props = {
     sendButtonClick?: (event: MouseEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
-    messagePattern: RegExp;
+	messagePattern: RegExp;
+	isLoading: boolean;
+	user: any;
 };
 
 export default class Dialog extends Block<Props> {
@@ -37,8 +40,24 @@ export default class Dialog extends Block<Props> {
         this.props.toogleSidebar();
     }
 
-	componentDidMount(props: Props): void {
-		this.props.createWebSocketConnection();
+	componentDidMount(): void {
+		// console.log(this.props.openedDialog.isSocketReady);
+		// console.log(this.props.openedDialog);
+		// console.log(this.props.openedDialogId);
+		if (typeof this.props.openedDialog === 'undefined') { 
+			return undefined;
+		}
+		if (this.props.openedDialog.socket === null) { 
+			console.log('вызов из диалога');
+			
+			this.props.createWebSocketConnection(this.props.openedDialogId);
+		}
+		
+		if (this.props.openedDialog && this.props.openedDialog.isSocketReady === true) { 
+			this.props.getMessages(this.props.openedDialogId);
+			return undefined;
+		}	
+		
 	}
 
     validateOnFocus(input: ValidateInput): void {
@@ -74,7 +93,12 @@ export default class Dialog extends Block<Props> {
         }
     }
 
-    protected render(): string {
+	render(): string {
+
+		if (isEmpty(this.props.user)) { 
+			return `{{{Loader isLoading=isLoading}}}`
+		}
+		
         return `
 		<div class="dialog-window">
 	<div class="dialog-window__inner">
@@ -82,7 +106,7 @@ export default class Dialog extends Block<Props> {
 			<div class="dialog-header__profile hr-left">
 				<div class="profile-info">
 					<div class="profile-info__avatar">
-						{{{Avatar}}}
+						{{{Avatar image="${this.props.user.avatar}"}}}
 					</div>
 					<div class="profile-info__title">
 						{{{PersonName name="Дейв Черный"}}}

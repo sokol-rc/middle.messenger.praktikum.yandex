@@ -70,11 +70,13 @@ class HTTPTransport {
                 reject();
             };
 
-            if (method === 'GET' || !data) {
-                xhr.send();
-            } else {
-                xhr.send(JSON.stringify(data));
-            }
+			if (method === 'GET' || !data) {
+				xhr.send();
+			} else if (method === 'PUT') {
+				xhr.send(data);
+			} else { 
+				xhr.send(JSON.stringify(data));
+			}
         });
     };
 }

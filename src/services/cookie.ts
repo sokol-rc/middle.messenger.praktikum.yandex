@@ -16,9 +16,7 @@ const setCookie = (name, value, seconds) => {
 };
 
 const deleteCookie = (name) => {
-    setCookie(name, '', {
-        'max-age': -1,
-    });
+    setCookie(name, '', 0);
 };
 
 export const checkAuthCookie = () => {

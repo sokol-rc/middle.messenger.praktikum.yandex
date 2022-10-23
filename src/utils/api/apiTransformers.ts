@@ -42,7 +42,6 @@ export const transformChatsList = (chatsList: any): any => {
             };
             rootProperties.lastMessage = transferedLastMessage;
         }
-		console.log(chatList);
         return rootProperties;
     });
 

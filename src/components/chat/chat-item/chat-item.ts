@@ -27,8 +27,7 @@ export default class ChatItem extends Block<Props> {
 		if (this.props.isEmpty) { 
 			return `<div class="chat-preview ${classActive}">пустой чат</div>`
 		}
-
-
+		
         return `<div class="chat-preview ${classActive}">
 		<div class="chat-preview__avatar">
 			{{{Avatar image="${this.props.avatar}"}}}

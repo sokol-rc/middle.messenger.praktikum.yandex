@@ -12,7 +12,18 @@ const initialStore: InitialStore = {
     isLoading: false,
     currentPage: null,
 	user: {},
-	chats: {},
+	chats: {
+		chatsList: null,
+		openedDialogId: 430,
+		dialogs: [
+			{
+				chatId: null,
+				socket: null,
+				isSocketReady: false,
+				content: []
+			}
+		]
+	},
 	loginFormError: '',
 	registrationFormError: ''
 };
