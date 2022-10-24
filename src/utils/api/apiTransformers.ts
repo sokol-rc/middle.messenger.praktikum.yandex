@@ -1,5 +1,9 @@
+import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
+
 export const transformUser = (data: UserDTO): User => {
-    data = JSON.parse(data);
+    if (typeof data === 'string') {
+        data = JSON.parse(data);
+    }
 
     return {
         id: data.id,
@@ -12,11 +16,19 @@ export const transformUser = (data: UserDTO): User => {
         email: data.email,
     };
 };
+
+export const transformUsers = (dataArray) => {
+	if (typeof dataArray === 'string') {
+        dataArray = JSON.parse(dataArray);
+    }  
+    const transfered = dataArray.map((user) => transformUser(user));
+    return transfered;
+};
 export const transformChatsList = (chatsList: any): any => {
-	chatsList = JSON.parse(chatsList);
-	if (chatsList.length === 0) { 
-		return null
-	}
+    chatsList = JSON.parse(chatsList);
+    if (chatsList.length === 0) {
+        return null;
+    }
     const transferedChatList = chatsList.map((chatList) => {
         const rootProperties = {
             id: chatList.id,
@@ -26,8 +38,9 @@ export const transformChatsList = (chatsList: any): any => {
             lastMessage: null,
         };
 
-		if (chatList.last_message !== null) {
-			const date = new Date(chatList.last_message.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        if (chatList.last_message !== null) {
+            const date = getMessageTimeFromDate(chatList.last_message.time);
+
             const transferedLastMessage = {
                 user: {
                     firstName: chatList.last_message.user.first_name,
@@ -46,4 +59,15 @@ export const transformChatsList = (chatsList: any): any => {
     });
 
     return transferedChatList;
+};
+
+export const transformMessages = (messages) => {
+    const messagesTransfered = messages.map((message) => ({
+        ...message,
+        chatId: message.chat_id,
+        userId: message.user_id,
+        isRead: message.is_read,
+    }));
+
+    return messagesTransfered;
 };

@@ -4,6 +4,8 @@ import messageReadedSvg from '../../../assets/message-readed.svg';
 import messageTailOutSvg from '../../../assets/message-tail-out.svg';
 import messageTailInSvg from '../../../assets/message-tail-in.svg';
 
+import './message.css'
+
 interface InputProps {
     time: string;
     direction: string;
@@ -22,24 +24,24 @@ type Props = InputProps & {
 export default class Message extends Block<Props> {
     constructor(props: InputProps) {
 		super({
-			...props,
-			messageReceived: true,
-            messageReaded: true,
+			...props
 		});
     }
 
     static componentName = 'Message';
 
     render(): string {
+        let isIncoming: boolean = false;
         let messageStatus: string = '';
         let directionClass: string = 'bubble-out';
-        let isIncoming: boolean = false;
-        let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
+		let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
+		let incomingUserName: string = '';
 
         if (this.props.direction === 'incoming') {
             directionClass = 'bubble-in';
             isIncoming = true;
-            messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
+			messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
+			incomingUserName = `<div class="bubble__title">${this.props.userDisplayName}</div>`
         }
 
         if (this.props.messageReceived && !isIncoming) {
@@ -54,6 +56,7 @@ export default class Message extends Block<Props> {
 			<div class="bubbles-group">
 				<div class="bubble ${directionClass}">
 					<div class="bubble__inner">
+					${incomingUserName}
 						<div class="bubble__text">{{text}}
 							<span class="bubble__time time">
 								<time class="time__inner time__inner--font-size-s time__inner--font-style-italic">{{time}}</time>

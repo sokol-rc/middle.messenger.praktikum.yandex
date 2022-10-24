@@ -1,6 +1,8 @@
 import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
+import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
 import isEmpty from 'utils/helpers/isEmpty';
+import { getMessageDirection } from 'utils/helpers/messageTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 import * as sendIcon from '../../assets/send.svg';
@@ -14,9 +16,9 @@ type Props = {
     sendButtonClick?: (event: MouseEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
-	messagePattern: RegExp;
-	isLoading: boolean;
-	user: any;
+    messagePattern: RegExp;
+    isLoading: boolean;
+    user: any;
 };
 
 export default class Dialog extends Block<Props> {
@@ -40,25 +42,26 @@ export default class Dialog extends Block<Props> {
         this.props.toogleSidebar();
     }
 
-	componentDidMount(): void {
-		// console.log(this.props.openedDialog.isSocketReady);
-		// console.log(this.props.openedDialog);
-		// console.log(this.props.openedDialogId);
-		if (typeof this.props.openedDialog === 'undefined') { 
-			return undefined;
-		}
-		if (this.props.openedDialog.socket === null) { 
-			console.log('вызов из диалога');
-			
-			this.props.createWebSocketConnection(this.props.openedDialogId);
-		}
-		
-		if (this.props.openedDialog && this.props.openedDialog.isSocketReady === true) { 
-			this.props.getMessages(this.props.openedDialogId);
-			return undefined;
-		}	
-		
-	}
+    componentDidMount(): void {
+        // console.log(this.props.openedDialog.isSocketReady);
+        // console.log(this.props.openedDialog);
+        // console.log(this.props.openedDialogId);
+        if (typeof this.props.openedDialog === 'undefined') {
+            return undefined;
+        }
+
+        if (this.props.openedDialog.socket === null) {
+            this.props.createWebSocketConnection(this.props.openedDialogId);
+        }
+
+        if (
+            this.props.openedDialog.isSocketReady === true &&
+            this.props.openedDialog.days.length === 0
+        ) {
+            this.props.getMessages(this.props.openedDialogId);
+            return undefined;
+        }
+    }
 
     validateOnFocus(input: ValidateInput): void {
         this._displayError(input);
@@ -77,8 +80,12 @@ export default class Dialog extends Block<Props> {
 
         const formValues = getFormValues([messageInput]);
         console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+        console.log(this.props.openedDialog);
 
-        this.props.sendMessage(formValues);
+        this.props.sendMessage({
+            message: formValues,
+            socket: this.props.openedDialog.socket,
+        });
     }
 
     private _displayError(inputRef: ValidateInput) {
@@ -93,12 +100,50 @@ export default class Dialog extends Block<Props> {
         }
     }
 
-	render(): string {
+    render(): string {
+        if (
+            isEmpty(this.props.user) ||
+            typeof this.props.openedDialog === 'undefined'
+        ) {
+            return `{{{Loader isLoading=isLoading}}}`;
+        }
+        let daysArray = [];
 
-		if (isEmpty(this.props.user)) { 
-			return `{{{Loader isLoading=isLoading}}}`
-		}
-		
+        if (this.props.openedDialog.days.length > 0) {
+            daysArray = this.props.openedDialog.days.map((day) => {
+                const messagesArray = day.messages.map((message) => {
+                    const time = getMessageTimeFromDate(message.time);
+                    const direction = getMessageDirection(
+                        message.userId,
+                        this.props.user.id
+                    );
+                    let userName = '';
+                    if (
+                        typeof this.props.openedDialog.usersDisplayName !==
+                        'undefined'
+                    ) {
+                        userName =
+                            this.props.openedDialog.usersDisplayName.find(
+                                (user) => user.userId === message.userId
+                            ).userDisplayName;
+                    }
+
+                    return `{{{Message
+						time="${time}"
+						text="${message.content}"
+						direction="${direction}"
+						messageReaded=true
+						userDisplayName="${userName}"
+					}}}`;
+                });
+                return `{{#DayContainer
+						day="${day.dayText}"
+					}}
+					${messagesArray.join('')}
+					{{/DayContainer}}`;
+            });
+        }
+
         return `
 		<div class="dialog-window">
 	<div class="dialog-window__inner">
@@ -120,19 +165,7 @@ export default class Dialog extends Block<Props> {
 		</div>
 		<div class="dialog-window__body dialog-window__body--bg-dialog hr-bottom">
 			<div class="dialog-scrollable-content">
-			{{#DayContainer
-				day="10 сентября"
-			}}
-		{{{Message
-			time="14:40"
-			text="Второе сообщение Второе сообщение Второе сообщение"
-		}}}
-		{{{Message
-			time="14:40"
-			text="Второе сообщение Второе сообщение Второе сообщение"
-			direction="incoming"
-		}}}
-			{{/DayContainer}}
+			${daysArray.join('')}
 			</div>
 		</div>
 		<div class="dialog-window__controls hr-left">

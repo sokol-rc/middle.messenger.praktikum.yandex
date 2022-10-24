@@ -47,7 +47,6 @@ export class Store<State extends Record<string, any>> extends EventBus {
 			action(this.dispatch.bind(this));
 		  } else {
 			try {
-			
 				this.isDispatching = true;
 				this.nextState = this.rootReducer(this.state, action);
 			}

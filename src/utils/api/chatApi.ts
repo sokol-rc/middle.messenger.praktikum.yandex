@@ -33,23 +33,16 @@ const ChatApi: ChatApiType = {
             headers: this.headers,
         });
     },
-    getTokenMessages(path: string) {
-        return HTTPTransport.post(`${this.apiUrl}chats/token/${path}`, {
+    getTokenMessages(chatId: number) {
+        return HTTPTransport.post(`${this.apiUrl}chats/token/${chatId}`, {
             headers: this.headers,
         });
-    },
-    // signin(options: Options) {
-    // 	return HTTPTransport.post(`${this.apiUrl}auth/signin`, {credentials: true, headers: this.headers ,...options});
-    // },
-    // signup(options: Options) {
-    //     return HTTPTransport.post(`${this.apiUrl}auth/signup`, {headers: this.headers ,...options});
-    // },
-    // logout() {
-    //     return HTTPTransport.post(`${this.apiUrl}auth/logout`);
-    // },
-    // user() {
-    // 	return HTTPTransport.get(`${this.apiUrl}auth/user`);
-    // },
+	},
+	getAllUsersInChat(chatId: number) {
+		return HTTPTransport.get(`${this.apiUrl}chats/${chatId}/users`, {
+			headers: this.headers,
+		});
+	}
 };
 
 export default ChatApi;

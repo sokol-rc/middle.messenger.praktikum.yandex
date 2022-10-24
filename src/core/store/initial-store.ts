@@ -20,7 +20,16 @@ const initialStore: InitialStore = {
 				chatId: null,
 				socket: null,
 				isSocketReady: false,
-				content: []
+				usersDisplayName: [{
+					userId: null,
+					userDisplayName: null
+				}],
+				days: [
+					{
+						id: null,
+						messages: []
+					}
+				]
 			}
 		]
 	},
