@@ -6,7 +6,7 @@ import {
     transformChatsList,
     transformMessages,
     transformUser,
-	transformUsers,
+    transformUsers,
 } from 'utils/api/apiTransformers';
 import AuthApi from 'utils/api/auth-api';
 import ChatApi from 'utils/api/chatApi';
@@ -18,6 +18,7 @@ import {
     getDayId,
     getDayTextFromDate,
 } from 'utils/helpers/dateTime';
+import searchInObject from 'utils/helpers/isContain';
 import isContain from 'utils/helpers/isContain';
 import { isMessageInDialog } from 'utils/helpers/messageTools';
 
@@ -27,6 +28,8 @@ const SET_LOGIN_FORM_ERROR = 'SET_LOGIN_FORM_ERROR';
 const SET_REGISTRATION_FORM_ERROR = 'SET_REGISTRATION_FORM_ERROR';
 const SET_USER = 'SET_USER';
 const SET_CHATS_LIST = 'SET_CHATS_LIST';
+const CREATE_CHAT = 'CREATE_CHAT';
+const DELETE_CHAT = 'DELETE_CHAT';
 const SET_SOCKET = 'SET_SOCKET';
 const SET_SOCKET_READY = 'SET_SOCKET_READY';
 const SET_MESSAGES = 'SET_MESSAGES';
@@ -52,21 +55,24 @@ export const authReducer = (state, action) => {
         case SET_USER:
             stateCopy.user = action.userTransferedObject;
             return stateCopy;
+        case CREATE_CHAT:
+            return stateCopy;
+		case DELETE_CHAT:
+            return stateCopy;
         case SET_CHATS_LIST:
             stateCopy.chats.chatsList = action.chatsList;
-			stateCopy.chats.chatsList.forEach((list) => {
-				
-                if (!isContain(list.id, 'chatId', stateCopy.chats.dialogs)) {
+            stateCopy.chats.chatsList.forEach((list) => {
+                if (!searchInObject(list.id, 'chatId', stateCopy.chats.dialogs)) {
                     stateCopy.chats.dialogs.push({
-						chatId: list.id,
-						chatInfoObject: list,
+                        chatId: list.id,
+                        chatInfoObject: list,
                         socket: null,
                         isSocketReady: false,
                         days: [],
                     });
                 }
-			});
-			stateCopy.chats.chatsListLoaded = true;
+            });
+            stateCopy.chats.chatsListLoaded = true;
             return stateCopy;
         case SET_SOCKET:
             stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
@@ -112,26 +118,26 @@ export const authReducer = (state, action) => {
                     dialog.days = dialog.days.sort(
                         (a, b) => parseFloat(a.id) - parseFloat(b.id)
                     );
-				}
-				dialog.messagesLoaded = true;
+                }
+                dialog.messagesLoaded = true;
                 return dialog;
             });
-			return stateCopy;
-		case SET_USERS_DISPLAY_NAME:
-			stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
+            return stateCopy;
+        case SET_USERS_DISPLAY_NAME:
+            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
                 if (dialog.chatId === action.chatId) {
-					dialog.usersDisplayName = action.allUsers.map((user) => { 
-						const userDisplayName = user.displayName || user.login;
-						
-						return {userId: user.id, userDisplayName}
-					})
+                    dialog.usersDisplayName = action.allUsers.map((user) => {
+                        const userDisplayName = user.displayName || user.login;
+
+                        return { userId: user.id, userDisplayName };
+                    });
                 }
                 return dialog;
             });
-			return stateCopy;
-		case SET_OPENED_DIALOG:
-			stateCopy.chats.openedDialogId = action.nextDialogId;
-			return stateCopy;
+            return stateCopy;
+        case SET_OPENED_DIALOG:
+            stateCopy.chats.openedDialogId = action.nextDialogId;
+            return stateCopy;
         default:
             return stateCopy;
     }
@@ -177,6 +183,13 @@ export const setUsersDisplayName = (allUsers, chatId) => ({
 export const openDialog = (nextDialogId) => ({
     type: SET_OPENED_DIALOG,
     nextDialogId,
+});
+export const removeChatFromStore = (chatId) => ({
+    type: DELETE_CHAT,
+    chatId,
+});
+export const addChatToStore = () => ({
+    type: CREATE_CHAT,
 });
 
 // THUNKS
@@ -283,11 +296,42 @@ export const getUserInfo = () => async (dispatch) => {
 };
 
 // CHAT REDUCER
+
+export const createChat = () => async (dispatch) => {
+	const responseCreateChat = await ChatApi.createChat({ data: { title: 'Новый чатик' } });
+	if (apiHasErrors(responseCreateChat)) {
+        console.log(responseCreateChat.responseText);
+        return false;
+	}
+	const newChatId = JSON.parse(responseCreateChat.responseText);
+	const userId = window.store.state.user.id;
+	const userData = JSON.stringify({ users: [userId], chatId: newChatId.id } )
+	const responseAddUserToChat = await ChatApi.addUserToChat({data: userData});
+
+	if (apiHasErrors(responseAddUserToChat)) {
+        console.log(responseAddUserToChat.responseText);
+        return false;
+	}
+
+	dispatch(() => addChatToStore());
+	return true;
+};
+
+export const deleteChat = (chatid: number) => async (dispatch) => {
+	const response = await ChatApi.deleteChat({ data: { chatId: `${chatid}` } });
+	if (apiHasErrors(response)) {
+        console.log(response.responseText);
+        return false;
+	}
+	dispatch(() => removeChatFromStore(chatid));
+	return true;
+};
+
 //TODO загружать все сообщения чата, а не только 20 последних
 export const getChatsList = (options: Options) => async (dispatch) => {
     dispatch(() => enableLoader());
 
-    const response = await ChatApi.getChats({ limit: 10 });
+    const response = await ChatApi.getChats({ data: { limit: 10 } });
 
     dispatch(() => disableLoader());
 
@@ -312,8 +356,8 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
         console.log(reason);
         return false;
     }
-	const { token } = JSON.parse(response.responseText);
-	const userId = window.store.state.user.id;
+    const { token } = JSON.parse(response.responseText);
+    const userId = window.store.state.user.id;
 
     const socket = new WebSocket(
         `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`
@@ -350,9 +394,9 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
         console.log(`Код: ${event.code} причина: ${event.reason}`);
     });
 
-	socket.addEventListener('message', (event) => {
-		console.log(event.data);
-		
+    socket.addEventListener('message', (event) => {
+        console.log(event.data);
+
         const data = JSON.parse(event.data);
         let messages = [];
         if (typeof data === 'object' && data.type === 'message') {
@@ -365,7 +409,6 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
             const messagesTransferedArray = transformMessages(messages);
             dispatch(() => setMessages(messagesTransferedArray));
         }
-
     });
 
     socket.addEventListener('error', (error) => {
@@ -385,10 +428,9 @@ export const sendMessage = (data) => (dispatch) => {
 };
 
 export const getMessages = (chatId) => async (dispatch) => {
+    const dialogs = window.store.state.chats.dialogs;
+    const dialog = dialogs.find((dialog) => dialog.chatId === chatId);
 
-	const dialogs = window.store.state.chats.dialogs;
-	const dialog = dialogs.find((dialog) => dialog.chatId === chatId);
-	
     if (dialog.isSocketReady === true) {
         dialog.socket.send(
             JSON.stringify({
@@ -396,9 +438,10 @@ export const getMessages = (chatId) => async (dispatch) => {
                 type: 'get old',
             })
         );
-	}
-	const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
-	const allUsersTransferedArray = transformUsers(allUsersResponse.responseText);
-	 dispatch(() => setUsersDisplayName(allUsersTransferedArray, chatId))
-	
+    }
+    const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
+    const allUsersTransferedArray = transformUsers(
+        allUsersResponse.responseText
+    );
+    dispatch(() => setUsersDisplayName(allUsersTransferedArray, chatId));
 };

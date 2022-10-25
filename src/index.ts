@@ -17,6 +17,7 @@ import PersonName from './components/person/person-name';
 import MessagePreview from './components/message/message-preview';
 import SidebarButton from './components/controls/sidebar-button/sidebar-button';
 import Sidebar from './components/sidebar';
+import SideBarContainer from './components/sidebar/sidebarContainer';
 import ModalConfirm from './components/modals/modal-confirm';
 import Dialog from './components/dialog';
 import DialogContainer from './components/dialog/dialogContainer';
@@ -49,6 +50,7 @@ registerComponent(DialogContainer);
 registerComponent(MessagePreview);
 registerComponent(SidebarButton);
 registerComponent(Sidebar);
+registerComponent(SideBarContainer);
 registerComponent(ModalConfirm);
 registerComponent(Form);
 registerComponent(Link);
@@ -57,10 +59,6 @@ registerComponent(Message);
 registerComponent(Loader);
 registerComponent(NavSidebar);
 registerComponent(NavSidebarContainer);
-
-
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -79,32 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			  );
 		});
 
-	// store.dispatch(initApp);
 	initRouter(router, store);
 });
-// document.addEventListener('DOMContentLoaded', routing);
 
-// const links: { [x: string]: any } = {
-//     '/login': LoginPage,
-//     '/registration': RegistrationPage,
-//     '/': ChatPage,
-//     '/profile': ProfilePage,
-//     '/404': ErrorPage,
-// };
-// const routing = (route: string | Event) => {
-//     let href: string = '';
-//     if (typeof route === 'string') {
-//         href = route;
-//     } else {
-//         href = document.location.pathname;
-//     }
-//     if (href in links) {
-//         renderDOM(new links[href]());
-//     } else if (href === '/500') {
-//         renderDOM(new links['/404']({ errorNumber: 500 }));
-//     } else {
-//         renderDOM(new links['/404']({ errorNumber: 404 }));
-//     }
-// };
-
-// (window as any).routing = routing;

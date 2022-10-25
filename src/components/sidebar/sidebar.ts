@@ -3,31 +3,60 @@ import './sidebar.css';
 
 interface Props {
     isVisible: boolean;
-    toogleModal: () => void;
+    openedDialogId: number;
+	toogleModal: () => void;
+	onConfirm: () => void;
+	onDecline: () => void;
+	deleteChat: (openedDialogId: number) => void;
+	openedDialog: any;
 }
 export default class Sidebar extends Block<Props> {
     constructor(props: Props) {
-        super({ ...props, isVisible: true });
+		super({ ...props, isVisible: true });
+		this.setProps({
+			toogleModal: this.toogleModal.bind(this),
+            onConfirm: this.onConfirm.bind(this),
+			onDecline: this.onDecline.bind(this),
+			isVisibleModal: false
+		})
     }
 
-    static componentName = 'Sidebar';
+    static componentName = 'SideBarContainer';
 
-    toogleModal() {
-        this.props.toogleModal();
+	toogleModal() {
+		this.setProps({isVisibleModal: true})
     }
 
-    protected render(): string {
+    onConfirm() {
+		console.log('delete chat');
+		this.props.deleteChat(this.props.openedDialogId);
+		this.setProps({isVisibleModal: false})
+    }
+
+    onDecline() {
+		
+		this.setProps({isVisibleModal: false})
+    }
+	
+
+	protected render(): string {
+		const { chatsListLoaded, openedDialog } = this.props;
+		if (!chatsListLoaded) { 
+			return '<div></div>';
+		}
         let classVisible: string = '';
         if (this.props.isVisible) {
             classVisible = 'right-sidebar--opened';
-        }
+		}
+		console.log(this.props.openedDialog);
+		
 
         return `<aside class="right-sidebar hr-left ${classVisible}">
 		<div class="right-sidebar__inner">
 			<div class="chat-info">
 				<div class="chat-info__description">
-					{{{Avatar}}}
-					{{{PersonName name="Дворник Частный"}}}
+					{{{Avatar image="${openedDialog.chatInfoObject.avatar}"}}}
+					{{{PersonName name="${openedDialog.chatInfoObject.title}"}}}
 				</div>
 				<div class="chat-info__control">
 					{{{Link
@@ -43,6 +72,14 @@ export default class Sidebar extends Block<Props> {
 				</div>
 			</div>
 		</div>
+		{{{ModalConfirm
+			label="Удалить чат?"
+			description="А вы уверены?"
+			onConfirm=onConfirm
+			onDecline=onDecline
+			isVisible=isVisibleModal
+			ref="ModalConfirmRef"
+		}}}
 	</aside>`;
     }
 }

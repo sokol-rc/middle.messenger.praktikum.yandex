@@ -29,7 +29,7 @@ export const transformChatsList = (chatsList: any): any => {
     if (chatsList.length === 0) {
         return null;
     }
-    const transferedChatList = chatsList.map((chatList) => {
+	const transferedChatList = chatsList.map((chatList) => {
         const rootProperties = {
             id: chatList.id,
             title: chatList.title,
@@ -41,7 +41,9 @@ export const transformChatsList = (chatsList: any): any => {
         if (chatList.last_message !== null) {
             const date = getMessageTimeFromDate(chatList.last_message.time);
 
-            const transferedLastMessage = {
+			const transferedLastMessage = {
+				
+				
                 user: {
                     firstName: chatList.last_message.user.first_name,
                     secondName: chatList.last_message.user.second_name,

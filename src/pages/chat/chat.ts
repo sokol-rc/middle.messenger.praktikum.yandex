@@ -17,9 +17,6 @@ export default class ChatPage extends Block<Props> {
         super(props);
         this.setProps({
             toogleSidebar: this.toogleSidebar.bind(this),
-            toogleModal: this.toogleModal.bind(this),
-            onConfirm: this.onConfirm.bind(this),
-            onDecline: this.onDecline.bind(this),
             isVisible: true,
         });
 	}
@@ -29,20 +26,6 @@ export default class ChatPage extends Block<Props> {
 			this.props.getUserInfo();
 		}
 	}
-
-    toogleModal() {
-        this.refs.ModalConfirmRef.setProps({
-            isVisible: !(this.refs.ModalConfirmRef.getProps() as any).isVisible,
-        });
-    }
-
-    onConfirm() {
-        this.toogleModal();
-    }
-
-    onDecline() {
-        this.toogleModal();
-    }
 
     toogleSidebar() {
         this.refs.SidebarRef.setProps({
@@ -66,19 +49,12 @@ export default class ChatPage extends Block<Props> {
 						}}}
 					</section>
 					<div class="chat-page__right-sidebar">
-						{{{Sidebar 
+						{{{SideBarContainer 
 							toogleModal=toogleModal
 							ref="SidebarRef"
 						}}}
 					</div>
 				</main>
-				{{{ModalConfirm
-					label="Удалить чат?"
-					description="А вы уверены?"
-					onConfirm=onConfirm
-					onDecline=onDecline
-					ref="ModalConfirmRef"
-				}}}
 			</div>
 `;
     }

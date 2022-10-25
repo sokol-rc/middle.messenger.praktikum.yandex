@@ -1,5 +1,5 @@
 import connect from 'core/connectHoc';
-import { getChatsList, openDialog } from 'reducers/authReducer';
+import { createChat, getChatsList, openDialog } from 'reducers/authReducer';
 import ChatList from './chat-list';
 
 const mstp = (state: Indexed<any>): Indexed => ({
@@ -8,6 +8,10 @@ const mstp = (state: Indexed<any>): Indexed => ({
     openedDialogId: state.chats.openedDialogId,
 });
 
-const ChatListContainer = connect(mstp, { getChatsList, openDialog });
+const ChatListContainer = connect(mstp, {
+    getChatsList,
+    openDialog,
+    createChat,
+});
 
 export default ChatListContainer(ChatList);

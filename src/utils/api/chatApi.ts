@@ -6,7 +6,8 @@ type ChatApiType = {
     getChats: (options: Options) => Promise<any>;
     createChat: (options: Options) => Promise<any>;
     getTokenMessages: (options: Options) => Promise<any>;
-    deleteChat: () => Promise<any>;
+    deleteChat: (options: Options) => Promise<any>;
+    addUserToChat: (options: Options) => Promise<any>;
 };
 
 const ChatApi: ChatApiType = {
@@ -27,10 +28,11 @@ const ChatApi: ChatApiType = {
             ...options,
         });
     },
-    deleteChat() {
+    deleteChat(options: Options) {
         return HTTPTransport.delete(`${this.apiUrl}chats`, {
             credentials: true,
-            headers: this.headers,
+			headers: this.headers,
+			...options,
         });
     },
     getTokenMessages(chatId: number) {
@@ -41,6 +43,13 @@ const ChatApi: ChatApiType = {
 	getAllUsersInChat(chatId: number) {
 		return HTTPTransport.get(`${this.apiUrl}chats/${chatId}/users`, {
 			headers: this.headers,
+		});
+	},
+	addUserToChat(options: Options) {
+		return HTTPTransport.put(`${this.apiUrl}chats/users`, {
+			credentials: true,
+			headers: this.headers,
+			...options
 		});
 	}
 };

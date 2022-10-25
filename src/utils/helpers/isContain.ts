@@ -1,4 +1,4 @@
-const isContain = (value, property, objectsArray) => { 
+const searchInObject = (value, property, objectsArray) => { 
 	if (!Array.isArray(objectsArray)) { 
 		throw Error('Not array');
 	}
@@ -8,4 +8,4 @@ const isContain = (value, property, objectsArray) => {
 	}
 	return false;
 }
-export default isContain;
+export default searchInObject;
