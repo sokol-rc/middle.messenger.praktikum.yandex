@@ -31,6 +31,7 @@ const SET_SOCKET = 'SET_SOCKET';
 const SET_SOCKET_READY = 'SET_SOCKET_READY';
 const SET_MESSAGES = 'SET_MESSAGES';
 const SET_USERS_DISPLAY_NAME = 'SET_USERS_DISPLAY_NAME';
+const SET_OPENED_DIALOG = 'SET_OPENED_DIALOG';
 
 export const authReducer = (state, action) => {
     const stateCopy = cloneDeep(state);
@@ -53,16 +54,19 @@ export const authReducer = (state, action) => {
             return stateCopy;
         case SET_CHATS_LIST:
             stateCopy.chats.chatsList = action.chatsList;
-            action.chatsList.forEach((list) => {
+			stateCopy.chats.chatsList.forEach((list) => {
+				
                 if (!isContain(list.id, 'chatId', stateCopy.chats.dialogs)) {
                     stateCopy.chats.dialogs.push({
-                        chatId: list.id,
+						chatId: list.id,
+						chatInfoObject: list,
                         socket: null,
                         isSocketReady: false,
                         days: [],
                     });
                 }
-            });
+			});
+			stateCopy.chats.chatsListLoaded = true;
             return stateCopy;
         case SET_SOCKET:
             stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
@@ -108,7 +112,8 @@ export const authReducer = (state, action) => {
                     dialog.days = dialog.days.sort(
                         (a, b) => parseFloat(a.id) - parseFloat(b.id)
                     );
-                }
+				}
+				dialog.messagesLoaded = true;
                 return dialog;
             });
 			return stateCopy;
@@ -123,6 +128,9 @@ export const authReducer = (state, action) => {
                 }
                 return dialog;
             });
+			return stateCopy;
+		case SET_OPENED_DIALOG:
+			stateCopy.chats.openedDialogId = action.nextDialogId;
 			return stateCopy;
         default:
             return stateCopy;
@@ -165,6 +173,10 @@ export const setUsersDisplayName = (allUsers, chatId) => ({
     type: SET_USERS_DISPLAY_NAME,
     allUsers,
     chatId,
+});
+export const openDialog = (nextDialogId) => ({
+    type: SET_OPENED_DIALOG,
+    nextDialogId,
 });
 
 // THUNKS
@@ -373,13 +385,10 @@ export const sendMessage = (data) => (dispatch) => {
 };
 
 export const getMessages = (chatId) => async (dispatch) => {
-    if (window.store.state.chats.chatsList === null) {
-        return false;
-    }
 
-    const dialogs = window.store.state.chats.dialogs;
-
-    const dialog = dialogs.find((dialog) => dialog.chatId === chatId);
+	const dialogs = window.store.state.chats.dialogs;
+	const dialog = dialogs.find((dialog) => dialog.chatId === chatId);
+	
     if (dialog.isSocketReady === true) {
         dialog.socket.send(
             JSON.stringify({

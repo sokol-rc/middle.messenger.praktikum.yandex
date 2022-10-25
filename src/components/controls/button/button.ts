@@ -24,7 +24,7 @@ export default class Button extends Block<Props> {
 
     static componentName = 'Button';
 
-    protected render(): string {
+    render(): string {
         return `<button class="{{className}}" type="submit">${this.props.label}</button> `;
     }
 }

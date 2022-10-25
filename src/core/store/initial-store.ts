@@ -14,12 +14,14 @@ const initialStore: InitialStore = {
 	user: {},
 	chats: {
 		chatsList: null,
+		chatsListLoaded: false,
 		openedDialogId: 430,
 		dialogs: [
 			{
 				chatId: null,
 				socket: null,
 				isSocketReady: false,
+				messagesLoaded: false,
 				usersDisplayName: [{
 					userId: null,
 					userDisplayName: null

@@ -2,17 +2,21 @@ import Block from 'core/Block';
 import './chat-item.css';
 
 type Props = {
+	id?: string;
 	avatar?: string;
 	personName?: string;
 	time?: string;
 	message?: string;
 	isEmpty?: string;
-    isActive?: boolean;
+	isActive?: string;
+    events: {
+        click: () => void;
+    };
 };
 
 export default class ChatItem extends Block<Props> {
-    constructor(props) {
-        super(props);
+	constructor({ ...props }) {
+		super({ ...props, events: { click: props.onClick } });
     }
 
     static componentName = 'ChatItem';
@@ -20,7 +24,7 @@ export default class ChatItem extends Block<Props> {
 	protected render(): string {
 		
         let classActive: string = '';
-        if (this.props.isActive) {
+        if (this.props.isActive === 'active') {
             classActive = 'chat-preview--active';
 		}
 		
@@ -28,7 +32,7 @@ export default class ChatItem extends Block<Props> {
 			return `<div class="chat-preview ${classActive}">пустой чат</div>`
 		}
 		
-        return `<div class="chat-preview ${classActive}">
+        return `<div class="chat-preview ${classActive}" data-chatid="${this.props.id}">
 		<div class="chat-preview__avatar">
 			{{{Avatar image="${this.props.avatar}"}}}
 		</div>

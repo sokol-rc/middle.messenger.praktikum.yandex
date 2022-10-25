@@ -10,10 +10,11 @@ const mstp = (state: Indexed<any>): Indexed => {
 	const dialog = getopenedDialogById(state.chats.dialogs, state.chats.openedDialogId);
 	return { 
 		isLoading: state.isLoading,
+		chatListLoaded: state.chats.chatsListLoaded,
 		user: state.user,
 		socket: state.chats.socket,
 		openedDialogId: state.chats.openedDialogId,
-		openedDialog: dialog
+		openedDialog: dialog,
 	}
 
 };

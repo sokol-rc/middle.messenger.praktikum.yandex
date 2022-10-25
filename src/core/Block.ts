@@ -149,7 +149,7 @@ export default class Block<P extends Record<string, any>> {
                             target
                         );
                         waitProxy = false;
-                    }, 10);
+                    }, 100);
                 }
 
                 return true;

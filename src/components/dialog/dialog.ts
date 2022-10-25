@@ -43,23 +43,21 @@ export default class Dialog extends Block<Props> {
     }
 
     componentDidMount(): void {
-        // console.log(this.props.openedDialog.isSocketReady);
-        // console.log(this.props.openedDialog);
-        // console.log(this.props.openedDialogId);
-        if (typeof this.props.openedDialog === 'undefined') {
-            return undefined;
+        const {
+            chatListLoaded,
+            getMessages,
+            openedDialogId,
+            openedDialog,
+            createWebSocketConnection,
+        } = this.props;
+        if (!chatListLoaded) {
+            return;
         }
-
-        if (this.props.openedDialog.socket === null) {
-            this.props.createWebSocketConnection(this.props.openedDialogId);
+        if (openedDialog.socket === null) {
+            createWebSocketConnection(openedDialogId);
         }
-
-        if (
-            this.props.openedDialog.isSocketReady === true &&
-            this.props.openedDialog.days.length === 0
-        ) {
-            this.props.getMessages(this.props.openedDialogId);
-            return undefined;
+        if (!openedDialog.messagesLoaded) {
+            getMessages(openedDialogId);
         }
     }
 
@@ -101,48 +99,39 @@ export default class Dialog extends Block<Props> {
     }
 
     render(): string {
-        if (
-            isEmpty(this.props.user) ||
-            typeof this.props.openedDialog === 'undefined'
-        ) {
+        const { user, openedDialog, chatListLoaded, messagesLoaded } =
+            this.props;
+        if (!chatListLoaded && !messagesLoaded) {
             return `{{{Loader isLoading=isLoading}}}`;
         }
-        let daysArray = [];
 
-        if (this.props.openedDialog.days.length > 0) {
-            daysArray = this.props.openedDialog.days.map((day) => {
-                const messagesArray = day.messages.map((message) => {
-                    const time = getMessageTimeFromDate(message.time);
-                    const direction = getMessageDirection(
-                        message.userId,
-                        this.props.user.id
-                    );
-                    let userName = '';
-                    if (
-                        typeof this.props.openedDialog.usersDisplayName !==
-                        'undefined'
-                    ) {
-                        userName =
-                            this.props.openedDialog.usersDisplayName.find(
-                                (user) => user.userId === message.userId
-                            ).userDisplayName;
-                    }
+        const chatName = openedDialog.chatInfoObject.title;
+        const chatAvatar = openedDialog.chatInfoObject.avatar;
+        const daysArray = openedDialog.days.map((day) => {
+            const messagesArray = day.messages.map((message) => {
+                const time = getMessageTimeFromDate(message.time);
+                const direction = getMessageDirection(message.userId, user.id);
+                let userName = '';
+                if (typeof openedDialog.usersDisplayName !== 'undefined') {
+                    userName = openedDialog.usersDisplayName.find(
+                        (u) => u.userId === message.userId
+                    ).userDisplayName;
+                }
 
-                    return `{{{Message
+                return `{{{Message
 						time="${time}"
 						text="${message.content}"
 						direction="${direction}"
 						messageReaded=true
 						userDisplayName="${userName}"
 					}}}`;
-                });
-                return `{{#DayContainer
+            });
+            return `{{#DayContainer
 						day="${day.dayText}"
 					}}
 					${messagesArray.join('')}
 					{{/DayContainer}}`;
-            });
-        }
+        });
 
         return `
 		<div class="dialog-window">
@@ -151,10 +140,10 @@ export default class Dialog extends Block<Props> {
 			<div class="dialog-header__profile hr-left">
 				<div class="profile-info">
 					<div class="profile-info__avatar">
-						{{{Avatar image="${this.props.user.avatar}"}}}
+						{{{Avatar image="${chatAvatar}"}}}
 					</div>
 					<div class="profile-info__title">
-						{{{PersonName name="Дейв Черный"}}}
+						{{{PersonName name="${chatName}"}}}
 						<span class="profile-info__status profile-status">Онлайн</span>
 					</div>
 				</div>
