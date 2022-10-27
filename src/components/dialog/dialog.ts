@@ -8,14 +8,20 @@ import Patterns from 'utils/validate/validate-pattenrs';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
+const ENTER_KEY_CODE = 'Enter';
+
 type Props = {
     handleClick?: () => void;
     toogleSidebar: () => void;
     createWebSocketConnection: () => void;
+    _showError: () => void;
+    _clearError: () => void;
     sendMessage: (message: any) => void;
     sendButtonClick?: (event: MouseEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
+    onInput: () => void;
+    onKeydown: (event: KeyboardEvent) => void;
     messagePattern: RegExp;
     isLoading: boolean;
     user: any;
@@ -27,10 +33,10 @@ export default class Dialog extends Block<Props> {
         this.setProps({
             handleClick: this.handleClick.bind(this),
             sendButtonClick: this.sendButtonClick.bind(this),
-            validateOnBlur: this.validateOnBlur.bind(this),
-            validateOnFocus: this.validateOnFocus.bind(this),
-            messagePattern: this.patterns.messagePattern,
             toogleSidebar: this.props.toogleSidebar,
+            onInput: this.onInput.bind(this),
+            onKeydown: this.onKeydown.bind(this),
+            errorMessage: 'Не должен быть пустым',
         });
     }
 
@@ -59,43 +65,74 @@ export default class Dialog extends Block<Props> {
         if (!openedDialog.messagesLoaded) {
             getMessages(openedDialogId);
         }
+        const dialogScrollableDiv = document.querySelector(
+            '.dialog-scrollable-content'
+        );
+        dialogScrollableDiv?.classList.add('scroll-y');
+        dialogScrollableDiv.scrollTop = dialogScrollableDiv.scrollHeight;
+        this.refs.messageInputRef.element?.focus();
     }
 
-    validateOnFocus(input: ValidateInput): void {
-        this._displayError(input);
+    onInput(): void {
+        const currentValue: string =
+            this.refs.messageInputRef.element.innerText;
+        this._checkValidate({
+            value: currentValue,
+            pattern: this.patterns.messagePattern,
+        });
     }
 
-    validateOnBlur(input: ValidateInput): void {
-        this._displayError(input);
+    onKeydown(event: KeyboardEvent): void {
+        if (event.code === ENTER_KEY_CODE && event.shiftKey === false) {
+            event.stopPropagation();
+            event.preventDefault();
+            this._submit();
+        }
+    }
+
+
+    _checkValidate(inputObject) {
+        const isValid: boolean = inputValidate(inputObject);
+
+        if (!isValid) {
+            this._showError();
+        } else {
+            this._clearError();
+        }
+        return isValid;
+    }
+
+    _showError(): void {
+        this.refs.errorRef.setProps({ isShowed: true });
+    }
+
+    _clearError(): void {
+        this.refs.errorRef.setProps({ isShowed: false });
     }
 
     sendButtonClick(event: MouseEvent) {
         event.preventDefault();
-
-        const messageInput: ValidateInput = this.refs.messageInputRef;
-
-        this._displayError(messageInput);
-
-        const formValues = getFormValues([messageInput]);
-        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
-        console.log(this.props.openedDialog);
-
-        this.props.sendMessage({
-            message: formValues,
-            socket: this.props.openedDialog.socket,
-        });
+        this._submit();
     }
 
-    private _displayError(inputRef: ValidateInput) {
-        const isValid: boolean = inputValidate(
-            inputRef.refs.inputInnerRef.getProps()
-        );
+    _submit(): void {
+        const currentValue: string =
+            this.refs.messageInputRef.element.innerText;
 
-        if (!isValid) {
-            inputRef.getProps().showError();
-        } else {
-            inputRef.getProps().clearError();
+        const isValid = this._checkValidate({
+            value: currentValue,
+            pattern: this.patterns.messagePattern,
+        });
+        if (isValid) {
+            this._sendMessage(currentValue);
         }
+    }
+
+    _sendMessage(message: string) {
+        this.props.sendMessage({
+            message,
+            socket: this.props.openedDialog.socket,
+        });
     }
 
     render(): string {
@@ -160,20 +197,18 @@ export default class Dialog extends Block<Props> {
 		<div class="dialog-window__controls hr-left">
 			<div class="message-send">
 				<form class="send-form" action="">
-							{{{Input
-								type="text"
-								wrapperClassName="send-form__input-group send-form-input"
-								labelClassName="send-form-input__label visually-hidden"
-								className="send-form-input__input"
-								name="message"
-								label="Напишите здесь"
-								placeholder="Напишите здесь..." 
-								validateOnBlur=validateOnBlur
-								validateOnFocus=validateOnFocus
-								pattern=messagePattern
-								errorMessage="не пустое"
-								ref="messageInputRef"
-							}}}
+				{{{DivLikeInput
+					className="send-form-input__input"
+					placeholder="Напишите здесь..."
+					onInput=onInput
+					onKeydown=onKeydown
+					onPaste=onPaste
+					ref="messageInputRef"
+				}}}
+				{{{InputError
+					errorMessage="${this.props.errorMessage}"
+					ref="errorRef"
+				}}}
 					<div class="send-form__submit">
 						<div class="send-message-control">
 						{{{Button
@@ -189,3 +224,19 @@ export default class Dialog extends Block<Props> {
 </div>`;
     }
 }
+
+// {{{Input
+// 	type="text"
+// 	wrapperClassName="send-form__input-group send-form-input"
+// 	labelClassName="send-form-input__label visually-hidden"
+// 	className="send-form-input__input"
+// 	name="message"
+// 	label="Напишите здесь"
+// 	placeholder="Напишите здесь..."
+// 	validateOnBlur=validateOnBlur
+// 	validateOnFocus=validateOnFocus
+// 	pattern=messagePattern
+// 	errorMessage="не пустое"
+// 	inputType="textarea"
+// 	ref="messageInputRef"
+// }}}

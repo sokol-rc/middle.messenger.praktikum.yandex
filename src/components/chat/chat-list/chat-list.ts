@@ -27,7 +27,7 @@ export default class ChatList extends Block<Props> {
     componentDidMount(){
         if (this.props.chatsList === null) {
             this.props.getChatsList({ limit: 10 });
-        }
+		}		
     }
 
     // хак, чтобы регистрировать HOC

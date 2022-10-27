@@ -28,11 +28,12 @@
 }
 
 .dev-header {
-    position: static;
     background-color: beige;
     display: flex;
     justify-content: center;
-    padding: 15px;
+    position: absolute;
+    left: 0;
+    right: 0;
 }
 
 .dev-header__inner {

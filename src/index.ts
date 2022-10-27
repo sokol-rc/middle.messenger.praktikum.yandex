@@ -28,6 +28,7 @@ import Message from './components/message/message';
 import Loader from './components/loader';
 import NavSidebar from './components/navSidebar';
 import NavSidebarContainer from './components/navSidebar/navSidebarContainer';
+import DivLikeInput from './components/divlikeinput';
 
 import './styles/common/default.css';
 import './styles/common/common.css';
@@ -36,6 +37,7 @@ import { authReducer } from './reducers/authReducer';
 require('babel-core/register');
 
 registerComponent(Button);
+registerComponent(DivLikeInput);
 registerComponent(Input);
 registerComponent(InputInner);
 registerComponent(InputError);

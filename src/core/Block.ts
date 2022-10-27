@@ -42,8 +42,7 @@ export default class Block<P extends Record<string, any>> {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-		eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
-		
+        eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
 
     _createResources() {
@@ -97,19 +96,17 @@ export default class Block<P extends Record<string, any>> {
         this._element!.replaceWith(newElement);
 
         this._element = newElement as HTMLElement;
-		this._addEvents();
+        this._addEvents();
     }
 
     protected render(): string {
         return '';
     }
 
-	getContent(): HTMLElement {
-		
+    getContent(): HTMLElement {
         if (
             this.element?.parentNode?.nodeType === Node.DOCUMENT_FRAGMENT_NODE
-		) {
-
+        ) {
             setTimeout(() => {
                 if (
                     this.element?.parentNode?.nodeType !==
@@ -124,8 +121,8 @@ export default class Block<P extends Record<string, any>> {
     }
 
     _makePropsProxy(props: any): any {
-		const self = this;
-		let waitProxy = false;
+        const self = this;
+        let waitProxy = false;
 
         return new Proxy(props as unknown as object, {
             get(target: Record<string, unknown>, prop: string) {

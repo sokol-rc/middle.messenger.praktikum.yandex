@@ -27,7 +27,8 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-		overflow: hidden;
+        overflow: hidden;
+        position: relative;
     }
 
     &__controls {
@@ -81,16 +82,63 @@
     &__input-group {
         flex-grow: 1;
     }
+
+    &__submit {
+        padding: 5px 15px;
+    }
+}
+
+.send-form-input {
+    &__input {
+        width: 100%;
+        resize: vertical;
+        padding: 15px;
+        border-radius: 15px;
+        border: 0;
+        box-shadow: 4px 4px 10px rgb(0 0 0 / 6%);
+        height: 50px;
+    }
+
+    &__input::before {
+        color: #a2acb4;
+        content: attr(data-placeholder);
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+    }
+
+    &__input:empty::before {
+        opacity: 1;
+    }
 }
 
 .dialog-scrollable-content {
     padding-bottom: 20px;
-	overflow-y: auto;
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 7px;
+    bottom: 0;
+}
+
+.scroll-y {
+    position: relative;
+    overflow-y: scroll;
+    scrollbar-color: transparent transparent;
+    scrollbar-width: thin;
+	scrollbar-gutter: stable;
+}
+
+.scroll-y:hover{
+    scrollbar-color: rgb(0 0 0 / 20%) transparent;
+    scrollbar-color: var(--scrollbar-color) transparent;
 }
 
 .bubbles-day-section {
-    max-width: 90%;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0 30px;
+	padding: 0 10px;
     display: flex;
     flex-direction: column;
 }

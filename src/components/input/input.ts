@@ -10,6 +10,7 @@ type Props = {
     pattern?: RegExp;
     className?: string;
     value: string;
+    inputType?: string;
     errorMessage: string;
     onFocus?: () => void;
     showError?: () => void;
@@ -76,6 +77,7 @@ export default class Input extends Block<Props> {
 				pattern=pattern
 				onBlur=onBlur
 				onFocus=onFocus
+				inputType="${this.props.inputType}"
 				ref="inputInnerRef"
 			}}}
 			{{{InputError

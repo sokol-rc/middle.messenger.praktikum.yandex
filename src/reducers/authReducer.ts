@@ -421,7 +421,7 @@ export const sendMessage = (data) => (dispatch) => {
 
     data.socket.send(
         JSON.stringify({
-            content: data.message.message,
+            content: data.message,
             type: 'message',
         })
     );

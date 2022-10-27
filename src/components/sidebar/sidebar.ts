@@ -48,7 +48,6 @@ export default class Sidebar extends Block<Props> {
         if (this.props.isVisible) {
             classVisible = 'right-sidebar--opened';
 		}
-		console.log(this.props.openedDialog);
 		
 
         return `<aside class="right-sidebar hr-left ${classVisible}">
