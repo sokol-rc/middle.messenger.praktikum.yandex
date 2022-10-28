@@ -1,7 +1,4 @@
-import { debug } from 'console';
 import Block from 'core/Block';
-import { login, logout } from 'services/auth';
-import AuthApi from 'utils/api/auth-api';
 import getFormValues from 'utils/formTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
@@ -39,7 +36,6 @@ export default class LoginPage extends Block<Props> {
             loginFormError: props.loginFormError,
             enableLoader: this.enableLoader.bind(this),
             onLogin: this.onLogin.bind(this),
-            onLogout: this.onLogout.bind(this),
         });
     }
 
@@ -67,10 +63,6 @@ export default class LoginPage extends Block<Props> {
 
     disableLoader() {
         this.props.disableLoader();
-    }
-
-    onLogout() {
-        this.props.doLogout();
     }
 
     onSubmit(event: SubmitEvent): void {
@@ -112,9 +104,6 @@ export default class LoginPage extends Block<Props> {
 
         return `
 <main class="auth-content layout-container">
-{{{Button label="Logout" onClick=onLogout}}}
-{{{Button label="enable loader" onClick=enableLoader}}}
-{{{Button label="disable loader" onClick=disableLoader}}}
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">
 		<div class="form-header auth-content__header">
 			<h1 class="form-header__title">Вход</h1>

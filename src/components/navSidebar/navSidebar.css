@@ -7,7 +7,7 @@
 .nav-sidebar__inner {
     display: flex;
     flex-direction: column;
-    padding: 20px 30px;
+    padding: 20px 0;
     height: 100%;
 }
 

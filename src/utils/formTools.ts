@@ -1,4 +1,4 @@
-type FormValues = {
+export type FormValues = {
     [key: string]: string;
 };
 
@@ -11,26 +11,25 @@ const getFormValues = (inputsRefs: Array<ValidateInput>): FormValues => {
 
         if (inputProps.value !== '' && inputProps.type !== 'checkbox') {
             formValues[inputProps.name] = inputProps.value;
-		}
+        }
     });
 
     return formValues;
 };
 export default getFormValues;
 
-export const getAvatarFormValue = (avatarSelector: string) => { 
-	const avatarInput = document.querySelector(avatarSelector);
-	if (avatarInput) { 
-		if (typeof avatarInput.files[0] === 'undefined') { 
-			console.log('нет изображения');
-			return null;
-			
-		}
-		const formData = new FormData();
-		formData.append("avatar", avatarInput.files[0]);
-		return formData
-	}
+export const getAvatarFormValue = (avatarSelector: string): FormData | null => {
+    const avatarInput: HTMLInputElement | null =
+        document.querySelector(avatarSelector);
+    if (avatarInput !== null && avatarInput.files !== null) {
+        if (typeof avatarInput.files[0] === 'undefined') {
+            console.log('нет изображения');
+            return null;
+        }
+        const formData = new FormData();
+        formData.append('avatar', avatarInput.files[0]);
+        return formData;
+    }
 
-	return null;
-	// return formData.get('avatar');
-}
+    return null;
+};

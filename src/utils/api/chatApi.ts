@@ -8,6 +8,7 @@ type ChatApiType = {
     getTokenMessages: (options: Options) => Promise<any>;
     deleteChat: (options: Options) => Promise<any>;
     addUserToChat: (options: Options) => Promise<any>;
+    getAllUsersInChat: (chatId: number) => Promise<any>;
 };
 
 const ChatApi: ChatApiType = {

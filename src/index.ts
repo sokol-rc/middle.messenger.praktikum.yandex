@@ -62,23 +62,22 @@ registerComponent(Loader);
 registerComponent(NavSidebar);
 registerComponent(NavSidebarContainer);
 
+const store = new Store<any>(initialStore, authReducer);
+export type RootState = ReturnType<typeof store.getState>;
 
 document.addEventListener('DOMContentLoaded', () => {
-	const store = new Store<any>(initialStore, authReducer);
-	const router = new Router('.app');
-	
-	
-	window.store = store;
-	window.router = router;
-	
-		store.on('changed', (prevState, nextState) => {
-			  console.log(
-				'%cstore updated',
-				'background: #222; color: #7B68EE',
-				nextState,
-			  );
-		});
+    const router = new Router('.app');
 
-	initRouter(router, store);
+    window.store = store;
+    window.router = router;
+
+    store.on('changed', (prevState, nextState) => {
+        console.log(
+            '%cstore updated',
+            'background: #222; color: #7B68EE',
+            nextState
+        );
+    });
+
+    initRouter(router, store);
 });
-

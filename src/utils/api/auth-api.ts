@@ -1,6 +1,6 @@
 import HTTPTransport, { Options } from './httptransport';
 
-type AuthApi = {
+type AuthApiType = {
 	apiUrl: string;
 	headers: Record<string, string>;
     signin: (options: Options) => Promise<any>;
@@ -9,11 +9,11 @@ type AuthApi = {
     user: () => Promise<any>;
 };
 
-const AuthApi: AuthApi = {
+const AuthApi: AuthApiType = {
     apiUrl: 'https://ya-praktikum.tech/api/v2/',
     headers: { 'accept': 'application/json', 'Content-Type': 'application/json' },
     signin(options: Options) {
-		return HTTPTransport.post(`${this.apiUrl}auth/signin`, {credentials: true, headers: this.headers ,...options});
+		return HTTPTransport.post(`${this.apiUrl}auth/signin`, {headers: this.headers ,...options});
     },
     signup(options: Options) {
         return HTTPTransport.post(`${this.apiUrl}auth/signup`, {headers: this.headers ,...options});

@@ -42,6 +42,8 @@ export default class Dialog extends Block<Props> {
 
     static componentName = 'DialogContainer';
 
+    protected messageInputHeight = 50;
+
     protected patterns = Patterns;
 
     handleClick() {
@@ -69,17 +71,43 @@ export default class Dialog extends Block<Props> {
             '.dialog-scrollable-content'
         );
         dialogScrollableDiv?.classList.add('scroll-y');
+        dialogScrollableDiv?.classList.add('scroll-theme');
         dialogScrollableDiv.scrollTop = dialogScrollableDiv.scrollHeight;
-        this.refs.messageInputRef.element?.focus();
+
+        if (this.refs.messageInputRef) {
+            this.refs.messageInputRef.element?.focus();
+        }
     }
 
     onInput(): void {
-        const currentValue: string =
-            this.refs.messageInputRef.element.innerText;
+        const messageInputElem = this.refs.messageInputRef.element;
+        const messageInputFakeElem = this.refs.messageInputFakeRef.element;
+        if (messageInputElem === null || messageInputFakeElem === null) {
+            return undefined;
+        }
+        const currentValue: string = messageInputElem.innerText;
+
+        messageInputFakeElem.textContent = currentValue;
+
         this._checkValidate({
             value: currentValue,
             pattern: this.patterns.messagePattern,
         });
+        const newHeight = messageInputFakeElem.scrollHeight;
+
+        if (this.messageInputHeight !== newHeight) {
+            this.messageInputHeight = newHeight;
+            if (newHeight > 110) {
+                if (!messageInputElem.classList.contains('scroll-y')) {
+                    messageInputElem.classList.add('scroll-y');
+                }
+            } else {
+                if (messageInputElem.classList.contains('scroll-y')) {
+                    messageInputElem.classList.remove('scroll-y');
+                }
+                messageInputElem.style.height = `${newHeight}px`;
+            }
+        }
     }
 
     onKeydown(event: KeyboardEvent): void {
@@ -89,7 +117,6 @@ export default class Dialog extends Block<Props> {
             this._submit();
         }
     }
-
 
     _checkValidate(inputObject) {
         const isValid: boolean = inputValidate(inputObject);
@@ -175,13 +202,13 @@ export default class Dialog extends Block<Props> {
 	<div class="dialog-window__inner">
 		<div class="dialog-window__header dialog-header hr-bottom">
 			<div class="dialog-header__profile hr-left">
-				<div class="profile-info">
-					<div class="profile-info__avatar">
+				<div class="dialog-window__chat-info">
+					<div class="chat-info__avatar">
 						{{{Avatar image="${chatAvatar}"}}}
 					</div>
-					<div class="profile-info__title">
+					<div class="chat-info__title">
 						{{{PersonName name="${chatName}"}}}
-						<span class="profile-info__status profile-status">Онлайн</span>
+						<span class="chat-info__status profile-status">Онлайн</span>
 					</div>
 				</div>
 			</div>
@@ -197,14 +224,21 @@ export default class Dialog extends Block<Props> {
 		<div class="dialog-window__controls hr-left">
 			<div class="message-send">
 				<form class="send-form" action="">
-				{{{DivLikeInput
-					className="send-form-input__input"
-					placeholder="Напишите здесь..."
-					onInput=onInput
-					onKeydown=onKeydown
-					onPaste=onPaste
-					ref="messageInputRef"
-				}}}
+				<div class="send-form__wrapper">
+					{{{DivLikeInput
+						className="send-form-input__input"
+						placeholder="Напишите здесь..."
+						onInput=onInput
+						onKeydown=onKeydown
+						onPaste=onPaste
+						ref="messageInputRef"
+					}}}
+					{{{DivLikeInput
+						className="send-form-input__input fake-input"
+						ref="messageInputFakeRef"
+					}}}
+				</div>
+
 				{{{InputError
 					errorMessage="${this.props.errorMessage}"
 					ref="errorRef"

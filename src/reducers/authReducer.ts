@@ -1,5 +1,6 @@
+import { DialogType } from 'core/store/initial-store';
+import { RootState } from 'index';
 import { RegistrationData } from 'pages/registration/registration';
-import { parse } from 'path';
 import { deleteAuthCookie, setAuthCookie } from 'services/cookie';
 import apiHasErrors from 'utils/api/api-has-errors';
 import {
@@ -19,8 +20,12 @@ import {
     getDayTextFromDate,
 } from 'utils/helpers/dateTime';
 import searchInObject from 'utils/helpers/isContain';
-import isContain from 'utils/helpers/isContain';
 import { isMessageInDialog } from 'utils/helpers/messageTools';
+import { ActionsTypes } from './actionTypes';
+import { DispatchThunk } from './thunkTypes';
+import { AllUsersTransferedType } from './transferedTypes';
+
+
 
 const ENABLE_LOADER = 'ENABLE_LOADER';
 const DISABLE_LOADER = 'DISABLE_LOADER';
@@ -36,7 +41,10 @@ const SET_MESSAGES = 'SET_MESSAGES';
 const SET_USERS_DISPLAY_NAME = 'SET_USERS_DISPLAY_NAME';
 const SET_OPENED_DIALOG = 'SET_OPENED_DIALOG';
 
-export const authReducer = (state, action) => {
+export const authReducer = (
+    state: RootState,
+    action: ActionsTypes
+): RootState => {
     const stateCopy = cloneDeep(state);
 
     switch (action.type) {
@@ -57,12 +65,14 @@ export const authReducer = (state, action) => {
             return stateCopy;
         case CREATE_CHAT:
             return stateCopy;
-		case DELETE_CHAT:
+        case DELETE_CHAT:
             return stateCopy;
         case SET_CHATS_LIST:
             stateCopy.chats.chatsList = action.chatsList;
             stateCopy.chats.chatsList.forEach((list) => {
-                if (!searchInObject(list.id, 'chatId', stateCopy.chats.dialogs)) {
+                if (
+                    !searchInObject(list.id, 'chatId', stateCopy.chats.dialogs)
+                ) {
                     stateCopy.chats.dialogs.push({
                         chatId: list.id,
                         chatInfoObject: list,
@@ -143,64 +153,80 @@ export const authReducer = (state, action) => {
     }
 };
 // ACTION CREATORS
-export const enableLoader = () => ({ type: ENABLE_LOADER });
-export const disableLoader = () => ({ type: DISABLE_LOADER });
-export const setloginFormError = (loginFormError: string) => ({
-    type: SET_LOGIN_FORM_ERROR,
-    loginFormError,
-});
-export const setRegistrationFormError = (registrationFormError: string) => ({
-    type: SET_REGISTRATION_FORM_ERROR,
-    registrationFormError,
-});
-export const setUser = (userTransferedObject: any) => ({
-    type: SET_USER,
-    userTransferedObject,
-});
-export const setChatsList = (chatsList: any) => ({
-    type: SET_CHATS_LIST,
-    chatsList,
-});
-export const setSocket = (chatId: number, socket: any) => ({
-    type: SET_SOCKET,
-    socket,
-    chatId,
-});
-export const setSocketReady = (chatId: number, ready: boolean) => ({
-    type: SET_SOCKET_READY,
-    ready,
-    chatId,
-});
-export const setMessages = (messages) => ({
-    type: SET_MESSAGES,
-    messages,
-});
-export const setUsersDisplayName = (allUsers, chatId) => ({
-    type: SET_USERS_DISPLAY_NAME,
-    allUsers,
-    chatId,
-});
-export const openDialog = (nextDialogId) => ({
-    type: SET_OPENED_DIALOG,
-    nextDialogId,
-});
-export const removeChatFromStore = (chatId) => ({
-    type: DELETE_CHAT,
-    chatId,
-});
-export const addChatToStore = () => ({
-    type: CREATE_CHAT,
-});
+export const actions = {
+    enableLoader: () => ({ type: ENABLE_LOADER } as const),
+    disableLoader: () => ({ type: DISABLE_LOADER } as const),
+    setloginFormError: (loginFormError: string) =>
+        ({
+            type: SET_LOGIN_FORM_ERROR,
+            loginFormError,
+        } as const),
+    setRegistrationFormError: (registrationFormError: string) =>
+        ({
+            type: SET_REGISTRATION_FORM_ERROR,
+            registrationFormError,
+        } as const),
+    setUser: (userTransferedObject: any) =>
+        ({
+            type: SET_USER,
+            userTransferedObject,
+        } as const),
+    setChatsList: (chatsList: any) =>
+        ({
+            type: SET_CHATS_LIST,
+            chatsList,
+        } as const),
+    setSocket: (chatId: number, socket: any) =>
+        ({
+            type: SET_SOCKET,
+            socket,
+            chatId,
+        } as const),
+    setSocketReady: (chatId: number, ready: boolean) =>
+        ({
+            type: SET_SOCKET_READY,
+            ready,
+            chatId,
+        } as const),
+    setMessages: (messages) =>
+        ({
+            type: SET_MESSAGES,
+            messages,
+        } as const),
+    setUsersDisplayName: (
+        allUsers: Array<AllUsersTransferedType>,
+        chatId: number
+    ) =>
+        ({
+            type: SET_USERS_DISPLAY_NAME,
+            allUsers,
+            chatId,
+        } as const),
+    openDialog: (nextDialogId: number) =>
+        ({
+            type: SET_OPENED_DIALOG,
+            nextDialogId,
+        } as const),
+    removeChatFromStore: (chatId: number) =>
+        ({
+            type: DELETE_CHAT,
+            chatId,
+        } as const),
+    addChatToStore: () =>
+        ({
+            type: CREATE_CHAT,
+        } as const),
+};
 
 // THUNKS
 export const doLogout = () => async (dispatch) => {
-    dispatch(() => enableLoader());
+    dispatch(() => actions.enableLoader());
 
     localStorage.removeItem('user');
     await AuthApi.logout();
 
-    dispatch(() => disableLoader());
-    dispatch(() => setUser({}));
+    dispatch(() => actions.disableLoader());
+    dispatch(() => actions.setUser({}));
 
     deleteAuthCookie();
 
@@ -208,28 +234,28 @@ export const doLogout = () => async (dispatch) => {
 };
 
 export const doLogin = (loginData: any) => async (dispatch) => {
-    dispatch(() => enableLoader());
+    dispatch(() => actions.enableLoader());
     const response = await AuthApi.signin({ data: loginData });
 
     if (apiHasErrors(response)) {
         console.log(response.responseText);
         const { reason } = JSON.parse(response.responseText);
-        dispatch(() => disableLoader());
-        dispatch(() => setloginFormError(reason));
+        dispatch(() => actions.disableLoader());
+        dispatch(() => actions.setloginFormError(reason));
         return false;
     }
 
     const responseUser = await AuthApi.user();
-    dispatch(() => disableLoader());
+    dispatch(() => actions.disableLoader());
 
     if (apiHasErrors(responseUser)) {
         console.log(responseUser.responseText);
-        dispatch(() => doLogout());
+        dispatch(() => actions.doLogout());
         return false;
     }
     const userTransferedObject = transformUser(responseUser.responseText);
     setAuthCookie();
-    dispatch(() => setUser(userTransferedObject));
+    dispatch(() => actions.setUser(userTransferedObject));
 
     window.router.go('/');
     return true;
@@ -237,24 +263,26 @@ export const doLogin = (loginData: any) => async (dispatch) => {
 
 export const doRegistrtation =
     (registrationData: RegistrationData) => async (dispatch) => {
-        dispatch(() => enableLoader());
+        dispatch(() => actions.enableLoader());
 
-        const response = await AuthApi.signup({ data: registrationData });
+        const response = await AuthApi.signup({
+            data: JSON.stringify(registrationData),
+        });
 
         if (apiHasErrors(response)) {
             console.log(response.responseText);
             const { reason } = JSON.parse(response.responseText);
-            dispatch(() => disableLoader());
-            dispatch(() => setRegistrationFormError(reason));
+            dispatch(() => actions.disableLoader());
+            dispatch(() => actions.setRegistrationFormError(reason));
 
             return false;
         }
-        dispatch(() => disableLoader());
+        dispatch(() => actions.disableLoader());
         window.router.go('/');
         return true;
     };
 export const saveUserInfo = (data) => async (dispatch) => {
-    dispatch(() => enableLoader());
+    dispatch(() => actions.enableLoader());
 
     if ('avatar' in data && data.avatar !== '') {
         await UserApi.saveProfileAvatar({ data: data.avatar });
@@ -265,32 +293,32 @@ export const saveUserInfo = (data) => async (dispatch) => {
     if (apiHasErrors(response)) {
         console.log(response.responseText);
         const { reason } = JSON.parse(response.responseText);
-        dispatch(() => disableLoader());
+        dispatch(() => actions.disableLoader());
         // dispatch(() => setRegistrationFormError(reason));
 
         return false;
     }
-    dispatch(() => disableLoader());
+    dispatch(() => actions.disableLoader());
 
     return true;
 };
 
 export const getUserInfo = () => async (dispatch) => {
-    dispatch(() => enableLoader());
+    dispatch(() => actions.enableLoader());
 
     const response = AuthApi.user();
     response.then((response) => {
         if (apiHasErrors(response)) {
             console.log(response.responseText);
             const { reason } = JSON.parse(response.responseText);
-            dispatch(() => disableLoader());
+            dispatch(() => actions.disableLoader());
             return false;
         }
-        dispatch(() => disableLoader());
+        dispatch(() => actions.disableLoader());
 
         const userTransferedObject = transformUser(response.responseText);
 
-        dispatch(() => setUser(userTransferedObject));
+        dispatch(() => actions.setUser(userTransferedObject));
         return true;
     });
 };
@@ -298,42 +326,48 @@ export const getUserInfo = () => async (dispatch) => {
 // CHAT REDUCER
 
 export const createChat = () => async (dispatch) => {
-	const responseCreateChat = await ChatApi.createChat({ data: { title: 'Новый чатик' } });
-	if (apiHasErrors(responseCreateChat)) {
+    const responseCreateChat = await ChatApi.createChat({
+        data: { title: 'Новый чатик' },
+    });
+    if (apiHasErrors(responseCreateChat)) {
         console.log(responseCreateChat.responseText);
         return false;
-	}
-	const newChatId = JSON.parse(responseCreateChat.responseText);
-	const userId = window.store.state.user.id;
-	const userData = JSON.stringify({ users: [userId], chatId: newChatId.id } )
-	const responseAddUserToChat = await ChatApi.addUserToChat({data: userData});
+    }
+    const newChatId = JSON.parse(responseCreateChat.responseText);
+    const userId = window.store.state.user.id;
+    const userData = JSON.stringify({ users: [userId], chatId: newChatId.id });
+    const responseAddUserToChat = await ChatApi.addUserToChat({
+        data: userData,
+    });
 
-	if (apiHasErrors(responseAddUserToChat)) {
+    if (apiHasErrors(responseAddUserToChat)) {
         console.log(responseAddUserToChat.responseText);
         return false;
-	}
+    }
 
-	dispatch(() => addChatToStore());
-	return true;
+    dispatch(() => actions.addChatToStore());
+    return true;
 };
 
 export const deleteChat = (chatid: number) => async (dispatch) => {
-	const response = await ChatApi.deleteChat({ data: { chatId: `${chatid}` } });
-	if (apiHasErrors(response)) {
+    const response = await ChatApi.deleteChat({
+        data: { chatId: `${chatid}` },
+    });
+    if (apiHasErrors(response)) {
         console.log(response.responseText);
         return false;
-	}
-	dispatch(() => removeChatFromStore(chatid));
-	return true;
+    }
+    dispatch(() => actions.removeChatFromStore(chatid));
+    return true;
 };
 
-//TODO загружать все сообщения чата, а не только 20 последних
+// TODO загружать все сообщения чата, а не только 20 последних
 export const getChatsList = (options: Options) => async (dispatch) => {
-    dispatch(() => enableLoader());
+    dispatch(() => actions.enableLoader());
 
     const response = await ChatApi.getChats({ data: { limit: 10 } });
 
-    dispatch(() => disableLoader());
+    dispatch(() => actions.disableLoader());
 
     if (apiHasErrors(response)) {
         console.log(response.responseText);
@@ -342,12 +376,12 @@ export const getChatsList = (options: Options) => async (dispatch) => {
     }
 
     const chatListTransferedObject = transformChatsList(response.responseText);
-    dispatch(() => setChatsList(chatListTransferedObject));
+    dispatch(() => actions.setChatsList(chatListTransferedObject));
     return true;
 };
 
 // TODO: это нечто странное
-export const createWebSocketConnection = (chatId) => async (dispatch) => {
+export const createWebSocketConnection = (chatId: number) => async (dispatch: DispatchThunk) => {
     // TODO: заменить user_id, chat_id
     const response = await ChatApi.getTokenMessages(chatId);
 
@@ -363,12 +397,12 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
         `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`
     );
 
-    dispatch(() => setSocket(chatId, socket));
+    dispatch(() => socket(chatId, socket));
     let intervalSocketPing = null;
 
     socket.addEventListener('open', () => {
         console.log('Соединение установлено.');
-        dispatch(() => setSocketReady(chatId, true));
+        dispatch(() => actions.setSocketReady(chatId, true));
 
         intervalSocketPing = setInterval(() => {
             socket.send(
@@ -384,7 +418,7 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
             window.clearInterval(intervalSocketPing);
         }
 
-        dispatch(() => setSocketReady(chatId, true));
+        dispatch(() => actions.setSocketReady(chatId, true));
 
         if (event.wasClean) {
             console.log('Соединение закрыто чисто');
@@ -407,7 +441,7 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
 
         if (messages.length > 0) {
             const messagesTransferedArray = transformMessages(messages);
-            dispatch(() => setMessages(messagesTransferedArray));
+            dispatch(() => actions.setMessages(messagesTransferedArray));
         }
     });
 
@@ -416,9 +450,7 @@ export const createWebSocketConnection = (chatId) => async (dispatch) => {
     });
 };
 
-export const sendMessage = (data) => (dispatch) => {
-    console.log(data.socket);
-
+export const sendMessage = (data: any) => (dispatch: DispatchThunk) => {
     data.socket.send(
         JSON.stringify({
             content: data.message,
@@ -427,21 +459,26 @@ export const sendMessage = (data) => (dispatch) => {
     );
 };
 
-export const getMessages = (chatId) => async (dispatch) => {
-    const dialogs = window.store.state.chats.dialogs;
-    const dialog = dialogs.find((dialog) => dialog.chatId === chatId);
-
-    if (dialog.isSocketReady === true) {
-        dialog.socket.send(
-            JSON.stringify({
-                content: '0',
-                type: 'get old',
-            })
+export const getMessages =
+    (chatId: number) => async (dispatch: DispatchThunk) => {
+        const { dialogs }: { dialogs: Array<DialogType> } =
+            window.store.state.chats;
+        const dialog: DialogType | undefined = dialogs.find(
+            (d: DialogType) => d.chatId === chatId
         );
-    }
-    const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
-    const allUsersTransferedArray = transformUsers(
-        allUsersResponse.responseText
-    );
-    dispatch(() => setUsersDisplayName(allUsersTransferedArray, chatId));
-};
+
+        if (dialog && dialog.isSocketReady === true) {
+            dialog.socket.send(
+                JSON.stringify({
+                    content: '0',
+                    type: 'get old',
+                })
+            );
+        }
+        const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
+        const allUsersTransferedArray: Array<AllUsersTransferedType> =
+            transformUsers(allUsersResponse.responseText);
+        dispatch(() =>
+            actions.setUsersDisplayName(allUsersTransferedArray, chatId)
+        );
+    };

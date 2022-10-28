@@ -58,11 +58,6 @@ export default class Sidebar extends Block<Props> {
 					{{{PersonName name="${openedDialog.chatInfoObject.title}"}}}
 				</div>
 				<div class="chat-info__control">
-					{{{Link
-						href="/profile"
-						label="Редактировать"
-						className="chat-info__control-item chat-edit"
-					}}}
 					{{{Button
 						label="Удалить чат"
 						className="chat-info__control-item chat-delete button-text"

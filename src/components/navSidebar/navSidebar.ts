@@ -1,26 +1,42 @@
-import Block from "core/Block";
+import Block from 'core/Block';
 
 import './navSidebar.css';
 
 type Props = {
     user: any;
+    doLogout: () => void;
+    onLogout: () => void;
 };
 export default class NavSidebar extends Block<Props> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
+        this.setProps({
+            onLogout: this.onLogout.bind(this),
+        });
     }
 
     static componentName = 'NavSidebarContainer';
 
-	render(): string {
-		
-		const avatar = this.props.user.avatar || '';
+    onLogout() {
+        this.props.doLogout();
+    }
+
+    render(): string {
+        const avatar = this.props.user.avatar || '';
         return `<div class="nav-sidebar__inner nav-sidebar--bg-main">
 		<div class="nav-sidebar__profile">
 			<div class="profile-info">
 				<div class="profile-info__avatar button-image"
 					onclick="sidebarRight.toogle(event,'chat-page__right-sidebar')">
 					{{{Avatar image="${avatar}"}}}
+				</div>
+				<div class="profile-info__control">
+					{{{Link
+						href="/settings"
+						label="Редактировать"
+						className="profile-info__control-item"
+					}}}
+					{{{Button label="Выйти" onClick=onLogout}}}
 				</div>
 			</div>
 		</div>

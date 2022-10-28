@@ -1,18 +1,19 @@
-import { Console } from 'console';
 import Block from 'core/Block';
-import { logout } from 'services/auth';
-import getFormValues, { getAvatarFormValue } from 'utils/formTools';
+import getFormValues, { FormValues, getAvatarFormValue } from 'utils/formTools';
 import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 
 import './profile.css';
 
+type FormValuesFormData<FormValues> = FormValues & { avatar?: FormData };
+
 type Props = {
-	[x: string]: any;
     user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
+    getUserInfo: () => void;
+    saveUserInfo: (formValues: FormValuesFormData<FormValues>) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
     emailPattern: RegExp;
@@ -21,7 +22,7 @@ type Props = {
 };
 
 export default class ProfilePage extends Block<Props> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
@@ -38,11 +39,11 @@ export default class ProfilePage extends Block<Props> {
 
     protected patterns = Patterns;
 
-	componentDidMount(): void {
-		if (this.props.user !== null) { 
-			this.props.getUserInfo();
-		}
-	}
+    componentDidMount(): void {
+        if (this.props.user !== null) {
+            this.props.getUserInfo();
+        }
+    }
 
     validateOnFocus(inputRef: ValidateInput): void {
         let isValid: boolean = true;
@@ -90,7 +91,8 @@ export default class ProfilePage extends Block<Props> {
             this.refs.oldPasswordInputRef,
             this.refs.newPasswordInputRef,
         ];
-        const formValues = getFormValues(inputsRefs);
+        const formValues: FormValuesFormData<FormValues> | null =
+            getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
             const isValid = this._validateRefs(inputRef);
@@ -103,8 +105,6 @@ export default class ProfilePage extends Block<Props> {
         );
 
         this._displayError(matchPassword, this.refs.newPasswordInputRef);
-
-        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
 
         const avatar = getAvatarFormValue('.avatar-input__input');
         if (avatar) {
@@ -125,8 +125,7 @@ export default class ProfilePage extends Block<Props> {
         }
     }
 
-	render() {
-		
+    render() {
         return `
 		<main class="profile-page layout-container">
 		<div class="profile-page__inner">

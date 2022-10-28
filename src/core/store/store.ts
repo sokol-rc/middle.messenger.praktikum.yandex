@@ -1,10 +1,7 @@
 import isEqual from 'utils/helpers/isequal';
 import EventBus from '../EventBus';
 
-export enum StoreEvents {
-    Updated = 'updated',
-}
-
+export type StoreEvents = 'updated';
 // наследуем Store от EventBus, чтобы его методы были сразу доступны у экземпляра Store
 export class Store<State extends Record<string, any>> extends EventBus {
     private state: Indexed = {};

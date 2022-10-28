@@ -62,11 +62,19 @@
 
 .profile-info {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
 }
 
-.profile-info__avatar {
-    margin-right: 16px;
+.profile-info__control {
+    flex-direction: column;
+    padding: 5px;
+    display: flex;
+    font-size: 14px;
+}
+
+.dialog-window__chat-info {
+    display: flex;
 }
 
 .message-send {
@@ -85,6 +93,14 @@
 
     &__submit {
         padding: 5px 15px;
+    }
+
+    &__wrapper {
+        position: relative;
+        flex-direction: row;
+        justify-content: flex-start;
+        display: flex;
+		width: 100%;
     }
 }
 
@@ -112,6 +128,11 @@
         opacity: 1;
     }
 }
+.fake-input {
+	position: absolute;
+	opacity: 0;
+	z-index: -1;
+}
 
 .dialog-scrollable-content {
     padding-bottom: 20px;
@@ -125,12 +146,15 @@
 .scroll-y {
     position: relative;
     overflow-y: scroll;
-    scrollbar-color: transparent transparent;
-    scrollbar-width: thin;
-	scrollbar-gutter: stable;
 }
 
-.scroll-y:hover{
+.scroll-theme {
+    scrollbar-color: transparent transparent;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+}
+
+.scroll-theme:hover {
     scrollbar-color: rgb(0 0 0 / 20%) transparent;
     scrollbar-color: var(--scrollbar-color) transparent;
 }
@@ -138,7 +162,7 @@
 .bubbles-day-section {
     max-width: 100%;
     margin: 0 30px;
-	padding: 0 10px;
+    padding: 0 10px;
     display: flex;
     flex-direction: column;
 }
