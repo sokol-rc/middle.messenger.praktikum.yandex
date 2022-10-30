@@ -5,10 +5,9 @@ type Props = {
     label?: string;
     className?: string;
     target?: string;
-}
+};
 
 export default class Link extends Block<Props> {
-
     static componentName = 'Link';
 
     render(): string {

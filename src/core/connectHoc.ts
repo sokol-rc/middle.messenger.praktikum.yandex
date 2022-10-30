@@ -1,36 +1,38 @@
 import isEqual from 'utils/helpers/isequal';
 import Block from './Block';
 
-export default function connect(mapStateToProps: (state: Indexed) => Indexed, mapDispatchToProps = {}) {
-
+export default function connect(
+    mapStateToProps: (state: Indexed) => Indexed,
+    mapDispatchToProps: Indexed = {}
+) {
+    // eslint-disable-next-line func-names
     return function (Component: typeof Block) {
         return class extends Component<any> {
-            constructor(props) {
-				const { store } = window;
+            constructor(props: any) {
+                const { store } = window;
 
-                // сохраняем начальное состояние
-				const state = mapStateToProps(store.getState());
-				
-				const actionCreators = {}
+                const state = mapStateToProps(store.getState());
 
-				Object.keys(mapDispatchToProps).forEach((actionCreator) => { 
-					actionCreators[actionCreator] = (payload) => store.dispatch(mapDispatchToProps[actionCreator], payload)
-				})
+                const actionCreators: Indexed = {};
+
+                Object.keys(mapDispatchToProps).forEach((actionCreator) => {
+                    actionCreators[actionCreator] = (payload: unknown) =>
+                        store.dispatch(
+                            mapDispatchToProps[actionCreator],
+                            payload
+                        );
+                });
 
                 super({ ...props, ...state, ...actionCreators });
 
-                // подписываемся на событие
-                store.on('changed', (state) => {
-                    // при обновлении получаем новое состояние
+                store.on('changed', (prevState: Indexed) => {
                     const newState = mapStateToProps(store.getState());
 
-                    // если что-то из используемых данных поменялось, обновляем компонент
-                    if (!isEqual(state, newState)) {
+                    if (!isEqual(prevState, newState)) {
                         this.setProps({ ...newState });
                     }
 
-                    // не забываем сохранить новое состояние
-                    state = newState;
+                    prevState = newState;
                 });
             }
         };

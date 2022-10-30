@@ -32,10 +32,11 @@ export default class InputInner extends Block<Props> {
         return 'InputInner';
     }
 
-	render(): string {
-		const { className, id, type, placeholder, name, value, inputType } = this.props;
-		if (typeof inputType !== 'undefined' && inputType === 'textarea') { 
-			return `
+    render(): string {
+        const { className, id, type, placeholder, name, value, inputType } =
+            this.props;
+        if (typeof inputType !== 'undefined' && inputType === 'textarea') {
+            return `
 			<textarea
 			class="${className}"
 			id="${id}"
@@ -43,7 +44,7 @@ export default class InputInner extends Block<Props> {
 			placeholder="${placeholder}"
 			name="${name}"
 			value="${value}">`;
-		}
+        }
         return `
 			<input
 			class="${className}"

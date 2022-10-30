@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default class DivLikeInput extends Block<Props> {
-	constructor({ ...props }: Props) {
+    constructor({ ...props }: Props) {
         super({
             ...props,
             events: {

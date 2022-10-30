@@ -1,3 +1,5 @@
+import { HTTPTransportResponseType } from "./apiTypes";
+
 type METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 type HttpHeaders = {
@@ -15,7 +17,8 @@ export type Options = {
     timeout?: number;
     headers?: HttpHeaders;
     method?: METHOD;
-    data?: Document | BodyInit | XMLHttpRequestBodyInit | null | undefined;
+	data?: Record<string, any>| Document | BodyInit | XMLHttpRequestBodyInit | null | undefined;
+	credentials?: boolean;
 };
 
 function queryStringify(data: any) {
@@ -30,23 +33,29 @@ function queryStringify(data: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class HTTPTransport {
-    get = (url: string, options: Options = {} as Options) => {
+    get<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
         }
-        return this.request(url, { ...options, method: 'GET' });
+		return this.request(url, { ...options, method: 'GET' })
     };
 
-    put = (url: string, options: Options) =>
-        this.request(url, { ...options, method: 'PUT' });
+	put<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
+		return this.request(url, { ...options, method: 'PUT' });
+	}
+        
 
-    post = (url: string, options: Options = {} as Options) =>
-        this.request(url, { ...options, method: 'POST' });
+	post<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
+		return this.request(url, { ...options, method: 'POST' });
+	}
+        
 
-    delete = (url: string, options: Options) =>
-        this.request(url, { ...options, method: 'DELETE' });
+	delete<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
+		return this.request(url, { ...options, method: 'DELETE' });
+	}
+        
 
-    request = (url: string, options: Options) => {
+    request = (url: string, options: Options): Promise<any> => {
         const { timeout = 5000, headers = {}, data, method } = options;
 
         return new Promise((resolve, reject) => {
@@ -62,8 +71,16 @@ class HTTPTransport {
                 xhr.setRequestHeader(key, headers[key]);
             });
 
-            xhr.onload = () => {
-                resolve(xhr);
+			xhr.onload = () => {
+				let response: Record<string, any> | string;
+				const isJson = xhr.getResponseHeader('Content-Type')?.includes('application/json');
+				if (isJson) {
+					response = { status: xhr.status, data: JSON.parse(xhr.responseText) }
+				} else { 
+					response = { status: xhr.status, data: xhr.responseText }
+				}
+			  
+				resolve(response);
             };
             xhr.onabort = () => {
                 reject();
@@ -79,7 +96,7 @@ class HTTPTransport {
             if (method === 'GET' || !data) {
                 xhr.send();
             } else if (method === 'PUT' && data) {
-                xhr.send(data);
+                xhr.send(data as any);
 			} else if (typeof data !== 'string') {
 					xhr.send(JSON.stringify(data));
 				} else { 

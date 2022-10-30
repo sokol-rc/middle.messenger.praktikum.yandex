@@ -1,14 +1,15 @@
 import Block from 'core/Block';
-import ChatApi from 'utils/api/chatApi';
-import { Options } from 'utils/api/httptransport';
+import { ChatListItemTransferedType, UserTransferedType } from 'reducers/transferedTypes';
 import isEmpty from 'utils/helpers/isEmpty';
+import { isHasLastMessage } from 'utils/typeGuards/typeGuards';
 
 import './chatList.css';
 
 type Props = {
     some: any;
-    chatsList: any;
-    getChatsList: (options: Options) => void;
+    chatsList: Array<ChatListItemTransferedType<UserTransferedType>>;
+    openedDialogId: number;
+    getChatsList: () => void;
     onClick: (event: MouseEvent) => void;
     openDialog: (chatId: number) => void;
     toogleModal: () => void;
@@ -24,10 +25,10 @@ export default class ChatList extends Block<Props> {
         });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         if (this.props.chatsList === null) {
-            this.props.getChatsList({ limit: 10 });
-		}		
+            this.props.getChatsList();
+        }
     }
 
     // хак, чтобы регистрировать HOC
@@ -56,9 +57,9 @@ export default class ChatList extends Block<Props> {
         }
 
         const chatsListArray = chatsList.map((chatList) => {
-			const activeStatus = openedDialogId === chatList.id ? 'active' : '';
+            const activeStatus = openedDialogId === chatList.id ? 'active' : '';
 			const avatar = chatList.avatar || '';
-            if (chatList.lastMessage === null) {
+			if (!isHasLastMessage(chatList.lastMessage)) { 
 				return `<div class="chat-list__item hr-bottom">{{{ChatItem 
 					id="${chatList.id}"
 					avatar="${avatar}"
@@ -66,7 +67,7 @@ export default class ChatList extends Block<Props> {
 					isActive="${activeStatus}"
 					onClick=onClick
 				}}}</div>`;
-            }
+			}
             const chatItem = `<div class="chat-list__item hr-bottom">{{{ChatItem 
 				id="${chatList.id}"
 				avatar="${chatList.avatar}"

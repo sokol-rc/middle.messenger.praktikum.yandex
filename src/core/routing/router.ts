@@ -1,9 +1,21 @@
+import { Component } from 'core/Block';
 import { checkAuth } from 'services/auth';
 import Route from './route';
 
 export default class Router {
-    constructor(rootQuery) {
+    private static __instance: Router;
+
+    private routes!: Array<{ route: Route; flags: { [x: string]: boolean } }>;
+
+    private history!: History;
+
+    private _currentRoute!: Route | null;
+
+    private _rootQuery!: string;
+
+    constructor(rootQuery: string) {
         if (Router.__instance) {
+            // eslint-disable-next-line no-constructor-return
             return Router.__instance;
         }
 
@@ -15,7 +27,12 @@ export default class Router {
         Router.__instance = this;
     }
 
-    use(pathname, block, flags, props = {}) {
+    use(
+        pathname: string,
+        block: Component,
+        flags: { [x: string]: boolean },
+        props = {}
+    ) {
         const route = new Route(pathname, block, {
             ...props,
             rootQuery: this._rootQuery,
@@ -26,26 +43,27 @@ export default class Router {
     }
 
     start() {
-        window.onpopstate = (event) => {
-            this._onRoute(event.currentTarget.location.pathname);
+        window.onpopstate = () => {
+            this._onRoute(window.location.pathname);
         };
 
         this._onRoute(window.location.pathname);
     }
 
-    _onRoute(pathname) {
+    async _onRoute(pathname: string) {
         const routeWithFlags = this.getRoute(pathname);
 
         if (typeof routeWithFlags === 'undefined') {
-            // this.history.pushState({}, '', pathname);
             const errorPageRoute = this.getRoute('/404');
-            // this.go('/404');
-            errorPageRoute.route.render();
+
+            if (typeof errorPageRoute !== 'undefined') {
+                errorPageRoute.route.render();
+            }
             return;
         }
         const { route, flags } = routeWithFlags;
 
-        if (flags.shouldAuthorized && checkAuth()) {
+        if (flags.shouldAuthorized && await checkAuth()) {
             this.go('/');
             // const loginPageRoute = this.getRoute('/');
 
@@ -61,7 +79,7 @@ export default class Router {
         route.render();
     }
 
-    go(pathname) {
+    go(pathname: string) {
         this.history.pushState({}, '', pathname);
         this._onRoute(pathname);
     }
@@ -74,7 +92,7 @@ export default class Router {
         this.history.forward();
     }
 
-    getRoute(pathname) {
+    getRoute(pathname: string) {
         return this.routes.find((route) => route.route.match(pathname));
     }
 }

@@ -16,14 +16,4 @@ export default class Loader extends Block<Props> {
 		
 		`;
     }
-	// protected render(): string {
-    //     if (!this.props.isLoading()) {
-    //         return '<div></div>';
-    //     }
-    //     return `<div class="loader-wrapper">
-	// 	<div class="loader">Loading...</div>
-	// 	</div>
-		
-	// 	`;
-    // }
 }

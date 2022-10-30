@@ -1,4 +1,4 @@
-const searchInObject = (value, property, objectsArray) => { 
+const searchInObject = (value: string | number, property: string, objectsArray: Array<Record<string, any>>) => { 
 	if (!Array.isArray(objectsArray)) { 
 		throw Error('Not array');
 	}

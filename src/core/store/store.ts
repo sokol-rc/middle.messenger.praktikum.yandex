@@ -1,65 +1,68 @@
+import { RootStateType } from 'index';
+import { ActionsTypes, Dispatch, DispatchThunk, RootReducerType } from 'reducers/authReducer';
 import isEqual from 'utils/helpers/isequal';
 import EventBus from '../EventBus';
 
 export type StoreEvents = 'updated';
-// наследуем Store от EventBus, чтобы его методы были сразу доступны у экземпляра Store
-export class Store<State extends Record<string, any>> extends EventBus {
-    private state: Indexed = {};
+export interface Store {
+	[x: string]: unknown;
+};
 
-    constructor(defaultState: State, rootReducer) {
+export class Store extends EventBus {
+	private state: any = {};
+
+	private rootReducer: RootReducerType;
+
+	private nextState: Partial<RootStateType>;
+
+	private isDispatching: boolean;
+
+    constructor(defaultState: RootStateType, rootReducer: RootReducerType) {
         super();
         this.state = defaultState;
-		this.rootReducer = rootReducer;
-		this.isDispatching = false;
-		this.nextState = {};
-		this.set(defaultState);
-		
+        this.rootReducer = rootReducer;
+        this.isDispatching = false;
+        this.nextState = {};
+        this.set(defaultState);
     }
 
     public getState() {
         return this.state;
     }
 
-    public set(nextState: Partial<State>) {
-		const prevState = { ...this.state };
+    public set(nextState: Partial<RootStateType>) {
+        const prevState = { ...this.state };
 
-		if (!isEqual(prevState, nextState)) { 
-			this.state = { ...this.state, ...nextState };
+        if (!isEqual(prevState, nextState)) {
+            this.state = { ...this.state, ...nextState };
 
-			this.emit('changed', prevState, nextState);
-		}
-	}
-	
+            this.emit('changed', prevState, nextState);
+        }
+    }
 
-	dispatch(actionCreatorOrThunk: Action<State>, payload: any) {
+    dispatch(actionCreatorOrThunk: Dispatch<ActionsTypes> | DispatchThunk, payload: any) {
+        const action = actionCreatorOrThunk(payload);
 
-		const action = actionCreatorOrThunk(payload);
-		
-
-		if (this.isDispatching) {
+        if (this.isDispatching) {
             throw new Error('1 action за раз');
-		}
+        }
 
 		if (typeof action === 'function') {
-			action(this.dispatch.bind(this));
-		  } else {
-			try {
+			// @ts-expect-error
+            action(this.dispatch.bind(this));
+        } else {
+            try {
 				this.isDispatching = true;
-				this.nextState = this.rootReducer(this.state, action);
-			}
-			finally {
-				this.isDispatching = false;
-				this.set({
-					...this.state,
-					...this.nextState,
-				});
-			}
-		  }
-
-		
-
-        
-
+				// @ts-expect-error
+                this.nextState = this.rootReducer(this.state, action);
+            } finally {
+                this.isDispatching = false;
+                this.set({
+                    ...this.state,
+                    ...this.nextState,
+                });
+            }
+        }
 
         // if (typeof nextStateOrAction === 'function') {
         //     nextStateOrAction(this.dispatch.bind(this), this.state, payload);

@@ -1,11 +1,12 @@
 import Block from 'core/Block';
-import getFormValues, { FormValues, getAvatarFormValue } from 'utils/formTools';
+import { UserProfileType } from 'reducers/thunkTypes';
+import getFormValues, { getAvatarFormValue } from 'utils/formTools';
 import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 
 import './profile.css';
 
-type FormValuesFormData<FormValues> = FormValues & { avatar?: FormData };
+export type FormValuesFormData<FormValues> = FormValues & { avatar?: FormData };
 
 type Props = {
     user: Record<string, string>;
@@ -13,7 +14,7 @@ type Props = {
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
     getUserInfo: () => void;
-    saveUserInfo: (formValues: FormValuesFormData<FormValues>) => void;
+    saveUserInfo: (formValues: UserProfileType, avatar: FormData | null) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
     emailPattern: RegExp;
@@ -91,8 +92,8 @@ export default class ProfilePage extends Block<Props> {
             this.refs.oldPasswordInputRef,
             this.refs.newPasswordInputRef,
         ];
-        const formValues: FormValuesFormData<FormValues> | null =
-            getFormValues(inputsRefs);
+        const formValues =
+            <UserProfileType>getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
             const isValid = this._validateRefs(inputRef);
@@ -107,10 +108,8 @@ export default class ProfilePage extends Block<Props> {
         this._displayError(matchPassword, this.refs.newPasswordInputRef);
 
         const avatar = getAvatarFormValue('.avatar-input__input');
-        if (avatar) {
-            formValues.avatar = avatar;
-        }
-        this.props.saveUserInfo(formValues);
+
+        this.props.saveUserInfo(formValues, avatar);
     }
 
     private _validateRefs(inputRef: ValidateInput) {

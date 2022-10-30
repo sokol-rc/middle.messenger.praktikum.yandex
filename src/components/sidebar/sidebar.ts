@@ -3,52 +3,51 @@ import './sidebar.css';
 
 interface Props {
     isVisible: boolean;
+    isVisibleModal: boolean;
+    chatsListLoaded: boolean;
     openedDialogId: number;
-	toogleModal: () => void;
-	onConfirm: () => void;
-	onDecline: () => void;
-	deleteChat: (openedDialogId: number) => void;
-	openedDialog: any;
+    toogleModal: () => void;
+    onConfirm: () => void;
+    onDecline: () => void;
+    deleteChat: (openedDialogId: number) => void;
+    openedDialog: any;
 }
 export default class Sidebar extends Block<Props> {
     constructor(props: Props) {
-		super({ ...props, isVisible: true });
-		this.setProps({
-			toogleModal: this.toogleModal.bind(this),
+        super({ ...props, isVisible: true });
+        this.setProps({
+            toogleModal: this.toogleModal.bind(this),
             onConfirm: this.onConfirm.bind(this),
-			onDecline: this.onDecline.bind(this),
-			isVisibleModal: false
-		})
+            onDecline: this.onDecline.bind(this),
+            isVisibleModal: false,
+        });
     }
 
     static componentName = 'SideBarContainer';
 
-	toogleModal() {
-		this.setProps({isVisibleModal: true})
+    toogleModal() {
+        this.setProps({ isVisibleModal: true });
     }
 
     onConfirm() {
-		console.log('delete chat');
-		this.props.deleteChat(this.props.openedDialogId);
-		this.setProps({isVisibleModal: false})
+        console.log('delete chat');
+        this.props.deleteChat(this.props.openedDialogId);
+        this.setProps({ isVisibleModal: false });
     }
 
     onDecline() {
-		
-		this.setProps({isVisibleModal: false})
+        this.setProps({ isVisibleModal: false });
     }
-	
 
-	protected render(): string {
-		const { chatsListLoaded, openedDialog } = this.props;
-		if (!chatsListLoaded) { 
-			return '<div></div>';
-		}
+    protected render(): string {
+        const { chatsListLoaded, openedDialog } = this.props;
+        if (!chatsListLoaded) {
+            return '<div></div>';
+        }
         let classVisible: string = '';
         if (this.props.isVisible) {
             classVisible = 'right-sidebar--opened';
-		}
-		
+        }
 
         return `<aside class="right-sidebar hr-left ${classVisible}">
 		<div class="right-sidebar__inner">

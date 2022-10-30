@@ -21,6 +21,7 @@ type Props = {
     loginFormError: string;
     isLoading: () => boolean;
     onLogin: (loginData: LoginData) => void;
+    doLogin: (loginData: LoginData) => void;
     onLogout: () => void;
 };
 
@@ -34,7 +35,6 @@ export default class LoginPage extends Block<Props> {
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
             loginFormError: props.loginFormError,
-            enableLoader: this.enableLoader.bind(this),
             onLogin: this.onLogin.bind(this),
         });
     }
@@ -57,14 +57,6 @@ export default class LoginPage extends Block<Props> {
         this.props.doLogin(loginData);
     }
 
-    enableLoader() {
-        this.props.setloginFormError('asdasd');
-    }
-
-    disableLoader() {
-        this.props.disableLoader();
-    }
-
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
         const inputsRefs: ValidateInput[] = [
@@ -73,7 +65,7 @@ export default class LoginPage extends Block<Props> {
         ];
         let isFormValid: boolean = true;
 
-        const formValues = getFormValues(inputsRefs);
+        const formValues: LoginData = getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
             const isValid = this._validateRefs(inputRef);
@@ -101,7 +93,6 @@ export default class LoginPage extends Block<Props> {
     }
 
     render() {
-
         return `
 <main class="auth-content layout-container">
 	<div class="auth-content__form form-wrapper auth-content__form--main-bg">

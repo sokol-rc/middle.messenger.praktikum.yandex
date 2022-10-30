@@ -1,3 +1,3 @@
-import PersonName from "./person-name";
+import PersonName from './person-name';
 
 export default PersonName;

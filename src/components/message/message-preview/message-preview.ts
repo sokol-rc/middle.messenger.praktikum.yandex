@@ -1,7 +1,10 @@
 import Block from 'core/Block';
 import './message-preview.css';
 
-export default class MessagePreview extends Block<{}> {
+type Props = {
+    message: string;
+};
+export default class MessagePreview extends Block<Props> {
     static componentName = 'MessagePreview';
 
     protected render(): string {

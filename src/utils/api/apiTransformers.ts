@@ -1,11 +1,13 @@
+import {
+	ChatListItemTransferedType,
+    MessageTransferedType,
+    MessageType,
+	UserTransferedType,
+} from 'reducers/transferedTypes';
 import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
+import { ChatListItemApiType, UserType } from './apiTypes';
 
-export const transformUser = (data: UserDTO): User => {
-    if (typeof data === 'string') {
-        data = JSON.parse(data);
-    }
-
-    return {
+export const transformUser = (data: UserType): UserTransferedType => ({
         id: data.id,
         login: data.login,
         firstName: data.first_name,
@@ -14,36 +16,31 @@ export const transformUser = (data: UserDTO): User => {
         avatar: data.avatar,
         phone: data.phone,
         email: data.email,
-    };
-};
+    });
 
-export const transformUsers = (dataArray) => {
-	if (typeof dataArray === 'string') {
-        dataArray = JSON.parse(dataArray);
-    }  
+export const transformUsers = (dataArray: Array<UserType>) => {
+
     const transfered = dataArray.map((user) => transformUser(user));
     return transfered;
 };
-export const transformChatsList = (chatsList: any): any => {
-    chatsList = JSON.parse(chatsList);
+
+export const transformChatsList = (chatsList: Array<ChatListItemApiType>): Array<ChatListItemTransferedType<UserTransferedType>> | null => {
     if (chatsList.length === 0) {
         return null;
     }
-	const transferedChatList = chatsList.map((chatList) => {
+    const transferedChatList = chatsList.map((chatList) => {
         const rootProperties = {
             id: chatList.id,
             title: chatList.title,
             avatar: chatList.avatar,
             unreadCount: chatList.unread_count,
-            lastMessage: null,
+            lastMessage: null as unknown,
         };
 
         if (chatList.last_message !== null) {
             const date = getMessageTimeFromDate(chatList.last_message.time);
 
-			const transferedLastMessage = {
-				
-				
+            const transferedLastMessage = {
                 user: {
                     firstName: chatList.last_message.user.first_name,
                     secondName: chatList.last_message.user.second_name,
@@ -63,7 +60,9 @@ export const transformChatsList = (chatsList: any): any => {
     return transferedChatList;
 };
 
-export const transformMessages = (messages) => {
+export const transformMessages = (
+    messages: Array<MessageType>
+): Array<MessageTransferedType> => {
     const messagesTransfered = messages.map((message) => ({
         ...message,
         chatId: message.chat_id,

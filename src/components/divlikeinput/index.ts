@@ -1,3 +1,3 @@
-import DivLikeInput from "./divLikeInput";
+import DivLikeInput from './divLikeInput';
 
 export default DivLikeInput;

@@ -1,9 +1,12 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-restricted-syntax */
 type Indexed<T = any> = {
     [key in string]: T;
 };
 
 function merge(lhs: Indexed, rhs: Indexed): Indexed {
-    for (let p in rhs) {
+    for (const p in rhs) {
         if (!rhs.hasOwnProperty(p)) {
             continue;
         }

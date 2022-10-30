@@ -1,22 +1,21 @@
 import Block from 'core/Block';
-import getFormValues from 'utils/formTools';
+import { DialogType } from 'core/store/initial-store';
+import { SendMessageType } from 'reducers/thunkTypes';
 import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
-import isEmpty from 'utils/helpers/isEmpty';
 import { getMessageDirection } from 'utils/helpers/messageTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
-const ENTER_KEY_CODE = 'Enter';
-
 type Props = {
     handleClick?: () => void;
     toogleSidebar: () => void;
-    createWebSocketConnection: () => void;
+    createWebSocketConnection: (openedDialogId: number) => void;
     _showError: () => void;
     _clearError: () => void;
-    sendMessage: (message: any) => void;
+    sendMessage: (message: SendMessageType) => void;
+    getMessages: (openedDialogId: number) => void;
     sendButtonClick?: (event: MouseEvent) => void;
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
@@ -24,6 +23,11 @@ type Props = {
     onKeydown: (event: KeyboardEvent) => void;
     messagePattern: RegExp;
     isLoading: boolean;
+    chatListLoaded: boolean;
+    messagesLoaded: boolean;
+    errorMessage: string;
+    openedDialogId: number;
+    openedDialog: DialogType | null;
     user: any;
 };
 
@@ -58,7 +62,7 @@ export default class Dialog extends Block<Props> {
             openedDialog,
             createWebSocketConnection,
         } = this.props;
-        if (!chatListLoaded) {
+        if (!chatListLoaded || openedDialog === null) {
             return;
         }
         if (openedDialog.socket === null) {
@@ -70,9 +74,11 @@ export default class Dialog extends Block<Props> {
         const dialogScrollableDiv = document.querySelector(
             '.dialog-scrollable-content'
         );
-        dialogScrollableDiv?.classList.add('scroll-y');
-        dialogScrollableDiv?.classList.add('scroll-theme');
-        dialogScrollableDiv.scrollTop = dialogScrollableDiv.scrollHeight;
+        if (dialogScrollableDiv !== null) {
+            dialogScrollableDiv.classList.add('scroll-y');
+            dialogScrollableDiv.classList.add('scroll-theme');
+            dialogScrollableDiv.scrollTop = dialogScrollableDiv.scrollHeight;
+        }
 
         if (this.refs.messageInputRef) {
             this.refs.messageInputRef.element?.focus();
@@ -83,7 +89,7 @@ export default class Dialog extends Block<Props> {
         const messageInputElem = this.refs.messageInputRef.element;
         const messageInputFakeElem = this.refs.messageInputFakeRef.element;
         if (messageInputElem === null || messageInputFakeElem === null) {
-            return undefined;
+            return;
         }
         const currentValue: string = messageInputElem.innerText;
 
@@ -111,14 +117,14 @@ export default class Dialog extends Block<Props> {
     }
 
     onKeydown(event: KeyboardEvent): void {
-        if (event.code === ENTER_KEY_CODE && event.shiftKey === false) {
+        if (event.code === 'Enter' && event.shiftKey === false) {
             event.stopPropagation();
             event.preventDefault();
             this._submit();
         }
     }
 
-    _checkValidate(inputObject) {
+    _checkValidate(inputObject: ValidateInput) {
         const isValid: boolean = inputValidate(inputObject);
 
         if (!isValid) {
@@ -143,29 +149,31 @@ export default class Dialog extends Block<Props> {
     }
 
     _submit(): void {
-        const currentValue: string =
-            this.refs.messageInputRef.element.innerText;
+        const currentValue: string | undefined =
+            this?.refs?.messageInputRef?.element?.innerText;
 
         const isValid = this._checkValidate({
             value: currentValue,
             pattern: this.patterns.messagePattern,
         });
-        if (isValid) {
+        if (isValid && typeof currentValue !== 'undefined') {
             this._sendMessage(currentValue);
         }
     }
 
     _sendMessage(message: string) {
-        this.props.sendMessage({
-            message,
-            socket: this.props.openedDialog.socket,
-        });
+        if (this.props.openedDialog !== null) {
+            this.props.sendMessage({
+                message,
+                socket: this.props.openedDialog.socket as WebSocket,
+            });
+        }
     }
 
     render(): string {
         const { user, openedDialog, chatListLoaded, messagesLoaded } =
             this.props;
-        if (!chatListLoaded && !messagesLoaded) {
+        if ((!chatListLoaded && !messagesLoaded) || openedDialog === null) {
             return `{{{Loader isLoading=isLoading}}}`;
         }
 
@@ -175,11 +183,19 @@ export default class Dialog extends Block<Props> {
             const messagesArray = day.messages.map((message) => {
                 const time = getMessageTimeFromDate(message.time);
                 const direction = getMessageDirection(message.userId, user.id);
+
                 let userName = '';
-                if (typeof openedDialog.usersDisplayName !== 'undefined') {
-                    userName = openedDialog.usersDisplayName.find(
+
+                if (
+                    typeof openedDialog.usersDisplayName !== 'undefined' &&
+                    openedDialog.usersDisplayName !== null
+                ) {
+                    const userNameFound = openedDialog?.usersDisplayName?.find(
                         (u) => u.userId === message.userId
-                    ).userDisplayName;
+                    )?.userDisplayName;
+                    if (userNameFound && typeof userName !== 'undefined') {
+                        userName = userNameFound;
+                    }
                 }
 
                 return `{{{Message

@@ -4,7 +4,7 @@ import messageReadedSvg from '../../../assets/message-readed.svg';
 import messageTailOutSvg from '../../../assets/message-tail-out.svg';
 import messageTailInSvg from '../../../assets/message-tail-in.svg';
 
-import './message.css'
+import './message.css';
 
 interface InputProps {
     time: string;
@@ -12,20 +12,21 @@ interface InputProps {
     label: string;
     className: string;
     target: string;
+    userDisplayName: string;
     messageReceived: boolean;
     messageReaded: boolean;
 }
 
 type Props = InputProps & {
-	messageReceived: boolean;
-	messageReaded: boolean;
-}
+    messageReceived: boolean;
+    messageReaded: boolean;
+};
 
 export default class Message extends Block<Props> {
     constructor(props: InputProps) {
-		super({
-			...props
-		});
+        super({
+            ...props,
+        });
     }
 
     static componentName = 'Message';
@@ -34,14 +35,14 @@ export default class Message extends Block<Props> {
         let isIncoming: boolean = false;
         let messageStatus: string = '';
         let directionClass: string = 'bubble-out';
-		let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
-		let incomingUserName: string = '';
+        let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
+        let incomingUserName: string = '';
 
         if (this.props.direction === 'incoming') {
             directionClass = 'bubble-in';
             isIncoming = true;
-			messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
-			incomingUserName = `<div class="bubble__title">${this.props.userDisplayName}</div>`
+            messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
+            incomingUserName = `<div class="bubble__title">${this.props.userDisplayName}</div>`;
         }
 
         if (this.props.messageReceived && !isIncoming) {

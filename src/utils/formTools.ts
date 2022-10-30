@@ -2,14 +2,15 @@ export type FormValues = {
     [key: string]: string;
 };
 
-const getFormValues = (inputsRefs: Array<ValidateInput>): FormValues => {
-    const formValues: FormValues = {};
+const getFormValues = <T = FormValues>(inputsRefs: Array<ValidateInput>): T => {
+    const formValues = {} as T;
 
     inputsRefs.forEach((inputRef) => {
         const inputProps: ValidateInput =
             inputRef.refs.inputInnerRef.getProps();
 
-        if (inputProps.value !== '' && inputProps.type !== 'checkbox') {
+		if (inputProps.value !== '' && inputProps.type !== 'checkbox') {
+			// @ts-expect-error
             formValues[inputProps.name] = inputProps.value;
         }
     });

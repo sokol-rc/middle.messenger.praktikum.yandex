@@ -1,38 +1,26 @@
-/*
-isEmpty(null); // => true
-isEmpty(true); // => true
-isEmpty(1); // => true
-isEmpty([1, 2, 3]); // => false
-isEmpty({ 'a': 1 }); // => false
-isEmpty('123'); // => false
-isEmpty(123); // => true
-isEmpty(''); // => true
-isEmpty(0); // => true
-*/
-
-function isNumberNull(value) {
+function isNumberNull(value: any) {
     return value === 0;
 }
 
-function isNumber(value) {
+function isNumber(value: any) {
     return typeof value === 'number';
 }
 
-function isNull(value) {
+function isNull(value: any) {
     return value === null;
 }
 
-function isBoolean(value) {
+function isBoolean(value: any) {
     return typeof value === 'boolean';
 }
 
-function isEmptyString(value) {
+function isEmptyString(value: any) {
     return value === '';
 }
-function isUndefined(value) {
+function isUndefined(value: any) {
     return typeof value === 'undefined';
 }
-function isEmptyArray(value) {
+function isEmptyArray(value: any) {
     return (
         Object.prototype.toString.call(value) === '[object Array]' &&
         Array.isArray(value) &&
@@ -40,23 +28,26 @@ function isEmptyArray(value) {
     );
 }
 
-function isEmptyObject(value) {
+function isEmptyObject(value: any) {
     return (
         Object.prototype.toString.call(value) === '[object Object]' &&
         !Object.keys(value).length
     );
 }
-function isMap(value) {
-    if (Object.prototype.toString.call(value) === '[object Map]')
+function isMap(value: any) {
+    if (Object.prototype.toString.call(value) === '[object Map]') {
         return !value.size;
+	}
+	return false;
 }
-function isSet(value) {
+function isSet(value: any) {
     if (Object.prototype.toString.call(value) === '[object Set]') {
         return !value.size;
-    }
+	}
+	return false;
 }
 
-export default function isEmpty(value) {
+export default function isEmpty(value: any) {
     if (
         isNumberNull(value) ||
         isNumber(value) ||

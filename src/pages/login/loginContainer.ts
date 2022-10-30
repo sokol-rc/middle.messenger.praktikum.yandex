@@ -1,14 +1,17 @@
+import { Component } from 'core/Block';
 import connect from 'core/connectHoc';
-import { disableLoader, doLogin, doLogout, enableLoader, setloginFormError } from '../../reducers/authReducer';
+import { doLogin, doLogout } from '../../reducers/authReducer';
 import LoginPage from './login';
 
 const mstp = (state: Indexed<any>): Indexed => ({
     isLoading: state.isLoading,
-    store: window.store,
-    user: window.store.getState().user,
-    loginFormError: window.store.getState().loginFormError,
+    user: state.user,
+    loginFormError: state.loginFormError,
 });
 
-const LoginPageContainer = connect(mstp, { doLogin, doLogout, enableLoader, disableLoader, setloginFormError });
+const LoginPageContainer = connect(mstp, {
+    doLogin,
+    doLogout,
+});
 
-export default LoginPageContainer(LoginPage);
+export default LoginPageContainer(LoginPage as Component);

@@ -1,4 +1,4 @@
-import { Message, MessageType } from "reducers/transferedTypes";
+import { ChatListItemTransferedType, MessageTransferedType, UserTransferedType } from 'reducers/transferedTypes';
 
 type InitialStore = {
     isLoading: boolean;
@@ -12,7 +12,8 @@ type InitialStore = {
 export type ChatsStoreType = {
     chatsList: any;
     chatsListLoaded: boolean;
-    openedDialogId: number;
+	openedDialogId: number;
+	dialogs: Array<DialogType>
 };
 
 export type UserDisplayNameType = {
@@ -21,12 +22,14 @@ export type UserDisplayNameType = {
 };
 
 export type DayType = {
-	id: null;
-	messages: Array<MessageType>;
-}
+    id: null | number;
+    dayText: string;
+    messages: Array<MessageTransferedType>;
+};
 export type DialogType = {
     chatId: number | null;
-    socket: any;
+	socket: any;
+	chatInfoObject: ChatListItemTransferedType<UserTransferedType>
     isSocketReady: boolean;
     messagesLoaded: boolean;
     usersDisplayName: Array<UserDisplayNameType>;
@@ -39,7 +42,7 @@ const initialStore: InitialStore = {
     chats: {
         chatsList: null,
         chatsListLoaded: false,
-        openedDialogId: 430,
+		openedDialogId: 430,
         dialogs: [
             {
                 chatId: null,

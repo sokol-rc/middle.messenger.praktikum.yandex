@@ -1,8 +1,7 @@
 import { DialogType } from 'core/store/initial-store';
-import { RootState } from 'index';
+import { RootStateType } from 'index';
 import { RegistrationData } from 'pages/registration/registration';
 import { deleteAuthCookie, setAuthCookie } from 'services/cookie';
-import apiHasErrors from 'utils/api/api-has-errors';
 import {
     transformChatsList,
     transformMessages,
@@ -11,7 +10,6 @@ import {
 } from 'utils/api/apiTransformers';
 import AuthApi from 'utils/api/auth-api';
 import ChatApi from 'utils/api/chatApi';
-import { Options } from 'utils/api/httptransport';
 import UserApi from 'utils/api/userApi';
 import cloneDeep from 'utils/helpers/cloneDeep';
 import {
@@ -21,55 +19,55 @@ import {
 } from 'utils/helpers/dateTime';
 import searchInObject from 'utils/helpers/isContain';
 import { isMessageInDialog } from 'utils/helpers/messageTools';
-import { ActionsTypes } from './actionTypes';
-import { DispatchThunk } from './thunkTypes';
-import { AllUsersTransferedType } from './transferedTypes';
+import { apiHasErrors } from 'utils/typeGuards/typeGuards';
+import {
+    ChangePasswordType,
+    LoginDataType,
+    SendMessageType,
+    UserProfileType,
+} from './thunkTypes';
+import {
+    ChatListItemTransferedType,
+    MessageTransferedType,
+    MessageType,
+    UserTransferedType,
+} from './transferedTypes';
 
+type PropertiesType<T> = T extends { [key: string]: infer U } ? U : never;
 
+export type InferActionsType<T extends { [key: string]: (...args: any[]) => any }> = ReturnType<PropertiesType<T>>;
+export type ActionsTypes = InferActionsType<typeof actions>
 
-const ENABLE_LOADER = 'ENABLE_LOADER';
-const DISABLE_LOADER = 'DISABLE_LOADER';
-const SET_LOGIN_FORM_ERROR = 'SET_LOGIN_FORM_ERROR';
-const SET_REGISTRATION_FORM_ERROR = 'SET_REGISTRATION_FORM_ERROR';
-const SET_USER = 'SET_USER';
-const SET_CHATS_LIST = 'SET_CHATS_LIST';
-const CREATE_CHAT = 'CREATE_CHAT';
-const DELETE_CHAT = 'DELETE_CHAT';
-const SET_SOCKET = 'SET_SOCKET';
-const SET_SOCKET_READY = 'SET_SOCKET_READY';
-const SET_MESSAGES = 'SET_MESSAGES';
-const SET_USERS_DISPLAY_NAME = 'SET_USERS_DISPLAY_NAME';
-const SET_OPENED_DIALOG = 'SET_OPENED_DIALOG';
-
-export const authReducer = (
-    state: RootState,
+export type RootReducerType = (
+    state: RootStateType,
     action: ActionsTypes
-): RootState => {
+) => RootStateType;
+
+export const authReducer: RootReducerType = (state, action) => {
     const stateCopy = cloneDeep(state);
 
     switch (action.type) {
-        case ENABLE_LOADER:
+        case 'ENABLE_LOADER':
             stateCopy.isLoading = true;
             return stateCopy;
-        case DISABLE_LOADER:
+        case 'DISABLE_LOADER':
             stateCopy.isLoading = false;
             return stateCopy;
-        case SET_LOGIN_FORM_ERROR:
+        case 'SET_LOGIN_FORM_ERROR':
             stateCopy.loginFormError = action.loginFormError;
             return stateCopy;
-        case SET_REGISTRATION_FORM_ERROR:
+        case 'SET_REGISTRATION_FORM_ERROR':
             stateCopy.registrationFormError = action.registrationFormError;
             return stateCopy;
-        case SET_USER:
+        case 'SET_USER':
             stateCopy.user = action.userTransferedObject;
             return stateCopy;
-        case CREATE_CHAT:
+        case 'CREATE_CHAT':
             return stateCopy;
-        case DELETE_CHAT:
+        case 'DELETE_CHAT':
             return stateCopy;
-        case SET_CHATS_LIST:
-            stateCopy.chats.chatsList = action.chatsList;
-            stateCopy.chats.chatsList.forEach((list) => {
+        case 'SET_CHATS_LIST':
+            action.chatsList.forEach((list) => {
                 if (
                     !searchInObject(list.id, 'chatId', stateCopy.chats.dialogs)
                 ) {
@@ -84,68 +82,88 @@ export const authReducer = (
             });
             stateCopy.chats.chatsListLoaded = true;
             return stateCopy;
-        case SET_SOCKET:
-            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
-                if (dialog.chatId === action.chatId && dialog.socket === null) {
-                    console.log('socket to state');
+        case 'SET_SOCKET':
+            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map(
+                (dialog: DialogType) => {
+                    if (
+                        dialog.chatId === action.chatId &&
+                        dialog.socket === null
+                    ) {
+                        console.log('socket to state');
 
-                    dialog.socket = action.socket;
+                        dialog.socket = action.socket;
+                    }
+                    return dialog;
                 }
-                return dialog;
-            });
+            );
 
             return stateCopy;
-        case SET_SOCKET_READY:
-            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
-                if (dialog.chatId === action.chatId) {
-                    dialog.isSocketReady = action.ready;
+        case 'SET_SOCKET_READY':
+            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map(
+                (dialog: DialogType) => {
+                    if (dialog.chatId === action.chatId) {
+                        dialog.isSocketReady = action.ready;
+                    }
+                    return dialog;
                 }
-                return dialog;
-            });
+            );
             return stateCopy;
-        case SET_MESSAGES:
-            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
-                if (action.messages[0].chat_id === dialog.chatId) {
-                    action.messages.reverse().map((outsideMessage) => {
-                        if (!isMessageInDialog(outsideMessage, dialog)) {
-                            const dayId = getDayId(outsideMessage.time);
-                            const currentDay = getDayById(dayId, dialog.days);
-                            const dayText = getDayTextFromDate(
-                                outsideMessage.time
-                            );
+        case 'SET_MESSAGES':
+            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map(
+                (dialog: DialogType) => {
+                    if (action.messages[0].chatId === dialog.chatId) {
+                        action.messages.reverse().forEach((outsideMessage) => {
+                            if (!isMessageInDialog(outsideMessage, dialog)) {
+                                const dayId = getDayId(outsideMessage.time);
+                                const currentDay = getDayById(
+                                    dayId,
+                                    dialog.days
+                                );
+                                const dayText = getDayTextFromDate(
+                                    outsideMessage.time
+                                );
 
-                            if (currentDay === null) {
-                                dialog.days.push({
-                                    id: dayId,
-                                    dayText,
-                                    messages: [outsideMessage],
-                                });
-                            } else {
-                                currentDay.messages.push(outsideMessage);
+                                if (currentDay === null) {
+                                    dialog.days.push({
+                                        id: dayId,
+                                        dayText,
+                                        messages: [outsideMessage],
+                                    });
+                                } else {
+                                    currentDay.messages.push(outsideMessage);
+                                }
                             }
-                        }
-                    });
-                    dialog.days = dialog.days.sort(
-                        (a, b) => parseFloat(a.id) - parseFloat(b.id)
-                    );
+                        });
+                        dialog.days = dialog.days.sort((a, b) => {
+                            if (a.id !== null && b.id !== null) {
+                                return a.id - b.id;
+                            }
+                            return 0;
+                        });
+                    }
+                    dialog.messagesLoaded = true;
+                    return dialog;
                 }
-                dialog.messagesLoaded = true;
-                return dialog;
-            });
+            );
             return stateCopy;
-        case SET_USERS_DISPLAY_NAME:
-            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map((dialog) => {
-                if (dialog.chatId === action.chatId) {
-                    dialog.usersDisplayName = action.allUsers.map((user) => {
-                        const userDisplayName = user.displayName || user.login;
+        case 'SET_USERS_DISPLAY_NAME':
+            stateCopy.chats.dialogs = stateCopy.chats.dialogs.map(
+                (dialog: DialogType) => {
+                    if (dialog.chatId === action.chatId) {
+                        dialog.usersDisplayName = action.allUsers.map(
+                            (user) => {
+                                const userDisplayName =
+                                    user.displayName || user.login;
 
-                        return { userId: user.id, userDisplayName };
-                    });
+                                return { userId: user.id, userDisplayName };
+                            }
+                        );
+                    }
+                    return dialog;
                 }
-                return dialog;
-            });
+            );
             return stateCopy;
-        case SET_OPENED_DIALOG:
+        case 'SET_OPENED_DIALOG':
             stateCopy.chats.openedDialogId = action.nextDialogId;
             return stateCopy;
         default:
@@ -154,194 +172,194 @@ export const authReducer = (
 };
 // ACTION CREATORS
 export const actions = {
-    enableLoader: () => ({ type: ENABLE_LOADER } as const),
-    disableLoader: () => ({ type: DISABLE_LOADER } as const),
+    enableLoader: () => ({ type: 'ENABLE_LOADER' } as const),
+    disableLoader: () => ({ type: 'DISABLE_LOADER' } as const),
     setloginFormError: (loginFormError: string) =>
         ({
-            type: SET_LOGIN_FORM_ERROR,
+            type: 'SET_LOGIN_FORM_ERROR',
             loginFormError,
         } as const),
     setRegistrationFormError: (registrationFormError: string) =>
         ({
-            type: SET_REGISTRATION_FORM_ERROR,
+            type: 'SET_REGISTRATION_FORM_ERROR',
             registrationFormError,
         } as const),
-    setUser: (userTransferedObject: any) =>
+    setUser: (userTransferedObject: UserTransferedType | null) =>
         ({
-            type: SET_USER,
+            type: 'SET_USER',
             userTransferedObject,
         } as const),
-    setChatsList: (chatsList: any) =>
+    setChatsList: (
+        chatsList: Array<ChatListItemTransferedType<UserTransferedType>>
+    ) =>
         ({
-            type: SET_CHATS_LIST,
+            type: 'SET_CHATS_LIST',
             chatsList,
         } as const),
-    setSocket: (chatId: number, socket: any) =>
+    setSocket: (chatId: number, socket: WebSocket) =>
         ({
-            type: SET_SOCKET,
+            type: 'SET_SOCKET',
             socket,
             chatId,
         } as const),
     setSocketReady: (chatId: number, ready: boolean) =>
         ({
-            type: SET_SOCKET_READY,
+            type: 'SET_SOCKET_READY',
             ready,
             chatId,
         } as const),
-    setMessages: (messages) =>
+    setMessages: (messages: Array<MessageTransferedType>) =>
         ({
-            type: SET_MESSAGES,
+            type: 'SET_MESSAGES',
             messages,
         } as const),
     setUsersDisplayName: (
-        allUsers: Array<AllUsersTransferedType>,
+        allUsers: Array<UserTransferedType>,
         chatId: number
     ) =>
         ({
-            type: SET_USERS_DISPLAY_NAME,
+            type: 'SET_USERS_DISPLAY_NAME',
             allUsers,
             chatId,
         } as const),
     openDialog: (nextDialogId: number) =>
         ({
-            type: SET_OPENED_DIALOG,
+            type: 'SET_OPENED_DIALOG',
             nextDialogId,
         } as const),
     removeChatFromStore: (chatId: number) =>
         ({
-            type: DELETE_CHAT,
+            type: 'DELETE_CHAT',
             chatId,
         } as const),
     addChatToStore: () =>
         ({
-            type: CREATE_CHAT,
+            type: 'CREATE_CHAT',
         } as const),
 };
 
-// THUNKS
-export const doLogout = () => async (dispatch) => {
+export type Dispatch<A extends ActionsTypes> = {
+    <T extends A>(action: T, ...extraArgs: any[]): A;
+};
+export type DispatchThunk = (a: Dispatch<ActionsTypes>) => void;
+
+export const doLogout = () => async (dispatch: DispatchThunk) => {
     dispatch(() => actions.enableLoader());
 
-    localStorage.removeItem('user');
     await AuthApi.logout();
 
     dispatch(() => actions.disableLoader());
-    dispatch(() => actions.setUser({}));
+	dispatch(() => actions.setUser(null));
 
     deleteAuthCookie();
 
     window.router.go('/');
 };
 
-export const doLogin = (loginData: any) => async (dispatch) => {
-    dispatch(() => actions.enableLoader());
-    const response = await AuthApi.signin({ data: loginData });
+export const doLogin =
+    (loginData: LoginDataType) => async (dispatch: DispatchThunk) => {
+        dispatch(() => actions.enableLoader());
+        const response = await AuthApi.signin({ data: loginData });
 
-    if (apiHasErrors(response)) {
-        console.log(response.responseText);
-        const { reason } = JSON.parse(response.responseText);
+        if (apiHasErrors(response.data)) {
+            dispatch(() => actions.disableLoader());
+            const { reason } = response.data;
+            dispatch(() => actions.setloginFormError(reason));
+            return false;
+        }
+
+        const responseUser = await AuthApi.user();
         dispatch(() => actions.disableLoader());
-        dispatch(() => actions.setloginFormError(reason));
-        return false;
-    }
 
-    const responseUser = await AuthApi.user();
-    dispatch(() => actions.disableLoader());
+        if (apiHasErrors(responseUser.data)) {
+            // dispatch(thunk)
+            dispatch(() => doLogout() as unknown as ActionsTypes);
+            return false;
+        }
 
-    if (apiHasErrors(responseUser)) {
-        console.log(responseUser.responseText);
-        dispatch(() => actions.doLogout());
-        return false;
-    }
-    const userTransferedObject = transformUser(responseUser.responseText);
-    setAuthCookie();
-    dispatch(() => actions.setUser(userTransferedObject));
+        const userTransferedObject = transformUser(responseUser.data);
+        setAuthCookie();
+        dispatch(() => actions.setUser(userTransferedObject));
 
-    window.router.go('/');
-    return true;
-};
+        window.router.go('/');
+        return true;
+    };
 
 export const doRegistrtation =
-    (registrationData: RegistrationData) => async (dispatch) => {
+    (registrationData: RegistrationData) => async (dispatch: DispatchThunk) => {
         dispatch(() => actions.enableLoader());
 
         const response = await AuthApi.signup({
-            data: JSON.stringify(registrationData),
+            data: registrationData,
         });
 
-        if (apiHasErrors(response)) {
-            console.log(response.responseText);
-            const { reason } = JSON.parse(response.responseText);
+        if (apiHasErrors(response.data)) {
             dispatch(() => actions.disableLoader());
+            const { reason } = response.data;
             dispatch(() => actions.setRegistrationFormError(reason));
-
             return false;
         }
+
         dispatch(() => actions.disableLoader());
         window.router.go('/');
         return true;
     };
-export const saveUserInfo = (data) => async (dispatch) => {
+
+export const saveUserInfo =
+    (data: UserProfileType, avatar: FormData | null) =>
+    async (dispatch: DispatchThunk) => {
+        dispatch(() => actions.enableLoader());
+
+        if (avatar !== null) {
+            await UserApi.saveProfileAvatar({ data: avatar });
+        }
+
+        await UserApi.saveProfile({ data });
+
+        const changePssswordObject: ChangePasswordType = {
+            oldPassword: data.oldPassword,
+            newPassword: data.newPassword,
+        };
+        await UserApi.savePassword({ data: changePssswordObject });
+
+        dispatch(() => actions.disableLoader());
+
+        return true;
+    };
+
+export const getUserInfo = () => async (dispatch: DispatchThunk) => {
     dispatch(() => actions.enableLoader());
 
-    if ('avatar' in data && data.avatar !== '') {
-        await UserApi.saveProfileAvatar({ data: data.avatar });
-    }
+    const response = await AuthApi.user();
 
-    const response = await UserApi.saveProfile({ data });
-
-    if (apiHasErrors(response)) {
-        console.log(response.responseText);
-        const { reason } = JSON.parse(response.responseText);
+    if (apiHasErrors(response.data)) {
         dispatch(() => actions.disableLoader());
-        // dispatch(() => setRegistrationFormError(reason));
-
         return false;
     }
     dispatch(() => actions.disableLoader());
 
+    const userTransferedObject = transformUser(response.data);
+
+    dispatch(() => actions.setUser(userTransferedObject));
     return true;
 };
 
-export const getUserInfo = () => async (dispatch) => {
-    dispatch(() => actions.enableLoader());
-
-    const response = AuthApi.user();
-    response.then((response) => {
-        if (apiHasErrors(response)) {
-            console.log(response.responseText);
-            const { reason } = JSON.parse(response.responseText);
-            dispatch(() => actions.disableLoader());
-            return false;
-        }
-        dispatch(() => actions.disableLoader());
-
-        const userTransferedObject = transformUser(response.responseText);
-
-        dispatch(() => actions.setUser(userTransferedObject));
-        return true;
-    });
-};
-
-// CHAT REDUCER
-
-export const createChat = () => async (dispatch) => {
-    const responseCreateChat = await ChatApi.createChat({
+// CHAT THUNKs
+export const createChat = () => async (dispatch: DispatchThunk) => {
+    const response = await ChatApi.createChat({
         data: { title: 'Новый чатик' },
     });
-    if (apiHasErrors(responseCreateChat)) {
-        console.log(responseCreateChat.responseText);
+    if (apiHasErrors(response.data)) {
         return false;
     }
-    const newChatId = JSON.parse(responseCreateChat.responseText);
+    const newChatId = response.data.id;
     const userId = window.store.state.user.id;
-    const userData = JSON.stringify({ users: [userId], chatId: newChatId.id });
+    const userData = JSON.stringify({ users: [userId], chatId: newChatId });
     const responseAddUserToChat = await ChatApi.addUserToChat({
         data: userData,
     });
 
-    if (apiHasErrors(responseAddUserToChat)) {
-        console.log(responseAddUserToChat.responseText);
+    if (apiHasErrors(responseAddUserToChat.data)) {
         return false;
     }
 
@@ -349,108 +367,99 @@ export const createChat = () => async (dispatch) => {
     return true;
 };
 
-export const deleteChat = (chatid: number) => async (dispatch) => {
-    const response = await ChatApi.deleteChat({
-        data: { chatId: `${chatid}` },
-    });
-    if (apiHasErrors(response)) {
-        console.log(response.responseText);
-        return false;
-    }
-    dispatch(() => actions.removeChatFromStore(chatid));
-    return true;
-};
+export const deleteChat =
+    (chatid: number) => async (dispatch: DispatchThunk) => {
+        const response = await ChatApi.deleteChat({
+            data: { chatId: `${chatid}` },
+        });
+        if (apiHasErrors(response.data)) {
+            return false;
+        }
+        dispatch(() => actions.removeChatFromStore(chatid));
+        return true;
+    };
 
-// TODO загружать все сообщения чата, а не только 20 последних
-export const getChatsList = (options: Options) => async (dispatch) => {
+export const getChatsList = () => async (dispatch: DispatchThunk) => {
     dispatch(() => actions.enableLoader());
-
-    const response = await ChatApi.getChats({ data: { limit: 10 } });
+    const response = await ChatApi.getChats({ data: { limit: '10' } });
 
     dispatch(() => actions.disableLoader());
 
-    if (apiHasErrors(response)) {
-        console.log(response.responseText);
-        const { reason } = JSON.parse(response.responseText);
+    if (apiHasErrors(response.data)) {
         return false;
     }
 
-    const chatListTransferedObject = transformChatsList(response.responseText);
-    dispatch(() => actions.setChatsList(chatListTransferedObject));
+    const chatListTransferedObject = transformChatsList(response.data);
+
+    if (chatListTransferedObject !== null) {
+        dispatch(() => actions.setChatsList(chatListTransferedObject));
+    }
     return true;
 };
 
-// TODO: это нечто странное
-export const createWebSocketConnection = (chatId: number) => async (dispatch: DispatchThunk) => {
-    // TODO: заменить user_id, chat_id
-    const response = await ChatApi.getTokenMessages(chatId);
+export const createWebSocketConnection =
+    (chatId: number) => async (dispatch: DispatchThunk) => {
+        const response = await ChatApi.getTokenMessages(chatId);
 
-    if (apiHasErrors(response)) {
-        const { reason } = JSON.parse(response.responseText);
-        console.log(reason);
-        return false;
-    }
-    const { token } = JSON.parse(response.responseText);
-    const userId = window.store.state.user.id;
-
-    const socket = new WebSocket(
-        `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`
-    );
-
-    dispatch(() => socket(chatId, socket));
-    let intervalSocketPing = null;
-
-    socket.addEventListener('open', () => {
-        console.log('Соединение установлено.');
-        dispatch(() => actions.setSocketReady(chatId, true));
-
-        intervalSocketPing = setInterval(() => {
-            socket.send(
-                JSON.stringify({
-                    type: 'ping',
-                })
-            );
-        }, 5000);
-    });
-
-    socket.addEventListener('close', (event) => {
-        if (intervalSocketPing !== null) {
-            window.clearInterval(intervalSocketPing);
+        if (apiHasErrors(response.data)) {
+            return false;
         }
+        const { token } = response.data;
+        const userId = window.store.state.user.id;
 
-        dispatch(() => actions.setSocketReady(chatId, true));
+        const socket = new WebSocket(
+            `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`
+        );
 
-        if (event.wasClean) {
-            console.log('Соединение закрыто чисто');
-        } else {
-            console.log('Обрыв соединения'); // например, "убит" процесс сервера
-        }
-        console.log(`Код: ${event.code} причина: ${event.reason}`);
-    });
+        dispatch(() => actions.setSocket(chatId, socket));
+        let intervalSocketPing: number | null = null;
 
-    socket.addEventListener('message', (event) => {
-        console.log(event.data);
+        socket.addEventListener('open', () => {
+            console.log('Соединение установлено.');
+            dispatch(() => actions.setSocketReady(chatId, true));
 
-        const data = JSON.parse(event.data);
-        let messages = [];
-        if (typeof data === 'object' && data.type === 'message') {
-            messages.push({ ...data, chat_id: chatId });
-        } else if (Array.isArray(data)) {
-            messages = data;
-        }
+            intervalSocketPing = window.setInterval(() => {
+                socket.send(
+                    JSON.stringify({
+                        type: 'ping',
+                    })
+                );
+            }, 5000);
+        });
 
-        if (messages.length > 0) {
-            const messagesTransferedArray = transformMessages(messages);
-            dispatch(() => actions.setMessages(messagesTransferedArray));
-        }
-    });
+        socket.addEventListener('close', (event) => {
+            if (intervalSocketPing !== null) {
+                window.clearInterval(intervalSocketPing);
+            }
 
-    socket.addEventListener('error', (error) => {
-        console.log(`Ошибка ${error.message}`);
-    });
-};
+            dispatch(() => actions.setSocketReady(chatId, true));
 
-export const sendMessage = (data: any) => (dispatch: DispatchThunk) => {
+            if (event.wasClean) {
+                console.log('Соединение закрыто чисто');
+            } else {
+                console.log('Обрыв соединения');
+            }
+            console.log(`Код: ${event.code} причина: ${event.reason}`);
+        });
+
+        socket.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data);
+            let messages: Array<MessageType> = [];
+            if (typeof data === 'object' && data.type === 'message') {
+                messages.push({ ...data, chat_id: chatId });
+            } else if (Array.isArray(data)) {
+                messages = data;
+            }
+
+            if (messages.length > 0) {
+                const messagesTransferedArray = transformMessages(messages);
+                dispatch(() => actions.setMessages(messagesTransferedArray));
+            }
+        });
+        return true;
+    };
+
+export const sendMessage = (data: SendMessageType) => () => {
     data.socket.send(
         JSON.stringify({
             content: data.message,
@@ -476,9 +485,13 @@ export const getMessages =
             );
         }
         const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
-        const allUsersTransferedArray: Array<AllUsersTransferedType> =
-            transformUsers(allUsersResponse.responseText);
+
+        if (apiHasErrors(allUsersResponse.data)) {
+            return false;
+        }
+        const allUsersTransferedArray = transformUsers(allUsersResponse.data);
         dispatch(() =>
             actions.setUsersDisplayName(allUsersTransferedArray, chatId)
         );
+        return true;
     };

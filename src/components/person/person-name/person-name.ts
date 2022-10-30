@@ -2,11 +2,10 @@ import Block from 'core/Block';
 import './person-name.css';
 
 type Props = {
-	name: string;
-}
+    name: string;
+};
 
 export default class PersonName extends Block<Props> {
-
     static componentName = 'PersonName';
 
     protected render(): string {

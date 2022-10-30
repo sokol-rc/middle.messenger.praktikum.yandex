@@ -1,16 +1,14 @@
-import connect from "core/connectHoc";
-import { doRegistrtation } from "../../reducers/authReducer";
-import RegistrationPage from "./registration";
-
+import { Component } from 'core/Block';
+import connect from 'core/connectHoc';
+import { doRegistrtation } from '../../reducers/authReducer';
+import RegistrationPage from './registration';
 
 const mstp = (state: Indexed<any>): Indexed => ({
     isLoading: state.isLoading,
-    store: window.store,
-    user: window.store.getState().user,
-    registrationFormError: window.store.getState().registrationFormError,
+    user: state.user,
+    registrationFormError: state.registrationFormError,
 });
-
 
 const RegistrationPageContainer = connect(mstp, { doRegistrtation });
 
-export default RegistrationPageContainer(RegistrationPage);
+export default RegistrationPageContainer(RegistrationPage as Component);

@@ -38,11 +38,11 @@ export default class Input extends Block<Props> {
     }
 
     onBlur(event: FocusEvent): void {
-		const currentValue: string = (event.target as HTMLInputElement).value;
-		if ((event.target as HTMLInputElement).type === 'file') { 
-			return;
-		}
-		
+        const currentValue: string = (event.target as HTMLInputElement).value;
+        if ((event.target as HTMLInputElement).type === 'file') {
+            return;
+        }
+
         this.setInputValue(currentValue);
         if (typeof this.props.validateOnBlur === 'function') {
             this.props.validateOnBlur(this);
@@ -63,8 +63,7 @@ export default class Input extends Block<Props> {
         this.refs.errorRef.setProps({ isShowed: false });
     }
 
-	protected render(): string {
-		
+    protected render(): string {
         return `
 		<div class="{{wrapperClassName}}">
 			<label class="{{labelClassName}}" for="${this.id}">${this.props.label}</label>

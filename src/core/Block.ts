@@ -54,9 +54,10 @@ export default class Block<P extends Record<string, any>> {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
 
-    _componentDidMount(props: P) {
-        this.componentDidMount(props);
+    _componentDidMount() {
+        this.componentDidMount();
     }
+
     componentDidMount() {}
 
     _componentDidUpdate() {
@@ -229,3 +230,5 @@ export default class Block<P extends Record<string, any>> {
         this.getContent().style.display = 'none';
     }
 }
+
+export type Component = typeof Block;

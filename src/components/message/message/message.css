@@ -9,7 +9,7 @@
         padding: 8px 10px;
         border-radius: 10px;
         position: relative;
-		flex-wrap: wrap;
+        flex-wrap: wrap;
     }
 
     &__title {

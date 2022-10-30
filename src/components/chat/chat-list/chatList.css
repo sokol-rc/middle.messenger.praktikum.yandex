@@ -1,8 +1,9 @@
 .chat-list {
-	min-width: 320px;
+    min-width: 320px;
 }
+
 .chat-list__control {
-	display: flex;
-	justify-content: center;
-	margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
 }
