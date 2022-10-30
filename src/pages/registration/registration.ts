@@ -77,8 +77,6 @@ export default class RegistrationPage extends Block<Props> {
             this._displayError(isValid, inputRef);
         });
 
-        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
-
 		if (isFormValid) {
             this.props.doRegistrtation(formValues);
         }

@@ -274,19 +274,3 @@ export default class Dialog extends Block<Props> {
 </div>`;
     }
 }
-
-// {{{Input
-// 	type="text"
-// 	wrapperClassName="send-form__input-group send-form-input"
-// 	labelClassName="send-form-input__label visually-hidden"
-// 	className="send-form-input__input"
-// 	name="message"
-// 	label="Напишите здесь"
-// 	placeholder="Напишите здесь..."
-// 	validateOnBlur=validateOnBlur
-// 	validateOnFocus=validateOnFocus
-// 	pattern=messagePattern
-// 	errorMessage="не пустое"
-// 	inputType="textarea"
-// 	ref="messageInputRef"
-// }}}
