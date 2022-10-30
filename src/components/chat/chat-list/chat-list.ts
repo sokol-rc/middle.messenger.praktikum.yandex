@@ -7,7 +7,7 @@ import './chatList.css';
 
 type Props = {
     some: any;
-    chatsList: Array<ChatListItemTransferedType<UserTransferedType>>;
+    chatsList: Array<ChatListItemTransferedType<UserTransferedType>> | null;
     openedDialogId: number;
     getChatsList: () => void;
     onClick: (event: MouseEvent) => void;
@@ -52,14 +52,14 @@ export default class ChatList extends Block<Props> {
 
     render(): string {
         const { chatsList, openedDialogId } = this.props;
-        if (isEmpty(chatsList)) {
+        if (isEmpty(chatsList) || chatsList === null) {
             return `<div class="chat-list"><div class="chat-list__inner">Нет чатов</div></div>`;
         }
 
         const chatsListArray = chatsList.map((chatList) => {
             const activeStatus = openedDialogId === chatList.id ? 'active' : '';
 			const avatar = chatList.avatar || '';
-			if (!isHasLastMessage(chatList.lastMessage)) { 
+			if (chatList.lastMessage === null || !isHasLastMessage(chatList.lastMessage)) { 
 				return `<div class="chat-list__item hr-bottom">{{{ChatItem 
 					id="${chatList.id}"
 					avatar="${avatar}"

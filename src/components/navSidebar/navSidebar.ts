@@ -21,8 +21,12 @@ export default class NavSidebar extends Block<Props> {
         this.props.doLogout();
     }
 
-    render(): string {
-        const avatar = this.props.user.avatar || '';
+	render(): string {
+		let avatar = '';
+		if (this.props.user !== null) { 
+			avatar = this.props.user.avatar || '';
+		}
+        
         return `<div class="nav-sidebar__inner nav-sidebar--bg-main">
 		<div class="nav-sidebar__profile">
 			<div class="profile-info">

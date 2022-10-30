@@ -50,7 +50,8 @@ export default class Router {
         this._onRoute(window.location.pathname);
     }
 
-    async _onRoute(pathname: string) {
+	async _onRoute(pathname: string) {
+
         const routeWithFlags = this.getRoute(pathname);
 
         if (typeof routeWithFlags === 'undefined') {
@@ -65,9 +66,6 @@ export default class Router {
 
         if (flags.shouldAuthorized && await checkAuth()) {
             this.go('/');
-            // const loginPageRoute = this.getRoute('/');
-
-            // loginPageRoute.route.render();
             return;
         }
 
@@ -96,29 +94,3 @@ export default class Router {
         return this.routes.find((route) => route.route.match(pathname));
     }
 }
-
-//   // Необходимо оставить в силу особенностей тренажёра
-//   history.pushState({}, '', '/');
-
-//   const router = new Router(".app");
-
-//   // Можно обновиться на /user и получить сразу пользователя
-//   router
-// 	.use("/", Chats)
-// 	.use("/users", Users)
-// 	.start();
-
-//   // Через секунду контент изменится сам, достаточно дёрнуть переход
-//   setTimeout(() => {
-// 	router.go("/users");
-//   }, 1000);
-
-//   // А можно и назад
-//   setTimeout(() => {
-// 	router.back();
-//   }, 3000);
-
-//   // И снова вперёд
-//   setTimeout(() => {
-// 	router.forward();
-//   }, 5000);

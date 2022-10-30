@@ -11,12 +11,15 @@ export default class Avatar extends Block<Props> {
     static componentName = 'Avatar';
 
     protected render(): string {
-        let avatar: string = personAvatar;
+        const { image } = this.props;
+		let avatar: string = personAvatar;
         if (
-            typeof this.props.image !== 'undefined' &&
-            !isEmpty(this.props.image)
-        ) {
-            avatar = `https://ya-praktikum.tech/api/v2/resources/${this.props.image}`;
+            typeof image !== 'undefined' &&
+            !isEmpty(image) &&
+			image !== 'null' &&
+			image !== null
+		) {
+            avatar = `https://ya-praktikum.tech/api/v2/resources/${image}`;
         }
 
         return `<div class="avatar">

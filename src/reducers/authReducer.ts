@@ -35,8 +35,10 @@ import {
 
 type PropertiesType<T> = T extends { [key: string]: infer U } ? U : never;
 
-export type InferActionsType<T extends { [key: string]: (...args: any[]) => any }> = ReturnType<PropertiesType<T>>;
-export type ActionsTypes = InferActionsType<typeof actions>
+export type InferActionsType<
+    T extends { [key: string]: (...args: any[]) => any }
+> = ReturnType<PropertiesType<T>>;
+export type ActionsTypes = InferActionsType<typeof actions>;
 
 export type RootReducerType = (
     state: RootStateType,
@@ -56,6 +58,8 @@ export const authReducer: RootReducerType = (state, action) => {
         case 'SET_LOGIN_FORM_ERROR':
             stateCopy.loginFormError = action.loginFormError;
             return stateCopy;
+        case 'SET_INITIAL_STATE':
+            return state;
         case 'SET_REGISTRATION_FORM_ERROR':
             stateCopy.registrationFormError = action.registrationFormError;
             return stateCopy;
@@ -67,19 +71,26 @@ export const authReducer: RootReducerType = (state, action) => {
         case 'DELETE_CHAT':
             return stateCopy;
         case 'SET_CHATS_LIST':
-            action.chatsList.forEach((list) => {
-                if (
-                    !searchInObject(list.id, 'chatId', stateCopy.chats.dialogs)
-                ) {
-                    stateCopy.chats.dialogs.push({
-                        chatId: list.id,
-                        chatInfoObject: list,
-                        socket: null,
-                        isSocketReady: false,
-                        days: [],
-                    });
+            stateCopy.chats.chatsList = action.chatsList;
+            stateCopy.chats.chatsList.forEach(
+                (list: ChatListItemTransferedType<UserTransferedType>) => {
+                    if (
+                        !searchInObject(
+                            list.id,
+                            'chatId',
+                            stateCopy.chats.dialogs
+                        )
+                    ) {
+                        stateCopy.chats.dialogs.push({
+                            chatId: list.id,
+                            chatInfoObject: list,
+                            socket: null,
+                            isSocketReady: false,
+                            days: [],
+                        });
+                    }
                 }
-            });
+            );
             stateCopy.chats.chatsListLoaded = true;
             return stateCopy;
         case 'SET_SOCKET':
@@ -184,6 +195,10 @@ export const actions = {
             type: 'SET_REGISTRATION_FORM_ERROR',
             registrationFormError,
         } as const),
+    setInitialState: () =>
+        ({
+            type: 'SET_INITIAL_STATE',
+        } as const),
     setUser: (userTransferedObject: UserTransferedType | null) =>
         ({
             type: 'SET_USER',
@@ -245,15 +260,15 @@ export type DispatchThunk = (a: Dispatch<ActionsTypes>) => void;
 
 export const doLogout = () => async (dispatch: DispatchThunk) => {
     dispatch(() => actions.enableLoader());
-
+    dispatch(() => actions.setInitialState());
     await AuthApi.logout();
 
     dispatch(() => actions.disableLoader());
-	dispatch(() => actions.setUser(null));
 
     deleteAuthCookie();
-
-    window.router.go('/');
+    setTimeout(() => {
+        window.router.go('/');
+    }, 200);
 };
 
 export const doLogin =
@@ -388,7 +403,6 @@ export const getChatsList = () => async (dispatch: DispatchThunk) => {
     if (apiHasErrors(response.data)) {
         return false;
     }
-
     const chatListTransferedObject = transformChatsList(response.data);
 
     if (chatListTransferedObject !== null) {
