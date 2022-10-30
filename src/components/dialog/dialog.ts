@@ -174,7 +174,7 @@ export default class Dialog extends Block<Props> {
         const { user, openedDialog, chatListLoaded, messagesLoaded } =
             this.props;
         if ((!chatListLoaded && !messagesLoaded) || openedDialog === null) {
-            return `{{{Loader isLoading=isLoading}}}`;
+            return `<div class="dialog__stub">Заглушка. Диалогов нет</div>`;
         }
 
         const chatName = openedDialog.chatInfoObject.title;

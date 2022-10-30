@@ -24,7 +24,7 @@ export const getAvatarFormValue = (avatarSelector: string): FormData | null => {
         document.querySelector(avatarSelector);
     if (avatarInput !== null && avatarInput.files !== null) {
         if (typeof avatarInput.files[0] === 'undefined') {
-            console.log('нет изображения');
+
             return null;
         }
         const formData = new FormData();

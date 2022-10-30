@@ -11,17 +11,20 @@ export const initRouter = (router: Router) => {
         {
             path: '/',
             component: LoginPageContainer,
-            shouldAuthorized: false,
+			shouldAuthorized: false,
+			shouldNotAuthorized: true,
         },
         {
             path: '/sign-up',
             component: RegistrationPageContainer,
-            shouldAuthorized: false,
+			shouldAuthorized: false,
+			shouldNotAuthorized: true,
         },
         {
             path: '/404',
             component: ErrorPage,
-            shouldAuthorized: false,
+			shouldAuthorized: false,
+			shouldNotAuthorized: false,
             props: {
                 errorNumber: 404,
             },
@@ -29,7 +32,8 @@ export const initRouter = (router: Router) => {
         {
             path: '/500',
             component: ErrorPage,
-            shouldAuthorized: false,
+			shouldAuthorized: false,
+			shouldNotAuthorized: false,
             props: {
                 errorNumber: 500,
             },
@@ -37,18 +41,20 @@ export const initRouter = (router: Router) => {
         {
             path: '/messenger',
             component: ChatPageContainer,
-            shouldAuthorized: true,
+			shouldAuthorized: true,
+			shouldNotAuthorized: false,
         },
         {
             path: '/settings',
             component: ProfilePageContainer,
-            shouldAuthorized: true,
+			shouldAuthorized: true,
+			shouldNotAuthorized: false,
         },
     ];
 
     routes.forEach((route) => {
-        const { path, component, shouldAuthorized, props = {} } = route;
-        router.use(path, component as Component, { shouldAuthorized }, props);
+        const { path, component, shouldAuthorized, shouldNotAuthorized, props = {} } = route;
+        router.use(path, component as Component, { shouldAuthorized, shouldNotAuthorized }, props);
     });
 
     router.start();

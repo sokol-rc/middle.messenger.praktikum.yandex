@@ -95,7 +95,7 @@ class HTTPTransport {
 
             if (method === 'GET' || !data) {
                 xhr.send();
-            } else if (method === 'PUT' && data) {
+			} else if (method === 'PUT' && data) {
                 xhr.send(data as any);
 			} else if (typeof data !== 'string') {
 					xhr.send(JSON.stringify(data));

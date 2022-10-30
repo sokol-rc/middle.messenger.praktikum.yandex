@@ -1,21 +1,19 @@
 import AuthApi from 'utils/api/auth-api';
-import { apiHasErrors } from 'utils/typeGuards/typeGuards';
 
-const checkAuthApi = async () => { 
+const isAuthApi = async () => { 
 	const response = await AuthApi.user();
-	if (apiHasErrors(response)) { 
+	if (response.status !== 200) { 
 		return false;
 	}
 	return true;
 }
 
 
-export const checkAuth = async () => {
-
-	if (!window.store.getState().isAuth && await checkAuthApi()) {
-		
-		return false;
+export const isAuthorized = async () => {
+	
+	if (await isAuthApi()) {
+		return true;
 	}
-	return true;
+	return false;
 
 };

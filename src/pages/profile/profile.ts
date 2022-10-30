@@ -14,7 +14,7 @@ type Props = {
     validateOnBlur: (input: ValidateInput) => void;
     validateOnFocus: (input: ValidateInput) => void;
     getUserInfo: () => void;
-    saveUserInfo: (formValues: UserProfileType, avatar: FormData | null) => void;
+	saveUserInfo: (data: { data: UserProfileType, avatar: FormData | null }) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
     emailPattern: RegExp;
@@ -86,7 +86,8 @@ export default class ProfilePage extends Block<Props> {
         const inputsRefs: ValidateInput[] = [
             this.refs.firstNameInputRef,
             this.refs.secondNameInputRef,
-            this.refs.loginInputRef,
+			this.refs.loginInputRef,
+			this.refs.displayNameInputRef,
             this.refs.emailInputRef,
             this.refs.phoneInputRef,
             this.refs.oldPasswordInputRef,
@@ -109,7 +110,7 @@ export default class ProfilePage extends Block<Props> {
 
         const avatar = getAvatarFormValue('.avatar-input__input');
 
-        this.props.saveUserInfo(formValues, avatar);
+		this.props.saveUserInfo({ data: formValues, avatar });
     }
 
     private _validateRefs(inputRef: ValidateInput) {

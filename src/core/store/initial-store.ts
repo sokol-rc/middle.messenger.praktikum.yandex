@@ -42,12 +42,13 @@ const initialStore: InitialStore = {
     chats: {
         chatsList: null,
         chatsListLoaded: false,
-		openedDialogId: 430,
+		openedDialogId: 0,
         dialogs: [
             {
                 chatId: null,
                 socket: null,
-                isSocketReady: false,
+				isSocketReady: false,
+				chatInfoObject: null,
                 messagesLoaded: false,
                 usersDisplayName: [
                     {

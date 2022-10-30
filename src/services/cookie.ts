@@ -11,7 +11,15 @@ const getCookie = (name: string) => {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 };
 
-const setCookie = (name: string, value: string | number, seconds: number) => {
+const setCookie = (
+    name: string,
+    value: string | number,
+    seconds: number = -1
+) => {
+    if (seconds === -1) {
+        document.cookie = `${name}=${value};}`;
+        return;
+    }
     const date = new Date(new Date().getTime() + seconds * 1000);
     const dateString = date.toUTCString();
     document.cookie = `${name}=${value};path=/;expires=${dateString}}`;
@@ -36,3 +44,24 @@ export const setAuthCookie = () => {
 export const deleteAuthCookie = () => {
     deleteCookie('isAuth');
 };
+
+export const getDosCookie = () => {
+    const dosOn = getCookie('DOSon');
+    if (dosOn === '1') {
+		return {dosCounter: getCookie('DOScounter'), dosTimeout: getCookie('DOStimeout')};
+    }
+    return false;
+};
+
+export const setInitialDosCookie = () => {
+    setCookie('DOSon', 1, 60 * 60 * 24);
+    setCookie('DOScounter', 1, 10);
+};
+
+export const updateDosCounter = (counter: number) => {
+    setCookie('DOScounter', counter, 10);
+};
+
+export const setTimeoutDosCookie = () => { 
+	setCookie('DOStimeout', 1, 60);
+}

@@ -52,3 +52,7 @@
 .dev-link:visited {
     color: #551a8b;
 }
+
+main {
+	padding-top: 20px;
+}

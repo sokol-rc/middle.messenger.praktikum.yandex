@@ -222,12 +222,10 @@ export default class Block<P extends Record<string, any>> {
         return fragment.content;
     }
 
-    show() {
-        this.getContent().style.display = 'flex';
-    }
-
     hide() {
-        this.getContent().style.display = 'none';
+        if (this._element) {
+            this._element.remove();
+        }
     }
 }
 

@@ -40,8 +40,6 @@ export default class Route {
             renderDOM(this._block);
             return;
         }
-
-        this._block.show();
         renderDOM(this._block);
     }
 }

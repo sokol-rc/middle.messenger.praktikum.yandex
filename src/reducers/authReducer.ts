@@ -1,4 +1,4 @@
-import { DialogType } from 'core/store/initial-store';
+import initialStore, { DialogType } from 'core/store/initial-store';
 import { RootStateType } from 'index';
 import { RegistrationData } from 'pages/registration/registration';
 import { deleteAuthCookie, setAuthCookie } from 'services/cookie';
@@ -18,6 +18,7 @@ import {
     getDayTextFromDate,
 } from 'utils/helpers/dateTime';
 import searchInObject from 'utils/helpers/isContain';
+import isEmpty from 'utils/helpers/isEmpty';
 import { isMessageInDialog } from 'utils/helpers/messageTools';
 import { apiHasErrors } from 'utils/typeGuards/typeGuards';
 import {
@@ -59,7 +60,7 @@ export const authReducer: RootReducerType = (state, action) => {
             stateCopy.loginFormError = action.loginFormError;
             return stateCopy;
         case 'SET_INITIAL_STATE':
-            return state;
+            return initialStore;
         case 'SET_REGISTRATION_FORM_ERROR':
             stateCopy.registrationFormError = action.registrationFormError;
             return stateCopy;
@@ -72,6 +73,10 @@ export const authReducer: RootReducerType = (state, action) => {
             return stateCopy;
         case 'SET_CHATS_LIST':
             stateCopy.chats.chatsList = action.chatsList;
+            if (isEmpty(stateCopy.chats.chatsList)) {
+                return stateCopy;
+            }
+            stateCopy.chats.openedDialogId = action.chatsList[0].id;
             stateCopy.chats.chatsList.forEach(
                 (list: ChatListItemTransferedType<UserTransferedType>) => {
                     if (
@@ -100,8 +105,6 @@ export const authReducer: RootReducerType = (state, action) => {
                         dialog.chatId === action.chatId &&
                         dialog.socket === null
                     ) {
-                        console.log('socket to state');
-
                         dialog.socket = action.socket;
                     }
                     return dialog;
@@ -260,15 +263,12 @@ export type DispatchThunk = (a: Dispatch<ActionsTypes>) => void;
 
 export const doLogout = () => async (dispatch: DispatchThunk) => {
     dispatch(() => actions.enableLoader());
-    dispatch(() => actions.setInitialState());
     await AuthApi.logout();
 
     dispatch(() => actions.disableLoader());
-
+    dispatch(() => actions.setInitialState());
     deleteAuthCookie();
-    setTimeout(() => {
-        window.router.go('/');
-    }, 200);
+    window.router.go('/');
 };
 
 export const doLogin =
@@ -296,7 +296,7 @@ export const doLogin =
         setAuthCookie();
         dispatch(() => actions.setUser(userTransferedObject));
 
-        window.router.go('/');
+        window.router.go('/messenger');
         return true;
     };
 
@@ -316,26 +316,42 @@ export const doRegistrtation =
         }
 
         dispatch(() => actions.disableLoader());
-        window.router.go('/');
+        window.router.go('/messenger');
         return true;
     };
 
 export const saveUserInfo =
-    (data: UserProfileType, avatar: FormData | null) =>
+    (inputData: { data: UserProfileType; avatar: FormData | null }) =>
     async (dispatch: DispatchThunk) => {
+        const { data, avatar } = inputData;
         dispatch(() => actions.enableLoader());
-
         if (avatar !== null) {
             await UserApi.saveProfileAvatar({ data: avatar });
         }
 
-        await UserApi.saveProfile({ data });
-
-        const changePssswordObject: ChangePasswordType = {
-            oldPassword: data.oldPassword,
-            newPassword: data.newPassword,
-        };
-        await UserApi.savePassword({ data: changePssswordObject });
+        await UserApi.saveProfile({
+            data: JSON.stringify({
+                first_name: data.first_name,
+                second_name: data.second_name,
+                display_name: data.display_name,
+                login: data.login,
+                email: data.email,
+                phone: data.phone,
+            }),
+        });
+        if (!isEmpty(data.newPassword) && !isEmpty(data.oldPassword)) {
+            const changePssswordObject: ChangePasswordType = {
+                newPassword: data.newPassword,
+                oldPassword: data.oldPassword,
+            };
+            await UserApi.savePassword({
+                data: JSON.stringify(changePssswordObject),
+                headers: {
+                    accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            });
+        }
 
         dispatch(() => actions.disableLoader());
 
@@ -407,6 +423,8 @@ export const getChatsList = () => async (dispatch: DispatchThunk) => {
 
     if (chatListTransferedObject !== null) {
         dispatch(() => actions.setChatsList(chatListTransferedObject));
+    } else {
+        dispatch(() => actions.setChatsList([]));
     }
     return true;
 };
@@ -429,7 +447,6 @@ export const createWebSocketConnection =
         let intervalSocketPing: number | null = null;
 
         socket.addEventListener('open', () => {
-            console.log('Соединение установлено.');
             dispatch(() => actions.setSocketReady(chatId, true));
 
             intervalSocketPing = window.setInterval(() => {

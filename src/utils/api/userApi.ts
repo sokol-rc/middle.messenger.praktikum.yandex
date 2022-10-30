@@ -21,7 +21,7 @@ const UserApi: UserApiType = {
     apiUrl: 'https://ya-praktikum.tech/api/v2/',
     headers: { accept: 'application/json', 'Content-Type': 'application/json' },
     async saveProfile(options: Options) {
-        const response = await HTTPTransport.post<UserProfileApiType>(
+        const response = await HTTPTransport.put<UserProfileApiType>(
             `${this.apiUrl}user/profile`,
             { headers: this.headers, ...options }
         );
@@ -35,7 +35,7 @@ const UserApi: UserApiType = {
         return response;
     },
     async savePassword(options: Options) {
-        const response = await HTTPTransport.post<DefaultType>(
+        const response = await HTTPTransport.put<DefaultType>(
             `${this.apiUrl}user/password`, { headers: { accept: 'application/json' }, ...options }
         );
         return response;

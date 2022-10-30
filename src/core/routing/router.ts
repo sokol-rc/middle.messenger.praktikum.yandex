@@ -1,5 +1,6 @@
 import { Component } from 'core/Block';
-import { checkAuth } from 'services/auth';
+import { isAuthorized } from 'services/auth';
+import { antiDOS } from 'utils/helpers/defenders';
 import Route from './route';
 
 export default class Router {
@@ -51,7 +52,10 @@ export default class Router {
     }
 
 	async _onRoute(pathname: string) {
-
+		
+		if (!antiDOS()) { 
+			return;
+		}
         const routeWithFlags = this.getRoute(pathname);
 
         if (typeof routeWithFlags === 'undefined') {
@@ -62,24 +66,36 @@ export default class Router {
             }
             return;
         }
-        const { route, flags } = routeWithFlags;
+		const { route, flags } = routeWithFlags;
 
-        if (flags.shouldAuthorized && await checkAuth()) {
+		const isAuth= await isAuthorized();
+		if (flags.shouldAuthorized && !isAuth) {
             this.go('/');
             return;
+		}
+		if (flags.shouldNotAuthorized && isAuth) {
+
+			
+			if (this._currentRoute) {
+				this._currentRoute.render()
+			} else { 
+				this.go('/messenger');
+			}
+			return;
         }
 
         if (this._currentRoute) {
             this._currentRoute.leave();
         }
 
-        this._currentRoute = route;
-        route.render();
+		this._currentRoute = route;
+		this.history.pushState({}, '', pathname);
+		route.render();
+		
     }
 
     go(pathname: string) {
-        this.history.pushState({}, '', pathname);
-        this._onRoute(pathname);
+		this._onRoute(pathname);
     }
 
     back() {

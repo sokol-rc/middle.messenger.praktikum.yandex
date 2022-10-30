@@ -1,5 +1,8 @@
 import Block from 'core/Block';
-import { ChatListItemTransferedType, UserTransferedType } from 'reducers/transferedTypes';
+import {
+    ChatListItemTransferedType,
+    UserTransferedType,
+} from 'reducers/transferedTypes';
 import isEmpty from 'utils/helpers/isEmpty';
 import { isHasLastMessage } from 'utils/typeGuards/typeGuards';
 
@@ -26,16 +29,15 @@ export default class ChatList extends Block<Props> {
     }
 
     componentDidMount() {
-        if (this.props.chatsList === null) {
+		if (this.props.chatsList === null) {
             this.props.getChatsList();
         }
     }
 
-    // хак, чтобы регистрировать HOC
     static componentName = 'ChatListContainer';
 
     onClick(event: MouseEvent) {
-        console.log(event.target);
+
         if (!event.currentTarget) {
             return;
         }
@@ -46,11 +48,11 @@ export default class ChatList extends Block<Props> {
     }
 
     toogleModal() {
-        console.log('create chat');
+
         this.props.createChat();
     }
 
-    render(): string {
+	render(): string {
         const { chatsList, openedDialogId } = this.props;
         if (isEmpty(chatsList) || chatsList === null) {
             return `<div class="chat-list"><div class="chat-list__inner">Нет чатов</div></div>`;
@@ -58,16 +60,19 @@ export default class ChatList extends Block<Props> {
 
         const chatsListArray = chatsList.map((chatList) => {
             const activeStatus = openedDialogId === chatList.id ? 'active' : '';
-			const avatar = chatList.avatar || '';
-			if (chatList.lastMessage === null || !isHasLastMessage(chatList.lastMessage)) { 
-				return `<div class="chat-list__item hr-bottom">{{{ChatItem 
+            const avatar = chatList.avatar || '';
+            if (
+                chatList.lastMessage === null ||
+                !isHasLastMessage(chatList.lastMessage)
+            ) {
+                return `<div class="chat-list__item hr-bottom">{{{ChatItem 
 					id="${chatList.id}"
 					avatar="${avatar}"
 					personName="${chatList.title}"
 					isActive="${activeStatus}"
 					onClick=onClick
 				}}}</div>`;
-			}
+            }
             const chatItem = `<div class="chat-list__item hr-bottom">{{{ChatItem 
 				id="${chatList.id}"
 				avatar="${chatList.avatar}"

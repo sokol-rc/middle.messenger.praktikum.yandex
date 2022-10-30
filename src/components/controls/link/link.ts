@@ -13,6 +13,6 @@ export default class Link extends Block<Props> {
     render(): string {
         const target = this.props.target ? `target="${this.props.target}"` : ``;
 
-        return `<a class="{{className}}" href="" onclick="window.router.go('{{href}}')" ${target}>{{label}}</a>`;
+        return `<a class="{{className}}" href="" onclick="window.router.go('{{href}}');return false;" ${target}>{{label}}</a>`;
     }
 }

@@ -5,6 +5,7 @@ import {
 	UserTransferedType,
 } from 'reducers/transferedTypes';
 import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
+import { antiXSS } from 'utils/helpers/defenders';
 import { ChatListItemApiType, UserType } from './apiTypes';
 
 export const transformUser = (data: UserType): UserTransferedType => ({
@@ -38,7 +39,9 @@ export const transformChatsList = (chatsList: Array<ChatListItemApiType>): Array
         };
 
         if (chatList.last_message !== null) {
-            const date = getMessageTimeFromDate(chatList.last_message.time);
+			const date = getMessageTimeFromDate(chatList.last_message.time);
+			const lastMessageContent = antiXSS(chatList.last_message.content) ;
+			
 
             const transferedLastMessage = {
                 user: {
@@ -50,8 +53,10 @@ export const transformChatsList = (chatsList: Array<ChatListItemApiType>): Array
                     phone: chatList.last_message.user.phone,
                 },
                 time: date,
-                content: chatList.last_message.content,
-            };
+                content: lastMessageContent,
+			};
+
+
             rootProperties.lastMessage = transferedLastMessage;
         }
         return rootProperties;
@@ -67,7 +72,8 @@ export const transformMessages = (
         ...message,
         chatId: message.chat_id,
         userId: message.user_id,
-        isRead: message.is_read,
+		isRead: message.is_read,
+		content: antiXSS(message.content),
     }));
 
     return messagesTransfered;
