@@ -5,6 +5,8 @@ import {
     UserApiType,
 } from './apiTypes';
 
+export const BASE_URL = 'https://ya-praktikum.tech/api/v2/';
+
 type AuthApiType = {
     apiUrl: string;
     headers: Record<string, string>;
@@ -19,7 +21,7 @@ type AuthApiType = {
 };
 
 const AuthApi: AuthApiType = {
-    apiUrl: 'https://ya-praktikum.tech/api/v2/',
+    apiUrl: BASE_URL,
     headers: { accept: 'application/json', 'Content-Type': 'application/json' },
     async signin(options: Options) {
         const response = await HTTPTransport.post<DefaultType>(

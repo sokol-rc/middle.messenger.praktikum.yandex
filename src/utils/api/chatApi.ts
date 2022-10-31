@@ -6,6 +6,7 @@ import {
     TokenApiType,
     UsersApiType,
 } from './apiTypes';
+import { BASE_URL } from './auth-api';
 import HTTPTransport, { Options } from './httptransport';
 
 type ChatApiType = {
@@ -32,7 +33,7 @@ type ChatApiType = {
 };
 
 const ChatApi: ChatApiType = {
-    apiUrl: 'https://ya-praktikum.tech/api/v2/',
+    apiUrl: BASE_URL,
     headers: { accept: 'application/json', 'Content-Type': 'application/json' },
 
     async getChats(options: Options) {

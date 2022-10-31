@@ -2,6 +2,7 @@ import Block from 'core/Block';
 import './avatar.css';
 import isEmpty from 'utils/helpers/isEmpty';
 import personAvatar from '../../../assets/avatar.png';
+import { BASE_URL } from 'utils/api/auth-api';
 
 interface Props {
 	image: string;
@@ -21,7 +22,7 @@ export default class Avatar extends Block<Props> {
 			image !== 'null' &&
 			image !== null
 		) {
-            avatarDefault = `https://ya-praktikum.tech/api/v2/resources/${image}`;
+            avatarDefault = `${BASE_URL}resources/${image}`;
 		}
 		if (typeof alt !== 'undefined' && alt !== '') { 
 			altDefault = `${alt}`

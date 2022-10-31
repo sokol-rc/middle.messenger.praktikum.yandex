@@ -3,6 +3,7 @@ import {
     HTTPTransportResponseType,
     UserProfileApiType,
 } from './apiTypes';
+import { BASE_URL } from './auth-api';
 import HTTPTransport, { Options } from './httptransport';
 
 type UserApiType = {
@@ -18,7 +19,7 @@ type UserApiType = {
 };
 
 const UserApi: UserApiType = {
-    apiUrl: 'https://ya-praktikum.tech/api/v2/',
+    apiUrl: BASE_URL,
     headers: { accept: 'application/json', 'Content-Type': 'application/json' },
     async saveProfile(options: Options) {
         const response = await HTTPTransport.put<UserProfileApiType>(
