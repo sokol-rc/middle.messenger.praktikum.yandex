@@ -33,6 +33,8 @@ function queryStringify(data: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class HTTPTransport {
+	private defaultHeaders = { accept: 'application/json', 'Content-Type': 'application/json' } as const;
+
     get<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
@@ -56,7 +58,7 @@ class HTTPTransport {
         
 
     request = (url: string, options: Options): Promise<any> => {
-        const { timeout = 5000, headers = {}, data, method } = options;
+        const { timeout = 5000, headers = this.defaultHeaders, data, method } = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();

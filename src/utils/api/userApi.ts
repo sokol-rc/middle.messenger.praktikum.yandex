@@ -8,23 +8,23 @@ import HTTPTransport, { Options } from './httptransport';
 
 type UserApiType = {
     apiUrl: string;
-    headers: Record<string, string>;
     saveProfile: (
         options: Options
     ) => Promise<HTTPTransportResponseType<UserProfileApiType>>;
     saveProfileAvatar: (
         options: Options
     ) => Promise<HTTPTransportResponseType<UserProfileApiType>>;
-    savePassword: (options: Options) => Promise<HTTPTransportResponseType<DefaultType>>;
+    savePassword: (
+        options: Options
+    ) => Promise<HTTPTransportResponseType<DefaultType>>;
 };
 
 const UserApi: UserApiType = {
     apiUrl: BASE_URL,
-    headers: { accept: 'application/json', 'Content-Type': 'application/json' },
     async saveProfile(options: Options) {
         const response = await HTTPTransport.put<UserProfileApiType>(
             `${this.apiUrl}user/profile`,
-            { headers: this.headers, ...options }
+            { ...options }
         );
         return response;
     },
@@ -37,7 +37,8 @@ const UserApi: UserApiType = {
     },
     async savePassword(options: Options) {
         const response = await HTTPTransport.put<DefaultType>(
-            `${this.apiUrl}user/password`, { headers: { accept: 'application/json' }, ...options }
+            `${this.apiUrl}user/password`,
+            { headers: { accept: 'application/json' }, ...options }
         );
         return response;
     },

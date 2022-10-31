@@ -11,7 +11,6 @@ import HTTPTransport, { Options } from './httptransport';
 
 type ChatApiType = {
     apiUrl: string;
-    headers: Record<string, string>;
     getChats: (
         options: Options
     ) => Promise<HTTPTransportResponseType<ChatListApiType>>;
@@ -34,14 +33,11 @@ type ChatApiType = {
 
 const ChatApi: ChatApiType = {
     apiUrl: BASE_URL,
-    headers: { accept: 'application/json', 'Content-Type': 'application/json' },
 
     async getChats(options: Options) {
         const response = await HTTPTransport.get<ChatListApiType>(
             `${this.apiUrl}chats`,
             {
-                credentials: true,
-                headers: this.headers,
                 ...options,
             }
         );
@@ -49,8 +45,6 @@ const ChatApi: ChatApiType = {
     },
     createChat(options: Options) {
         return HTTPTransport.post<CreateChatApiType>(`${this.apiUrl}chats`, {
-            credentials: true,
-            headers: this.headers,
             ...options,
         });
     },
@@ -58,8 +52,6 @@ const ChatApi: ChatApiType = {
         const response = await HTTPTransport.delete<DefaultType>(
             `${this.apiUrl}chats`,
             {
-                credentials: true,
-                headers: this.headers,
                 ...options,
             }
         );
@@ -67,19 +59,13 @@ const ChatApi: ChatApiType = {
     },
     getTokenMessages(chatId: number) {
         const response = HTTPTransport.post<TokenApiType>(
-            `${this.apiUrl}chats/token/${chatId}`,
-            {
-                headers: this.headers,
-            }
+            `${this.apiUrl}chats/token/${chatId}`
         );
         return response;
     },
     async getAllUsersInChat(chatId: number) {
         const response = await HTTPTransport.get<UsersApiType>(
-            `${this.apiUrl}chats/${chatId}/users`,
-            {
-                headers: this.headers,
-            }
+            `${this.apiUrl}chats/${chatId}/users`
         );
         return response;
     },
@@ -87,8 +73,6 @@ const ChatApi: ChatApiType = {
         const response = await HTTPTransport.put<DefaultType>(
             `${this.apiUrl}chats/users`,
             {
-                credentials: true,
-                headers: this.headers,
                 ...options,
             }
         );

@@ -9,7 +9,6 @@ export const BASE_URL = 'https://ya-praktikum.tech/api/v2/';
 
 type AuthApiType = {
     apiUrl: string;
-    headers: Record<string, string>;
     signin: (
         options: Options
     ) => Promise<HTTPTransportResponseType<DefaultType>>;
@@ -22,18 +21,17 @@ type AuthApiType = {
 
 const AuthApi: AuthApiType = {
     apiUrl: BASE_URL,
-    headers: { accept: 'application/json', 'Content-Type': 'application/json' },
     async signin(options: Options) {
         const response = await HTTPTransport.post<DefaultType>(
             `${this.apiUrl}auth/signin`,
-            { headers: this.headers, ...options }
+            { ...options }
         );
         return response;
     },
     async signup(options: Options) {
         const response = await HTTPTransport.post<DefaultType>(
             `${this.apiUrl}auth/signup`,
-            { headers: this.headers, ...options }
+            { ...options }
         );
         return response;
     },
@@ -42,7 +40,8 @@ const AuthApi: AuthApiType = {
     },
     async user() {
         const response = await HTTPTransport.get<UserApiType>(
-            `${this.apiUrl}auth/user`
+            `${this.apiUrl}auth/user`,
+            { headers: {} }
         );
 
         return response;
