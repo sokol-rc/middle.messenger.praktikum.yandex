@@ -309,6 +309,7 @@ export const doLogin =
             return true;
         } catch (e) {
             console.log(`doSomething`, e);
+            return false;
         }
     };
 
