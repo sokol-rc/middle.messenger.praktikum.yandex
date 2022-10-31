@@ -3,6 +3,7 @@ import { UserProfileType } from 'reducers/thunkTypes';
 import getFormValues, { getAvatarFormValue } from 'utils/formTools';
 import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
+import { ValidationHandlers } from 'utils/validate/validateTypes';
 
 import './profile.css';
 
@@ -11,8 +12,6 @@ export type FormValuesFormData<FormValues> = FormValues & { avatar?: FormData };
 type Props = {
     user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
-    validateOnBlur: (input: ValidateInput) => void;
-    validateOnFocus: (input: ValidateInput) => void;
     getUserInfo: () => void;
 	saveUserInfo: (data: { data: UserProfileType, avatar: FormData | null }) => void;
     personNamePattern: RegExp;
@@ -20,7 +19,7 @@ type Props = {
     emailPattern: RegExp;
     phonePattern: RegExp;
     passwordPattern: RegExp;
-};
+} & ValidationHandlers;
 
 export default class ProfilePage extends Block<Props> {
     constructor(props: Props) {

@@ -21,21 +21,21 @@ type UserApiType = {
 
 const UserApi: UserApiType = {
     apiUrl: BASE_URL,
-    async saveProfile(options: Options) {
+    async saveProfile(options) {
         const response = await HTTPTransport.put<UserProfileApiType>(
             `${this.apiUrl}user/profile`,
             { ...options }
         );
         return response;
     },
-    async saveProfileAvatar(options: Options) {
+    async saveProfileAvatar(options) {
         const response = await HTTPTransport.put<UserProfileApiType>(
             `${this.apiUrl}user/profile/avatar`,
             { headers: { accept: 'application/json' }, ...options }
         );
         return response;
     },
-    async savePassword(options: Options) {
+    async savePassword(options) {
         const response = await HTTPTransport.put<DefaultType>(
             `${this.apiUrl}user/password`,
             { headers: { accept: 'application/json' }, ...options }

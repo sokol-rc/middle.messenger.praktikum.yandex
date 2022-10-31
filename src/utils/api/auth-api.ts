@@ -21,14 +21,14 @@ type AuthApiType = {
 
 const AuthApi: AuthApiType = {
     apiUrl: BASE_URL,
-    async signin(options: Options) {
+    async signin(options) {
         const response = await HTTPTransport.post<DefaultType>(
             `${this.apiUrl}auth/signin`,
             { ...options }
         );
         return response;
     },
-    async signup(options: Options) {
+    async signup(options) {
         const response = await HTTPTransport.post<DefaultType>(
             `${this.apiUrl}auth/signup`,
             { ...options }

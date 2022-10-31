@@ -5,6 +5,7 @@ import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
 import { getMessageDirection } from 'utils/helpers/messageTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
+import { ValidationHandlers } from 'utils/validate/validateTypes';
 import * as sendIcon from '../../assets/send.svg';
 import './dialog.css';
 
@@ -18,8 +19,6 @@ type Props = {
     sendMessage: (message: SendMessageType) => void;
     getMessages: (openedDialogId: number) => void;
     sendButtonClick?: (event: MouseEvent) => void;
-    validateOnBlur: (input: ValidateInput) => void;
-    validateOnFocus: (input: ValidateInput) => void;
     onInput: () => void;
     onKeydown: (event: KeyboardEvent) => void;
     messagePattern: RegExp;
@@ -30,7 +29,7 @@ type Props = {
     openedDialogId: number;
     openedDialog: DialogType | null;
     user: any;
-};
+} & ValidationHandlers;
 
 export default class Dialog extends Block<Props> {
     constructor(props: Props) {

@@ -2,6 +2,7 @@ import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
+import { ValidationHandlers } from 'utils/validate/validateTypes';
 
 import './login.css';
 
@@ -12,8 +13,6 @@ type LoginData = {
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
-    validateOnBlur: (input: ValidateInput) => void;
-    validateOnFocus: (input: ValidateInput) => void;
     loginPattern: RegExp;
     passwordPattern: RegExp;
     store: any;
@@ -23,7 +22,7 @@ type Props = {
     onLogin: (loginData: LoginData) => void;
     doLogin: (loginData: LoginData) => void;
     onLogout: () => void;
-};
+} & ValidationHandlers;
 
 export default class LoginPage extends Block<Props> {
     constructor(props: Props) {

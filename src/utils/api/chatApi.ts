@@ -34,7 +34,7 @@ type ChatApiType = {
 const ChatApi: ChatApiType = {
     apiUrl: BASE_URL,
 
-    async getChats(options: Options) {
+    async getChats(options) {
         const response = await HTTPTransport.get<ChatListApiType>(
             `${this.apiUrl}chats`,
             {
@@ -43,12 +43,12 @@ const ChatApi: ChatApiType = {
         );
         return response;
     },
-    createChat(options: Options) {
+    createChat(options) {
         return HTTPTransport.post<CreateChatApiType>(`${this.apiUrl}chats`, {
             ...options,
         });
     },
-    async deleteChat(options: Options) {
+    async deleteChat(options) {
         const response = await HTTPTransport.delete<DefaultType>(
             `${this.apiUrl}chats`,
             {
@@ -57,19 +57,19 @@ const ChatApi: ChatApiType = {
         );
         return response;
     },
-    getTokenMessages(chatId: number) {
+    getTokenMessages(chatId) {
         const response = HTTPTransport.post<TokenApiType>(
             `${this.apiUrl}chats/token/${chatId}`
         );
         return response;
     },
-    async getAllUsersInChat(chatId: number) {
+    async getAllUsersInChat(chatId) {
         const response = await HTTPTransport.get<UsersApiType>(
             `${this.apiUrl}chats/${chatId}/users`
         );
         return response;
     },
-    async addUserToChat(options: Options) {
+    async addUserToChat(options) {
         const response = await HTTPTransport.put<DefaultType>(
             `${this.apiUrl}chats/users`,
             {

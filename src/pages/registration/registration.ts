@@ -2,6 +2,7 @@ import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
+import { ValidationHandlers } from 'utils/validate/validateTypes';
 
 import '../login/login.css';
 import './registration.css';
@@ -17,8 +18,6 @@ export type RegistrationData = {
 
 type Props = {
     onSubmit: (event: SubmitEvent) => void;
-    validateOnBlur: (input: ValidateInput) => void;
-    validateOnFocus: (input: ValidateInput) => void;
     doRegistrtation: (registrationData: RegistrationData) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
@@ -26,7 +25,7 @@ type Props = {
     phonePattern: RegExp;
     passwordPattern: RegExp;
     registrationFormError: string;
-};
+} & ValidationHandlers;
 
 export default class RegistrationPage extends Block<Props> {
     constructor(props: Props) {
