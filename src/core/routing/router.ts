@@ -51,10 +51,10 @@ export default class Router {
         this._onRoute(window.location.pathname);
     }
 
-	async _onRoute(pathname: string) {
-		if (!antiDOS()) { 
-			return;
-		}
+    async _onRoute(pathname: string) {
+        if (!antiDOS()) {
+            return;
+        }
         const routeWithFlags = this.getRoute(pathname);
 
         if (typeof routeWithFlags === 'undefined') {
@@ -65,38 +65,33 @@ export default class Router {
             }
             return;
         }
-		const { route, flags } = routeWithFlags;
+        const { route, flags } = routeWithFlags;
 
-		const isAuth= await isAuthorized();
-		if (flags.shouldAuthorized && !isAuth) {
+        const isAuth = await isAuthorized();
+        if (flags.shouldAuthorized && !isAuth) {
             this.go('/');
             return;
-		}
-		if (flags.shouldNotAuthorized && isAuth) {
-
-			
-			if (this._currentRoute) {
-				this._currentRoute.render()
-			} else { 
-				this.go('/messenger');
-			}
-			return;
+        }
+        if (flags.shouldNotAuthorized && isAuth) {
+            if (this._currentRoute) {
+                this._currentRoute.render();
+            } else {
+                this.go('/messenger');
+            }
+            return;
         }
 
-		if (this._currentRoute) {
-			
-			
+        if (this._currentRoute) {
             this._currentRoute.leave();
         }
 
-		this._currentRoute = route;
-		this.history.pushState({}, '', pathname);
-		route.render();
-		
+        this._currentRoute = route;
+        this.history.pushState({}, '', pathname);
+        route.render();
     }
 
     go(pathname: string) {
-		this._onRoute(pathname);
+        this._onRoute(pathname);
     }
 
     back() {

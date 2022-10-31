@@ -66,7 +66,8 @@ export default class Dialog extends Block<Props> {
         } = this.props;
         if (!chatListLoaded || openedDialog === null) {
             return;
-        }
+		}
+		
         if (openedDialog.socket === null) {
             createWebSocketConnection(openedDialogId);
 		}

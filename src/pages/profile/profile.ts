@@ -13,7 +13,10 @@ type Props = {
     user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
     getUserInfo: () => void;
-	saveUserInfo: (data: { data: UserProfileType, avatar: FormData | null }) => void;
+    saveUserInfo: (data: {
+        data: UserProfileType;
+        avatar: FormData | null;
+    }) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
     emailPattern: RegExp;
@@ -81,22 +84,25 @@ export default class ProfilePage extends Block<Props> {
 
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
+        let isValidateHasErrors = false;
 
         const inputsRefs: ValidateInput[] = [
             this.refs.firstNameInputRef,
             this.refs.secondNameInputRef,
-			this.refs.loginInputRef,
-			this.refs.displayNameInputRef,
+            this.refs.loginInputRef,
+            this.refs.displayNameInputRef,
             this.refs.emailInputRef,
             this.refs.phoneInputRef,
             this.refs.oldPasswordInputRef,
             this.refs.newPasswordInputRef,
         ];
-        const formValues =
-            <UserProfileType>getFormValues(inputsRefs);
+        const formValues = <UserProfileType>getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
             const isValid = this._validateRefs(inputRef);
+            if (!isValid) {
+                isValidateHasErrors = true;
+            }
             this._displayError(isValid, inputRef);
         });
 
@@ -108,8 +114,9 @@ export default class ProfilePage extends Block<Props> {
         this._displayError(matchPassword, this.refs.newPasswordInputRef);
 
         const avatar = getAvatarFormValue('.avatar-input__input');
-
-		this.props.saveUserInfo({ data: formValues, avatar });
+        if (!isValidateHasErrors) {
+            this.props.saveUserInfo({ data: formValues, avatar });
+        }
     }
 
     private _validateRefs(inputRef: ValidateInput) {

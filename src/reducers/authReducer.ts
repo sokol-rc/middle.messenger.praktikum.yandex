@@ -470,7 +470,7 @@ export const createWebSocketConnection =
                 window.clearInterval(intervalSocketPing);
             }
 
-            dispatch(() => actions.setSocketReady(chatId, true));
+            dispatch(() => actions.setSocketReady(chatId, false));
 
             if (event.wasClean) {
                 console.log('Соединение закрыто чисто');

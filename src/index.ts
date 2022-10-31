@@ -70,6 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.store = store;
 	window.router = router;
+    store.on('changed', (nextState) => {
+        console.log(
+            '%cstore updated',
+            'background: #222; color: #7B68EE',
+            nextState
+        );
+    });
 
     initRouter(router);
 });
