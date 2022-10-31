@@ -35,22 +35,22 @@ export default class Message extends Block<Props> {
         let isIncoming: boolean = false;
         let messageStatus: string = '';
         let directionClass: string = 'bubble-out';
-        let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" />`;
+        let messageTailOut: string = `<img class="bubble__tail-out" src="${messageTailOutSvg}" alt="исходящее сообщение"/>`;
         let incomingUserName: string = '';
 
         if (this.props.direction === 'incoming') {
             directionClass = 'bubble-in';
             isIncoming = true;
-            messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" />`;
+            messageTailOut = `<img class="bubble__tail-in" src="${messageTailInSvg}" alt="Входящее сообщение"/>`;
             incomingUserName = `<div class="bubble__title">${this.props.userDisplayName}</div>`;
         }
 
         if (this.props.messageReceived && !isIncoming) {
-            messageStatus = `<img class="bubble__sending-status sending-status received" src="${messageReceivedSvg}" />`;
+            messageStatus = `<img class="bubble__sending-status sending-status received" src="${messageReceivedSvg}" alt="Сообщение получено" />`;
         }
 
         if (this.props.messageReaded && !isIncoming) {
-            messageStatus = `<img class="bubble__sending-status sending-status readed" src="${messageReadedSvg}" />`;
+            messageStatus = `<img class="bubble__sending-status sending-status readed" src="${messageReadedSvg}" alt="Сообщение доставлено"/>`;
         }
 
         return `

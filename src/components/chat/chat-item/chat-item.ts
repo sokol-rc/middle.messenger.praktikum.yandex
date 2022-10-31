@@ -39,7 +39,7 @@ export default class ChatItem extends Block<Props> {
 
         return `<div class="chat-preview ${classActive}" data-chatid="${this.props.id}">
 		<div class="chat-preview__avatar">
-			{{{Avatar image="${this.props.avatar}"}}}
+			{{{Avatar image="${this.props.avatar}" alt="Автара чата ${this.props.personName}"}}}
 		</div>
 		<div class="chat-preview__body">
 			<div class="chat-preview__title">

@@ -224,7 +224,7 @@ export default class Dialog extends Block<Props> {
 			<div class="dialog-header__profile hr-left">
 				<div class="dialog-window__chat-info">
 					<div class="chat-info__avatar">
-						{{{Avatar image="${chatAvatar}"}}}
+						{{{Avatar image="${chatAvatar}" alt="Аватар чата ${chatName}"}}}
 					</div>
 					<div class="chat-info__title">
 						{{{PersonName name="${chatName}"}}}

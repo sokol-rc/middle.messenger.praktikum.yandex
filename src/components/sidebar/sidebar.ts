@@ -53,7 +53,7 @@ export default class Sidebar extends Block<Props> {
 		<div class="right-sidebar__inner">
 			<div class="chat-info">
 				<div class="chat-info__description">
-					{{{Avatar image="${openedDialog.chatInfoObject.avatar}"}}}
+					{{{Avatar image="${openedDialog.chatInfoObject.avatar}" alt="Аватар чата ${openedDialog.chatInfoObject.title}"}}}
 					{{{PersonName name="${openedDialog.chatInfoObject.title}"}}}
 				</div>
 				<div class="chat-info__control">
