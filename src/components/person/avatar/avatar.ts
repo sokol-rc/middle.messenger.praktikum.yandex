@@ -20,6 +20,7 @@ export default class Avatar extends Block<Props> {
             typeof image !== 'undefined' &&
             !isEmpty(image) &&
 			image !== 'null' &&
+			image !== 'undefined' &&
 			image !== null
 		) {
             avatarDefault = `${BASE_URL}resources/${image}`;

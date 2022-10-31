@@ -67,10 +67,6 @@ export const authReducer: RootReducerType = (state, action) => {
         case 'SET_USER':
             stateCopy.user = action.userTransferedObject;
             return stateCopy;
-        case 'CREATE_CHAT':
-            return stateCopy;
-        case 'DELETE_CHAT':
-            return stateCopy;
         case 'SET_CHATS_LIST':
             stateCopy.chats.chatsList = action.chatsList;
             if (isEmpty(stateCopy.chats.chatsList)) {
@@ -257,15 +253,6 @@ export const actions = {
             type: 'SET_OPENED_DIALOG',
             nextDialogId,
         } as const),
-    removeChatFromStore: (chatId: number) =>
-        ({
-            type: 'DELETE_CHAT',
-            chatId,
-        } as const),
-    addChatToStore: () =>
-        ({
-            type: 'CREATE_CHAT',
-        } as const),
     removeSocket: (chatId: number) =>
         ({
             type: 'REMOVE_SOCKET',
@@ -393,39 +380,6 @@ export const getUserInfo = () => async (dispatch: DispatchThunk) => {
 };
 
 // CHAT THUNKs
-export const createChat = () => async (dispatch: DispatchThunk) => {
-    const response = await ChatApi.createChat({
-        data: { title: 'Новый чатик' },
-    });
-    if (apiHasErrors(response.data)) {
-        return false;
-    }
-    const newChatId = response.data.id;
-    const userId = window.store.state.user.id;
-    const userData = JSON.stringify({ users: [userId], chatId: newChatId });
-    const responseAddUserToChat = await ChatApi.addUserToChat({
-        data: userData,
-    });
-
-    if (apiHasErrors(responseAddUserToChat.data)) {
-        return false;
-    }
-
-    dispatch(() => actions.addChatToStore());
-    return true;
-};
-
-export const deleteChat =
-    (chatid: number) => async (dispatch: DispatchThunk) => {
-        const response = await ChatApi.deleteChat({
-            data: { chatId: `${chatid}` },
-        });
-        if (apiHasErrors(response.data)) {
-            return false;
-        }
-        dispatch(() => actions.removeChatFromStore(chatid));
-        return true;
-    };
 
 export const getChatsList = () => async (dispatch: DispatchThunk) => {
     dispatch(() => actions.enableLoader());
@@ -446,6 +400,40 @@ export const getChatsList = () => async (dispatch: DispatchThunk) => {
     return true;
 };
 
+export const createChat = () => async (dispatch: DispatchThunk) => {
+    const response = await ChatApi.createChat({
+        data: { title: 'Новый чатик' },
+    });
+    if (apiHasErrors(response.data)) {
+        return false;
+    }
+    const newChatId = response.data.id;
+    const userId = window.store.state.user.id;
+    const userData = JSON.stringify({ users: [userId], chatId: newChatId });
+    const responseAddUserToChat = await ChatApi.addUserToChat({
+        data: userData,
+    });
+
+    if (apiHasErrors(responseAddUserToChat.data)) {
+        return false;
+    }
+
+    dispatch(() => getChatsList() as unknown as ActionsTypes);
+    return true;
+};
+
+export const deleteChat =
+    (chatid: number) => async (dispatch: DispatchThunk) => {
+        const response = await ChatApi.deleteChat({
+            data: { chatId: `${chatid}` },
+        });
+        if (apiHasErrors(response.data)) {
+            return false;
+        }
+        dispatch(() => getChatsList() as unknown as ActionsTypes);
+        return true;
+    };
+
 export const createWebSocketConnection =
     (chatId: number) => async (dispatch: DispatchThunk) => {
         const response = await ChatApi.getTokenMessages(chatId);
@@ -464,8 +452,6 @@ export const createWebSocketConnection =
         let intervalSocketPing: number | null = null;
 
         socket.addEventListener('open', () => {
-            console.log('открыто');
-
             dispatch(() => actions.setSocketReady(chatId, true));
 
             intervalSocketPing = window.setInterval(() => {
@@ -552,8 +538,8 @@ export const closeAllSockets = () => (dispatch: DispatchThunk) => {
     const { dialogs } = window.store.state.chats;
     dialogs.forEach((dialog: DialogType) => {
         if (dialog.socket !== null) {
-			dialog.socket.close();
-			const {chatId} = dialog
+            dialog.socket.close();
+            const { chatId } = dialog;
             if (chatId !== null) {
                 dispatch(() => actions.removeSocket(chatId));
             }
