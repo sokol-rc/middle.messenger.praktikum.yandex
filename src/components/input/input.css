@@ -1,5 +1,11 @@
+:root {
+    --form-input-bg-color: #fff;
+    --dark2-bg-color: #5c2e44;
+    --error-message-text-color: #dc3545;
+}
+
 .form-input {
-    background-color: #fff;
+    background-color: var(--form-input-bg-color);
     border-radius: 10px;
     position: relative;
     padding: 10px 20px;
@@ -32,5 +38,5 @@
     width: 100%;
     margin-top: 0.25rem;
     font-size: 80%;
-    color: #dc3545;
+    color: var(--error-message-text-color);
 }

@@ -26,7 +26,7 @@
     }
 
     &__tail-in {
-        fill: #fff;
+        fill: var(--incoming-message-bg-color);
         position: absolute;
         bottom: 0;
         left: 0;
@@ -34,7 +34,7 @@
     }
 
     &__tail-out {
-        fill: rgb(247 216 177);
+        fill: var(--outgoing-message-bg-color);
         position: absolute;
         bottom: 0;
         right: 0;

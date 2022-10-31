@@ -1,6 +1,12 @@
 :root {
     --message-status-received: #51b050;
     --message-status-readed: green;
+    --dialog-window-bg-color: rgb(100 110 85);
+    --hr-color: #888686;
+    --send-form-shadow: rgb(0 0 0 / 6%);
+    --send-input-placeholder: #a2acb4;
+    --incoming-message-bg-color: #fff;
+    --outgoing-message-bg-color: rgb(247 216 177);
 }
 
 .dialog-window {
@@ -37,7 +43,7 @@
 }
 
 .dialog-window__body--bg-dialog {
-    background-color: rgb(100 110 85);
+    background-color: var(--dialog-window-bg-color);
 }
 
 .dialog-header {
@@ -57,7 +63,7 @@
 }
 
 .hr-left {
-    border-left: 1px solid #888686;
+    border-left: 1px solid var(--hr-color);
 }
 
 .profile-info {
@@ -111,12 +117,12 @@
         padding: 15px;
         border-radius: 15px;
         border: 0;
-        box-shadow: 4px 4px 10px rgb(0 0 0 / 6%);
+        box-shadow: 4px 4px 10px var(--send-form-shadow);
         height: 50px;
     }
 
     &__input::before {
-        color: #a2acb4;
+        color: var(--send-input-placeholder);
         content: attr(data-placeholder);
         display: block;
         opacity: 0;
@@ -156,7 +162,6 @@
 }
 
 .scroll-theme:hover {
-    scrollbar-color: rgb(0 0 0 / 20%) transparent;
     scrollbar-color: var(--scrollbar-color) transparent;
 }
 
@@ -214,7 +219,7 @@
 }
 
 .bubble-in .bubble__inner {
-    background-color: #fff;
+    background-color: var(--incoming-message-bg-color);
 }
 
 .bubble-out .time__inner {
@@ -222,5 +227,5 @@
 }
 
 .bubble-out .bubble__inner {
-    background-color: rgb(247 216 177);
+    background-color: var(--outgoing-message-bg-color);
 }

@@ -1,6 +1,7 @@
 :root {
     --link-color-standart: #aaf;
     --btn-bg-submit-color: #6850f8;
+    --hr-border-bottom-color: #888686;
 }
 
 .visually-hidden {
@@ -24,22 +25,5 @@
     width: 100%;
     font-size: 0;
     line-height: 0;
-    border-bottom: 1px solid #888686;
-}
-
-.dev-header {
-    background-color: beige;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-}
-
-.dev-header__inner {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    max-width: 1280px;
-    width: 100%;
+    border-bottom: 1px solid var(--hr-border-bottom-color);
 }
