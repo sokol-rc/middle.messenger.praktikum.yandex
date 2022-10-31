@@ -69,14 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const router = new Router('.app');
 
     window.store = store;
-	window.router = router;
-    store.on('changed', (nextState) => {
-        console.log(
-            '%cstore updated',
-            'background: #222; color: #7B68EE',
-            nextState
-        );
-    });
+    window.router = router;
 
     initRouter(router);
 });
