@@ -52,7 +52,6 @@ export default class Router {
     }
 
 	async _onRoute(pathname: string) {
-		
 		if (!antiDOS()) { 
 			return;
 		}
@@ -84,7 +83,9 @@ export default class Router {
 			return;
         }
 
-        if (this._currentRoute) {
+		if (this._currentRoute) {
+			
+			
             this._currentRoute.leave();
         }
 

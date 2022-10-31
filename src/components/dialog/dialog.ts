@@ -14,6 +14,7 @@ type Props = {
     createWebSocketConnection: (openedDialogId: number) => void;
     _showError: () => void;
     _clearError: () => void;
+    closeSocket: (openedDialog: DialogType) => void;
     sendMessage: (message: SendMessageType) => void;
     getMessages: (openedDialogId: number) => void;
     sendButtonClick?: (event: MouseEvent) => void;
@@ -48,11 +49,21 @@ export default class Dialog extends Block<Props> {
 
     protected messageInputHeight = 50;
 
+    protected currentDialogId = 0;
+
     protected patterns = Patterns;
 
     handleClick() {
         this.props.toogleSidebar();
-    }
+	}
+	
+	componentWillUnmount(): void {
+		// console.log('unmout');
+		// if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) { 
+
+		// 	this.props.closeSocket(this.props.openedDialog);
+		// }
+	}
 
     componentDidMount(): void {
         const {
@@ -67,8 +78,8 @@ export default class Dialog extends Block<Props> {
         }
         if (openedDialog.socket === null) {
             createWebSocketConnection(openedDialogId);
-        }
-        if (!openedDialog.messagesLoaded) {
+		}
+		if (!openedDialog.messagesLoaded) {
             getMessages(openedDialogId);
         }
         const dialogScrollableDiv = document.querySelector(
@@ -82,7 +93,8 @@ export default class Dialog extends Block<Props> {
 
         if (this.refs.messageInputRef) {
             this.refs.messageInputRef.element?.focus();
-        }
+		}
+		this.currentDialogId = openedDialogId;
     }
 
     onInput(): void {

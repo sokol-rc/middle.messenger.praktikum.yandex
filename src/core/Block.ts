@@ -59,11 +59,13 @@ export default class Block<P extends Record<string, any>> {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
 
-    _componentDidMount() {
+	_componentDidMount() {
+		this._checkInDom();
         this.componentDidMount();
     }
 
-    _componentWillUnmount() {
+	_componentWillUnmount() {
+		this.eventBus().destroy();
         this.componentWillUnmount();
     }
 
@@ -72,6 +74,7 @@ export default class Block<P extends Record<string, any>> {
     componentDidMount() {}
 
     _componentDidUpdate() {
+
         const response = true;
         if (!response) {
             return;
@@ -97,6 +100,17 @@ export default class Block<P extends Record<string, any>> {
 
     get element() {
         return this._element;
+    }
+
+    _checkInDom() {
+        const elementInDOM = document.body.contains(this._element);
+
+        if (elementInDOM) {
+            setTimeout(() => this._checkInDom(), 1000);
+            return;
+        }
+
+        this.eventBus().emit(Block.EVENTS.FLOW_CWU, this.props);
     }
 
     _render() {
@@ -152,11 +166,7 @@ export default class Block<P extends Record<string, any>> {
                 if (!waitProxy) {
                     waitProxy = true;
                     setTimeout(() => {
-                        self.eventBus().emit(
-                            Block.EVENTS.FLOW_CDU,
-                            { ...target },
-                            target
-                        );
+                        self.eventBus().emit(Block.EVENTS.FLOW_CDU, target);
                         waitProxy = false;
                     }, 100);
                 }
@@ -234,7 +244,7 @@ export default class Block<P extends Record<string, any>> {
     }
 
     hide() {
-		if (this._element) {
+        if (this._element) {
             this.eventBus().emit(Block.EVENTS.FLOW_CWU);
             this._element.remove();
         }

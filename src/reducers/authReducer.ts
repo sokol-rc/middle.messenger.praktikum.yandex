@@ -154,8 +154,8 @@ export const authReducer: RootReducerType = (state, action) => {
                             }
                             return 0;
                         });
+						dialog.messagesLoaded = true;
                     }
-                    dialog.messagesLoaded = true;
                     return dialog;
                 }
             );
@@ -179,6 +179,16 @@ export const authReducer: RootReducerType = (state, action) => {
             return stateCopy;
         case 'SET_OPENED_DIALOG':
             stateCopy.chats.openedDialogId = action.nextDialogId;
+            return stateCopy;
+        case 'REMOVE_SOCKET':
+            stateCopy.chats.dialogs = stateCopy.chats.dialogs.forEach(
+                (dialog: DialogType) => {
+                    if (dialog.chatId === action.chatId) {
+                        dialog.isSocketReady = false;
+                        dialog.socket = null;
+                    }
+                }
+            );
             return stateCopy;
         default:
             return stateCopy;
@@ -253,6 +263,11 @@ export const actions = {
     addChatToStore: () =>
         ({
             type: 'CREATE_CHAT',
+        } as const),
+    removeSocket: (chatId: number) =>
+        ({
+            type: 'REMOVE_SOCKET',
+            chatId,
         } as const),
 };
 
@@ -458,7 +473,9 @@ export const createWebSocketConnection =
             }, 5000);
         });
 
-        socket.addEventListener('close', (event) => {
+		socket.addEventListener('close', (event) => {
+			console.log('close');
+			
             if (intervalSocketPing !== null) {
                 window.clearInterval(intervalSocketPing);
             }
@@ -525,4 +542,13 @@ export const getMessages =
             actions.setUsersDisplayName(allUsersTransferedArray, chatId)
         );
         return true;
+    };
+
+export const closeSocket =
+    (openedDialog: DialogType) => (dispatch: DispatchThunk) => {
+		const { socket, chatId } = openedDialog;
+        socket.close();
+        if (chatId !== null) {
+            dispatch(() => actions.removeSocket(chatId));
+        }
     };

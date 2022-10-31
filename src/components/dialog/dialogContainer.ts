@@ -1,6 +1,7 @@
 import { Component } from 'core/Block';
 import connect from 'core/connectHoc';
 import {
+	closeSocket,
     createWebSocketConnection,
     getMessages,
     sendMessage,
@@ -12,7 +13,6 @@ const mstp = (state: Indexed<any>): Indexed => ({
     isLoading: state.isLoading,
     chatListLoaded: state.chats.chatsListLoaded,
     user: state.user,
-    socket: state.chats.socket,
     openedDialogId: state.chats.openedDialogId,
     openedDialog: selectOpenedDialogById(state),
 });
@@ -20,7 +20,8 @@ const mstp = (state: Indexed<any>): Indexed => ({
 const DialogContainer = connect(mstp, {
     sendMessage,
     getMessages,
-    createWebSocketConnection,
+	createWebSocketConnection,
+	closeSocket
 });
 
 export default DialogContainer(Dialog as Component);
