@@ -43,16 +43,3 @@
     max-width: 1280px;
     width: 100%;
 }
-
-.dev-link {
-    cursor: pointer;
-    color: #00e;
-}
-
-.dev-link:visited {
-    color: #551a8b;
-}
-
-main {
-	padding-top: 20px;
-}
