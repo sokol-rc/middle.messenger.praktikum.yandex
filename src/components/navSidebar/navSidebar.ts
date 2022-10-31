@@ -30,8 +30,7 @@ export default class NavSidebar extends Block<Props> {
         return `<div class="nav-sidebar__inner nav-sidebar--bg-main">
 		<div class="nav-sidebar__profile">
 			<div class="profile-info">
-				<div class="profile-info__avatar button-image"
-					onclick="sidebarRight.toogle(event,'chat-page__right-sidebar')">
+				<div class="profile-info__avatar button-image">
 					{{{Avatar image="${avatar}"}}}
 				</div>
 				<div class="profile-info__control">
