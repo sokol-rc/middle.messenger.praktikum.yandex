@@ -1,4 +1,5 @@
 import Block from 'core/Block';
+import { DialogType } from 'core/store/initial-store';
 import './sidebar.css';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
     onConfirm: () => void;
     onDecline: () => void;
     deleteChat: (openedDialogId: number) => void;
-    openedDialog: any;
+    openedDialog: DialogType;
 }
 export default class Sidebar extends Block<Props> {
     constructor(props: Props) {

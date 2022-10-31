@@ -513,15 +513,18 @@ export const getMessages =
         const dialog: DialogType | undefined = dialogs.find(
             (d: DialogType) => d.chatId === chatId
         );
-
-        if (dialog && dialog.isSocketReady === true) {
-            dialog.socket.send(
-                JSON.stringify({
-                    content: '0',
-                    type: 'get old',
-                })
-            );
+        if (dialog) {
+            const { socket, isSocketReady } = dialog;
+            if (socket !== null && isSocketReady === true) {
+                socket.send(
+                    JSON.stringify({
+                        content: '0',
+                        type: 'get old',
+                    })
+                );
+            }
         }
+
         const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
 
         if (apiHasErrors(allUsersResponse.data)) {

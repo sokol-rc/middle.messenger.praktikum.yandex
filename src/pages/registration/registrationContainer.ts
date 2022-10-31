@@ -5,7 +5,6 @@ import RegistrationPage from './registration';
 
 const mstp = (state: Indexed<any>): Indexed => ({
     isLoading: state.isLoading,
-    user: state.user,
     registrationFormError: state.registrationFormError,
 });
 

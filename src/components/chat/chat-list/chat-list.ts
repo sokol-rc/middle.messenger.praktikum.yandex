@@ -9,7 +9,6 @@ import { isHasLastMessage } from 'utils/typeGuards/typeGuards';
 import './chatList.css';
 
 type Props = {
-    some: any;
     chatsList: Array<ChatListItemTransferedType<UserTransferedType>> | null;
     openedDialogId: number;
     getChatsList: () => void;

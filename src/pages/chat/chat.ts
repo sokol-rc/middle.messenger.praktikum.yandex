@@ -1,10 +1,11 @@
 import Block from 'core/Block';
+import { UserType } from 'utils/api/apiTypes';
 import isEmpty from 'utils/helpers/isEmpty';
 import './chat.css';
 
 type Props = {
-    isVisible: any;
-    user: any;
+    isVisible: boolean;
+    user: UserType | null;
     toogleSidebar: () => void;
     getUserInfo: () => void;
     toogleModal: () => void;
@@ -20,22 +21,22 @@ export default class ChatPage extends Block<Props> {
             toogleSidebar: this.toogleSidebar.bind(this),
             isVisible: true,
         });
-	}
+    }
 
-	componentWillUnmount(): void {
-		console.log('unmout');
-		// console.log(this.props.openedDialog);
-		
-		// if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) { 
-			this.props.closeAllSockets();
-		// }
-	}
+    componentWillUnmount(): void {
+        console.log('unmout');
+        // console.log(this.props.openedDialog);
 
-	componentDidMount(): void {
-		if (isEmpty(this.props.user)) { 
-			this.props.getUserInfo();
-		}
-	}
+        // if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) {
+        this.props.closeAllSockets();
+        // }
+    }
+
+    componentDidMount(): void {
+        if (isEmpty(this.props.user)) {
+            this.props.getUserInfo();
+        }
+    }
 
     toogleSidebar() {
         this.refs.SidebarRef.setProps({
@@ -43,7 +44,7 @@ export default class ChatPage extends Block<Props> {
         });
     }
 
-	render() {
+    render() {
         return `
 			<div>
 				<main class="chat-page full-page">
@@ -69,4 +70,3 @@ export default class ChatPage extends Block<Props> {
 `;
     }
 }
-

@@ -10,7 +10,7 @@ type InitialStore = {
 };
 
 export type ChatsStoreType = {
-    chatsList: any;
+    chatsList: Array<ChatListItemTransferedType<UserTransferedType>> | null;
     chatsListLoaded: boolean;
 	openedDialogId: number;
 	dialogs: Array<DialogType>
@@ -28,7 +28,7 @@ export type DayType = {
 };
 export type DialogType = {
     chatId: number | null;
-	socket: any;
+	socket: WebSocket | null;
 	chatInfoObject: ChatListItemTransferedType<UserTransferedType>
     isSocketReady: boolean;
     messagesLoaded: boolean;

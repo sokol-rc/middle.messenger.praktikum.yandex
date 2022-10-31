@@ -25,6 +25,7 @@ type Props = {
     phonePattern: RegExp;
     passwordPattern: RegExp;
     registrationFormError: string;
+    isLoading: boolean;
 } & ValidationHandlers;
 
 export default class RegistrationPage extends Block<Props> {
@@ -64,23 +65,22 @@ export default class RegistrationPage extends Block<Props> {
             this.refs.emailInputRef,
             this.refs.phoneInputRef,
             this.refs.passwordInputRef,
-		];
-		let isFormValid: boolean = true;
+        ];
+        let isFormValid: boolean = true;
         const formValues: RegistrationData = getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
-			const isValid = this._validateRefs(inputRef);
-			if (!isValid) {
+            const isValid = this._validateRefs(inputRef);
+            if (!isValid) {
                 isFormValid = false;
             }
             this._displayError(isValid, inputRef);
         });
 
-		if (isFormValid) {
+        if (isFormValid) {
             this.props.doRegistrtation(formValues);
         }
     }
-
 
     private _validateRefs(inputRef: ValidateInput) {
         return inputValidate(inputRef.refs.inputInnerRef.getProps());
@@ -94,8 +94,7 @@ export default class RegistrationPage extends Block<Props> {
         }
     }
 
-	render() {
-		
+    render() {
         return `
 		<main class="auth-content layout-container">
 			<div class="auth-content__form form-wrapper auth-content__form--main-bg">

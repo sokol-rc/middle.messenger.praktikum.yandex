@@ -184,7 +184,7 @@ export default class Block<P extends Record<string, any>> {
     }
 
     _removeEvents() {
-        const { events } = this.props as any;
+        const { events } = this.props as P;
 
         if (!events || !this._element) {
             return;
@@ -198,7 +198,7 @@ export default class Block<P extends Record<string, any>> {
     }
 
     _addEvents() {
-        const { events = {} } = this.props as any;
+        const { events = {} } = this.props as P;
 
         if (!events) {
             return;

@@ -1,6 +1,7 @@
 import Block from 'core/Block';
 import { DialogType } from 'core/store/initial-store';
 import { SendMessageType } from 'reducers/thunkTypes';
+import { UserTransferedType } from 'reducers/transferedTypes';
 import { getMessageTimeFromDate } from 'utils/helpers/dateTime';
 import { getMessageDirection } from 'utils/helpers/messageTools';
 import { inputValidate } from 'utils/validate/validate';
@@ -28,7 +29,7 @@ type Props = {
     errorMessage: string;
     openedDialogId: number;
     openedDialog: DialogType | null;
-    user: any;
+    user: UserTransferedType;
 } & ValidationHandlers;
 
 export default class Dialog extends Block<Props> {

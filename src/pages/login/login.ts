@@ -15,8 +15,6 @@ type Props = {
     onSubmit: (event: SubmitEvent) => void;
     loginPattern: RegExp;
     passwordPattern: RegExp;
-    store: any;
-    user: any;
     loginFormError: string;
     isLoading: () => boolean;
     onLogin: (loginData: LoginData) => void;

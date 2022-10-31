@@ -4,8 +4,6 @@ import { doLogin, doLogout } from '../../reducers/authReducer';
 import LoginPage from './login';
 
 const mstp = (state: Indexed<any>): Indexed => ({
-    isLoading: state.isLoading,
-    user: state.user,
     loginFormError: state.loginFormError,
 });
 
