@@ -219,7 +219,7 @@ export default class RegistrationPage extends Block<Props> {
 							Есть аккаунт?
 						</p>
 						{{{Link
-							href="#"
+							href="/"
 							label="Войти"
 							className="link link--standart"
 						}}}

@@ -166,7 +166,7 @@ export default class LoginPage extends Block<Props> {
 					Нет аккаунта?
 				</p>
 				{{{Link
-					href="#"
+					href="/sign-up"
 					label="Зарегистрироваться"
 					className="link link--standart"
 				}}}
