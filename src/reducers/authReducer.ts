@@ -266,286 +266,346 @@ export type Dispatch<A extends ActionsTypes> = {
 export type DispatchThunk = (a: Dispatch<ActionsTypes>) => void;
 
 export const doLogout = () => async (dispatch: DispatchThunk) => {
-    dispatch(() => actions.enableLoader());
-    await AuthApi.logout();
+    try {
+        dispatch(() => actions.enableLoader());
+        await AuthApi.logout();
 
-    dispatch(() => actions.disableLoader());
-    dispatch(() => actions.setInitialState());
-    deleteAuthCookie();
-    window.router.go('/');
+        dispatch(() => actions.disableLoader());
+        dispatch(() => actions.setInitialState());
+        deleteAuthCookie();
+        window.router.go('/');
+    } catch (e) {
+        console.log(`doSomething`, e);
+    }
 };
 
 export const doLogin =
     (loginData: LoginDataType) => async (dispatch: DispatchThunk) => {
-        dispatch(() => actions.enableLoader());
-        const response = await AuthApi.signin({ data: loginData });
+        try {
+            dispatch(() => actions.enableLoader());
+            const response = await AuthApi.signin({ data: loginData });
 
-        if (apiHasErrors(response.data)) {
+            if (apiHasErrors(response.data)) {
+                dispatch(() => actions.disableLoader());
+                const { reason } = response.data;
+                dispatch(() => actions.setloginFormError(reason));
+                return false;
+            }
+
+            const responseUser = await AuthApi.user();
             dispatch(() => actions.disableLoader());
-            const { reason } = response.data;
-            dispatch(() => actions.setloginFormError(reason));
-            return false;
+
+            if (apiHasErrors(responseUser.data)) {
+                // dispatch(thunk)
+                dispatch(() => doLogout() as unknown as ActionsTypes);
+                return false;
+            }
+
+            const userTransferedObject = transformUser(responseUser.data);
+            setAuthCookie();
+            dispatch(() => actions.setUser(userTransferedObject));
+
+            window.router.go('/messenger');
+            return true;
+        } catch (e) {
+            console.log(`doSomething`, e);
         }
-
-        const responseUser = await AuthApi.user();
-        dispatch(() => actions.disableLoader());
-
-        if (apiHasErrors(responseUser.data)) {
-            // dispatch(thunk)
-            dispatch(() => doLogout() as unknown as ActionsTypes);
-            return false;
-        }
-
-        const userTransferedObject = transformUser(responseUser.data);
-        setAuthCookie();
-        dispatch(() => actions.setUser(userTransferedObject));
-
-        window.router.go('/messenger');
-        return true;
     };
 
 export const doRegistrtation =
     (registrationData: RegistrationData) => async (dispatch: DispatchThunk) => {
-        dispatch(() => actions.enableLoader());
+        try {
+            dispatch(() => actions.enableLoader());
 
-        const response = await AuthApi.signup({
-            data: registrationData,
-        });
+            const response = await AuthApi.signup({
+                data: registrationData,
+            });
 
-        if (apiHasErrors(response.data)) {
+            if (apiHasErrors(response.data)) {
+                dispatch(() => actions.disableLoader());
+                const { reason } = response.data;
+                dispatch(() => actions.setRegistrationFormError(reason));
+                return false;
+            }
+
             dispatch(() => actions.disableLoader());
-            const { reason } = response.data;
-            dispatch(() => actions.setRegistrationFormError(reason));
+            window.router.go('/messenger');
+            return true;
+        } catch (e) {
+            console.log(`doSomething`, e);
             return false;
         }
-
-        dispatch(() => actions.disableLoader());
-        window.router.go('/messenger');
-        return true;
     };
 
 export const saveUserInfo =
     (inputData: { data: UserProfileType; avatar: FormData | null }) =>
     async (dispatch: DispatchThunk) => {
-        const { data, avatar } = inputData;
-        dispatch(() => actions.enableLoader());
-        if (avatar !== null) {
-            await UserApi.saveProfileAvatar({ data: avatar });
-        }
+        try {
+            const { data, avatar } = inputData;
+            dispatch(() => actions.enableLoader());
+            if (avatar !== null) {
+                await UserApi.saveProfileAvatar({ data: avatar });
+            }
 
-        await UserApi.saveProfile({
-            data: JSON.stringify({
-                first_name: data.first_name,
-                second_name: data.second_name,
-                display_name: data.display_name,
-                login: data.login,
-                email: data.email,
-                phone: data.phone,
-            }),
-        });
-        if (!isEmpty(data.newPassword) && !isEmpty(data.oldPassword)) {
-            const changePssswordObject: ChangePasswordType = {
-                newPassword: data.newPassword,
-                oldPassword: data.oldPassword,
-            };
-            await UserApi.savePassword({
-                data: JSON.stringify(changePssswordObject),
-                headers: {
-                    accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
+            await UserApi.saveProfile({
+                data: JSON.stringify({
+                    first_name: data.first_name,
+                    second_name: data.second_name,
+                    display_name: data.display_name,
+                    login: data.login,
+                    email: data.email,
+                    phone: data.phone,
+                }),
             });
+            if (!isEmpty(data.newPassword) && !isEmpty(data.oldPassword)) {
+                const changePssswordObject: ChangePasswordType = {
+                    newPassword: data.newPassword,
+                    oldPassword: data.oldPassword,
+                };
+                await UserApi.savePassword({
+                    data: JSON.stringify(changePssswordObject),
+                    headers: {
+                        accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                });
+            }
+
+            dispatch(() => actions.disableLoader());
+
+            return true;
+        } catch (e) {
+            console.log(`doSomething`, e);
+            return false;
         }
-
-        dispatch(() => actions.disableLoader());
-
-        return true;
     };
 
 export const getUserInfo = () => async (dispatch: DispatchThunk) => {
-    dispatch(() => actions.enableLoader());
+    try {
+        dispatch(() => actions.enableLoader());
 
-    const response = await AuthApi.user();
+        const response = await AuthApi.user();
 
-    if (apiHasErrors(response.data)) {
+        if (apiHasErrors(response.data)) {
+            dispatch(() => actions.disableLoader());
+            return false;
+        }
         dispatch(() => actions.disableLoader());
+
+        const userTransferedObject = transformUser(response.data);
+
+        dispatch(() => actions.setUser(userTransferedObject));
+        return true;
+    } catch (e) {
+        console.log(`doSomething`, e);
         return false;
     }
-    dispatch(() => actions.disableLoader());
-
-    const userTransferedObject = transformUser(response.data);
-
-    dispatch(() => actions.setUser(userTransferedObject));
-    return true;
 };
 
 // CHAT THUNKs
 
 export const getChatsList = () => async (dispatch: DispatchThunk) => {
-    dispatch(() => actions.enableLoader());
-    const response = await ChatApi.getChats({ data: { limit: '10' } });
+    try {
+        dispatch(() => actions.enableLoader());
+        const response = await ChatApi.getChats({ data: { limit: '10' } });
 
-    dispatch(() => actions.disableLoader());
+        dispatch(() => actions.disableLoader());
 
-    if (apiHasErrors(response.data)) {
+        if (apiHasErrors(response.data)) {
+            return false;
+        }
+        const chatListTransferedObject = transformChatsList(response.data);
+
+        if (chatListTransferedObject !== null) {
+            dispatch(() => actions.setChatsList(chatListTransferedObject));
+        } else {
+            dispatch(() => actions.setChatsList([]));
+        }
+        return true;
+    } catch (e) {
+        console.log(`doSomething`, e);
         return false;
     }
-    const chatListTransferedObject = transformChatsList(response.data);
-
-    if (chatListTransferedObject !== null) {
-        dispatch(() => actions.setChatsList(chatListTransferedObject));
-    } else {
-        dispatch(() => actions.setChatsList([]));
-    }
-    return true;
 };
 
 export const createChat = () => async (dispatch: DispatchThunk) => {
-    const response = await ChatApi.createChat({
-        data: { title: 'Новый чатик' },
-    });
-    if (apiHasErrors(response.data)) {
+    try {
+        const response = await ChatApi.createChat({
+            data: { title: 'Новый чатик' },
+        });
+        if (apiHasErrors(response.data)) {
+            return false;
+        }
+        const newChatId = response.data.id;
+        const userId = window.store.state.user.id;
+        const userData = JSON.stringify({ users: [userId], chatId: newChatId });
+        const responseAddUserToChat = await ChatApi.addUserToChat({
+            data: userData,
+        });
+
+        if (apiHasErrors(responseAddUserToChat.data)) {
+            return false;
+        }
+
+        dispatch(() => getChatsList() as unknown as ActionsTypes);
+        return true;
+    } catch (e) {
+        console.log(`doSomething`, e);
         return false;
     }
-    const newChatId = response.data.id;
-    const userId = window.store.state.user.id;
-    const userData = JSON.stringify({ users: [userId], chatId: newChatId });
-    const responseAddUserToChat = await ChatApi.addUserToChat({
-        data: userData,
-    });
-
-    if (apiHasErrors(responseAddUserToChat.data)) {
-        return false;
-    }
-
-    dispatch(() => getChatsList() as unknown as ActionsTypes);
-    return true;
 };
 
 export const deleteChat =
     (chatid: number) => async (dispatch: DispatchThunk) => {
-        const response = await ChatApi.deleteChat({
-            data: { chatId: `${chatid}` },
-        });
-        if (apiHasErrors(response.data)) {
+        try {
+            const response = await ChatApi.deleteChat({
+                data: { chatId: `${chatid}` },
+            });
+            if (apiHasErrors(response.data)) {
+                return false;
+            }
+            dispatch(() => getChatsList() as unknown as ActionsTypes);
+            return true;
+        } catch (e) {
+            console.log(`doSomething`, e);
             return false;
         }
-        dispatch(() => getChatsList() as unknown as ActionsTypes);
-        return true;
     };
 
 export const createWebSocketConnection =
     (chatId: number) => async (dispatch: DispatchThunk) => {
-        const response = await ChatApi.getTokenMessages(chatId);
+        try {
+            const response = await ChatApi.getTokenMessages(chatId);
 
-        if (apiHasErrors(response.data)) {
+            if (apiHasErrors(response.data)) {
+                return false;
+            }
+            const { token } = response.data;
+            const userId = window.store.state.user.id;
+
+            const socket = new WebSocket(
+                `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`
+            );
+
+            dispatch(() => actions.setSocket(chatId, socket));
+            let intervalSocketPing: number | null = null;
+
+            socket.addEventListener('open', () => {
+                dispatch(() => actions.setSocketReady(chatId, true));
+
+                intervalSocketPing = window.setInterval(() => {
+                    socket.send(
+                        JSON.stringify({
+                            type: 'ping',
+                        })
+                    );
+                }, 5000);
+            });
+
+            socket.addEventListener('close', (event) => {
+                console.log('close');
+
+                if (intervalSocketPing !== null) {
+                    window.clearInterval(intervalSocketPing);
+                }
+
+                dispatch(() => actions.setSocketReady(chatId, false));
+
+                if (event.wasClean) {
+                    console.log('Соединение закрыто чисто');
+                } else {
+                    console.log('Обрыв соединения');
+                }
+                console.log(`Код: ${event.code} причина: ${event.reason}`);
+            });
+
+            socket.addEventListener('message', (event) => {
+                const data = JSON.parse(event.data);
+                let messages: Array<MessageType> = [];
+                if (typeof data === 'object' && data.type === 'message') {
+                    messages.push({ ...data, chat_id: chatId });
+                } else if (Array.isArray(data)) {
+                    messages = data;
+                }
+
+                if (messages.length > 0) {
+                    const messagesTransferedArray = transformMessages(messages);
+                    dispatch(() =>
+                        actions.setMessages(messagesTransferedArray)
+                    );
+                }
+            });
+            return true;
+        } catch (e) {
+            console.log(`doSomething`, e);
             return false;
         }
-        const { token } = response.data;
-        const userId = window.store.state.user.id;
-
-        const socket = new WebSocket(
-            `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`
-        );
-
-        dispatch(() => actions.setSocket(chatId, socket));
-        let intervalSocketPing: number | null = null;
-
-        socket.addEventListener('open', () => {
-            dispatch(() => actions.setSocketReady(chatId, true));
-
-            intervalSocketPing = window.setInterval(() => {
-                socket.send(
-                    JSON.stringify({
-                        type: 'ping',
-                    })
-                );
-            }, 5000);
-        });
-
-        socket.addEventListener('close', (event) => {
-            console.log('close');
-
-            if (intervalSocketPing !== null) {
-                window.clearInterval(intervalSocketPing);
-            }
-
-            dispatch(() => actions.setSocketReady(chatId, false));
-
-            if (event.wasClean) {
-                console.log('Соединение закрыто чисто');
-            } else {
-                console.log('Обрыв соединения');
-            }
-            console.log(`Код: ${event.code} причина: ${event.reason}`);
-        });
-
-        socket.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
-            let messages: Array<MessageType> = [];
-            if (typeof data === 'object' && data.type === 'message') {
-                messages.push({ ...data, chat_id: chatId });
-            } else if (Array.isArray(data)) {
-                messages = data;
-            }
-
-            if (messages.length > 0) {
-                const messagesTransferedArray = transformMessages(messages);
-                dispatch(() => actions.setMessages(messagesTransferedArray));
-            }
-        });
-        return true;
     };
 
 export const sendMessage = (data: SendMessageType) => () => {
-    data.socket.send(
-        JSON.stringify({
-            content: data.message,
-            type: 'message',
-        })
-    );
+    try {
+        data.socket.send(
+            JSON.stringify({
+                content: data.message,
+                type: 'message',
+            })
+        );
+    } catch (e) {
+        console.log(`doSomething`, e);
+    }
 };
 
 export const getMessages =
     (chatId: number) => async (dispatch: DispatchThunk) => {
-        const { dialogs }: { dialogs: Array<DialogType> } =
-            window.store.state.chats;
-        const dialog: DialogType | undefined = dialogs.find(
-            (d: DialogType) => d.chatId === chatId
-        );
-        if (dialog) {
-            const { socket, isSocketReady } = dialog;
-            if (socket !== null && isSocketReady === true) {
-                socket.send(
-                    JSON.stringify({
-                        content: '0',
-                        type: 'get old',
-                    })
-                );
+        try {
+            const { dialogs }: { dialogs: Array<DialogType> } =
+                window.store.state.chats;
+            const dialog: DialogType | undefined = dialogs.find(
+                (d: DialogType) => d.chatId === chatId
+            );
+            if (dialog) {
+                const { socket, isSocketReady } = dialog;
+                if (socket !== null && isSocketReady === true) {
+                    socket.send(
+                        JSON.stringify({
+                            content: '0',
+                            type: 'get old',
+                        })
+                    );
+                }
             }
-        }
 
-        const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
+            const allUsersResponse = await ChatApi.getAllUsersInChat(chatId);
 
-        if (apiHasErrors(allUsersResponse.data)) {
+            if (apiHasErrors(allUsersResponse.data)) {
+                return false;
+            }
+            const allUsersTransferedArray = transformUsers(
+                allUsersResponse.data
+            );
+            dispatch(() =>
+                actions.setUsersDisplayName(allUsersTransferedArray, chatId)
+            );
+            return true;
+        } catch (e) {
+            console.log(`doSomething`, e);
             return false;
         }
-        const allUsersTransferedArray = transformUsers(allUsersResponse.data);
-        dispatch(() =>
-            actions.setUsersDisplayName(allUsersTransferedArray, chatId)
-        );
-        return true;
     };
 
 export const closeAllSockets = () => (dispatch: DispatchThunk) => {
-    const { dialogs } = window.store.state.chats;
-    dialogs.forEach((dialog: DialogType) => {
-        if (dialog.socket !== null) {
-            dialog.socket.close();
-            const { chatId } = dialog;
-            if (chatId !== null) {
-                dispatch(() => actions.removeSocket(chatId));
+    try {
+        const { dialogs } = window.store.state.chats;
+        dialogs.forEach((dialog: DialogType) => {
+            if (dialog.socket !== null) {
+                dialog.socket.close();
+                const { chatId } = dialog;
+                if (chatId !== null) {
+                    dispatch(() => actions.removeSocket(chatId));
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        console.log(`doSomething`, e);
+    }
 };

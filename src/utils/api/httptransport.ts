@@ -30,15 +30,15 @@ function queryStringify(data: any) {
         .join('&');
     return `?${stringified}`;
 }
-type MethodType<T = any, R = HTTPTransportResponseType<T>> = (url: string, options: Options) => Promise<R>
+// type MethodType<T = any, R = HTTPTransportResponseType<T>> = (url: string, options: Options) => Promise<R>
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class HTTPTransport {
 	private defaultHeaders = { accept: 'application/json', 'Content-Type': 'application/json' } as const;
 
-   get: MethodType<any> = (url, options = {} as Options) => {
-    // get<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> {
+//    get: MethodType<any> = (url, options = {} as Options) => {
+    get<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
         }
