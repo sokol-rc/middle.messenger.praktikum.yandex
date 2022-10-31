@@ -146,7 +146,7 @@ export default class Block<P extends Record<string, any>> {
         return this.element!;
     }
 
-    _makePropsProxy(props: any): any {
+    _makePropsProxy(props: P): P {
         const self = this;
         let waitProxy = false;
 

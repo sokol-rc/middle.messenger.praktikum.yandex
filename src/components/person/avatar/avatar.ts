@@ -1,8 +1,8 @@
 import Block from 'core/Block';
 import './avatar.css';
 import isEmpty from 'utils/helpers/isEmpty';
-import personAvatar from '../../../assets/avatar.png';
 import { BASE_URL } from 'utils/api/auth-api';
+import personAvatar from '../../../assets/avatar.png';
 
 interface Props {
 	image: string;
