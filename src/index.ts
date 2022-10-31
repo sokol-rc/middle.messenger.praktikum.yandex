@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const router = new Router('.app');
 
     window.store = store;
-    window.router = router;
+	window.router = router;
 
     initRouter(router);
 });

@@ -10,6 +10,7 @@ type Props = {
     toogleModal: () => void;
     onConfirm: () => void;
     onDecline: () => void;
+    closeAllSockets: () => void;
 };
 
 export default class ChatPage extends Block<Props> {
@@ -19,6 +20,15 @@ export default class ChatPage extends Block<Props> {
             toogleSidebar: this.toogleSidebar.bind(this),
             isVisible: true,
         });
+	}
+
+	componentWillUnmount(): void {
+		console.log('unmout');
+		// console.log(this.props.openedDialog);
+		
+		// if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) { 
+			this.props.closeAllSockets();
+		// }
 	}
 
 	componentDidMount(): void {

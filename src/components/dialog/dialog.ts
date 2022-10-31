@@ -56,14 +56,6 @@ export default class Dialog extends Block<Props> {
     handleClick() {
         this.props.toogleSidebar();
 	}
-	
-	componentWillUnmount(): void {
-		// console.log('unmout');
-		// if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) { 
-
-		// 	this.props.closeSocket(this.props.openedDialog);
-		// }
-	}
 
     componentDidMount(): void {
         const {

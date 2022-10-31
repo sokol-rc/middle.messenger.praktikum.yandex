@@ -1,7 +1,6 @@
 import { Component } from 'core/Block';
 import connect from 'core/connectHoc';
 import {
-	closeSocket,
     createWebSocketConnection,
     getMessages,
     sendMessage,
@@ -20,8 +19,7 @@ const mstp = (state: Indexed<any>): Indexed => ({
 const DialogContainer = connect(mstp, {
     sendMessage,
     getMessages,
-	createWebSocketConnection,
-	closeSocket
+    createWebSocketConnection,
 });
 
 export default DialogContainer(Dialog as Component);
