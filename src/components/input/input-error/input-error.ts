@@ -8,14 +8,12 @@ type Props = {
 export default class InputError extends Block<Props> {
     constructor({ ...props }: Props) {
         super({ ...props });
-		this.setProps({ isShowed: false });
-		
-		
+        this.setProps({ isShowed: false });
     }
 
     static componentName = 'InputError';
 
-	protected render(): string {
+    protected render(): string {
         return `
 		<div class="error-message">${
             this.props.isShowed ? this.props.errorMessage : ''

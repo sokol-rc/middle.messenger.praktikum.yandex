@@ -1,5 +1,6 @@
 :root {
     --error-page-bg-color: #d1d0d0;
+    --text-error-stroke: #000;
 }
 
 .error-page {
@@ -19,7 +20,7 @@
         font-size: 80vh;
         line-height: 1.3;
         mix-blend-mode: soft-light;
-        -webkit-text-stroke: 24px #000;
+        -webkit-text-stroke: 24px var(--text-error-stroke);
         backdrop-filter: blur(2px);
         transform: rotate(-28deg);
     }

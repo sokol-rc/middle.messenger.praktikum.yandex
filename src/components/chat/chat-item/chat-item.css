@@ -1,6 +1,7 @@
 :root {
     --chat-item-hover-bg-color: rgb(255 246 254);
     --chat-item-active-bg-color: rgb(255 228 251);
+	--message-preview-color: #747474;
 }
 
 .chat-preview {
@@ -37,7 +38,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: #747474;
+        color: var(--message-preview-color);
     }
 
     &--active {

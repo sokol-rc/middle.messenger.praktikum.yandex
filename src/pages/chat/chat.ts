@@ -1,14 +1,17 @@
 import Block from 'core/Block';
-import personAvatar from '../../assets/avatar.png';
-
+import { UserType } from 'utils/api/apiTypes';
+import isEmpty from 'utils/helpers/isEmpty';
 import './chat.css';
 
 type Props = {
-    isVisible: any;
+    isVisible: boolean;
+    user: UserType | null;
     toogleSidebar: () => void;
+    getUserInfo: () => void;
     toogleModal: () => void;
     onConfirm: () => void;
     onDecline: () => void;
+    closeAllSockets: () => void;
 };
 
 export default class ChatPage extends Block<Props> {
@@ -16,25 +19,23 @@ export default class ChatPage extends Block<Props> {
         super(props);
         this.setProps({
             toogleSidebar: this.toogleSidebar.bind(this),
-            toogleModal: this.toogleModal.bind(this),
-            onConfirm: this.onConfirm.bind(this),
-            onDecline: this.onDecline.bind(this),
             isVisible: true,
         });
     }
 
-    toogleModal() {
-        this.refs.ModalConfirmRef.setProps({
-            isVisible: !(this.refs.ModalConfirmRef.getProps() as any).isVisible,
-        });
+    componentWillUnmount(): void {
+        console.log('unmout');
+        // console.log(this.props.openedDialog);
+
+        // if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) {
+        this.props.closeAllSockets();
+        // }
     }
 
-    onConfirm() {
-        this.toogleModal();
-    }
-
-    onDecline() {
-        this.toogleModal();
+    componentDidMount(): void {
+        if (isEmpty(this.props.user)) {
+            this.props.getUserInfo();
+        }
     }
 
     toogleSidebar() {
@@ -48,39 +49,23 @@ export default class ChatPage extends Block<Props> {
 			<div>
 				<main class="chat-page full-page">
 					<nav class="nav-sidebar">
-						<div class="nav-sidebar__inner nav-sidebar--bg-main">
-							<div class="nav-sidebar__profile">
-								<div class="profile-info">
-									<div class="profile-info__avatar button-image"
-										onclick="sidebarRight.toogle(event,'chat-page__right-sidebar')">
-										{{{Avatar image="${personAvatar}"}}}
-									</div>
-								</div>
-							</div>
-						</div>
+						{{{NavSidebarContainer}}}
 					</nav>
 					<section class="chat-page__list">
-						{{{ChatList}}}
+						{{{ChatListContainer}}}
 					</section>
 					<section class="chat-page__dialog">
-						{{{Dialog 
+						{{{DialogContainer 
 							toogleSidebar=toogleSidebar
 						}}}
 					</section>
 					<div class="chat-page__right-sidebar">
-						{{{Sidebar 
+						{{{SideBarContainer 
 							toogleModal=toogleModal
 							ref="SidebarRef"
 						}}}
 					</div>
 				</main>
-				{{{ModalConfirm
-					label="Удалить чат?"
-					description="А вы уверены?"
-					onConfirm=onConfirm
-					onDecline=onDecline
-					ref="ModalConfirmRef"
-				}}}
 			</div>
 `;
     }

@@ -2,56 +2,79 @@ import Block from 'core/Block';
 import getFormValues from 'utils/formTools';
 import { inputValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
+import { ValidationHandlers } from 'utils/validate/validateTypes';
 
 import './login.css';
 
-type Props = {
-    onSubmit: (event: SubmitEvent) => void;
-    validateOnBlur: (input: ValidateInput) => void;
-    validateOnFocus: (input: ValidateInput) => void;
-    loginPattern: RegExp;
-    passwordPattern: RegExp;
+type LoginData = {
+    login: string;
+    password: string;
 };
 
+type Props = {
+    onSubmit: (event: SubmitEvent) => void;
+    loginPattern: RegExp;
+    passwordPattern: RegExp;
+    loginFormError: string;
+    isLoading: () => boolean;
+    onLogin: (loginData: LoginData) => void;
+    doLogin: (loginData: LoginData) => void;
+    onLogout: () => void;
+} & ValidationHandlers;
+
 export default class LoginPage extends Block<Props> {
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
             validateOnFocus: this.validateOnFocus.bind(this),
             loginPattern: this.patterns.loginPattern,
             passwordPattern: this.patterns.passwordPattern,
+            loginFormError: props.loginFormError,
+            onLogin: this.onLogin.bind(this),
         });
     }
 
     protected patterns = Patterns;
 
+    componentDidMount() {}
+
     validateOnFocus(inputRef: ValidateInput): void {
-		const isValid = this._validateRefs(inputRef);
-		this._displayError(isValid, inputRef);
+        const isValid = this._validateRefs(inputRef);
+        this._displayError(isValid, inputRef);
     }
 
     validateOnBlur(inputRef: ValidateInput): void {
-		const isValid = this._validateRefs(inputRef);
-		this._displayError(isValid, inputRef);
+        const isValid = this._validateRefs(inputRef);
+        this._displayError(isValid, inputRef);
+    }
+
+    onLogin(loginData: LoginData) {
+        this.props.doLogin(loginData);
     }
 
     onSubmit(event: SubmitEvent): void {
-		event.preventDefault();
-		const inputsRefs: ValidateInput[] = [
-			this.refs.loginInputRef,
-			this.refs.passwordInputRef,
-		];
-		
-        const formValues = getFormValues(inputsRefs);
+        event.preventDefault();
+        const inputsRefs: ValidateInput[] = [
+            this.refs.loginInputRef,
+            this.refs.passwordInputRef,
+        ];
+        let isFormValid: boolean = true;
+
+        const formValues: LoginData = getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
-			const isValid = this._validateRefs(inputRef);
+            const isValid = this._validateRefs(inputRef);
+            if (!isValid) {
+                isFormValid = false;
+            }
             this._displayError(isValid, inputRef);
         });
 
-        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+        if (isFormValid) {
+            this.onLogin(formValues);
+        }
     }
 
     private _validateRefs(inputRef: ValidateInput) {
@@ -78,6 +101,8 @@ export default class LoginPage extends Block<Props> {
 			onSubmit=onSubmit
 			ref="formRef"
 		}}
+		{{{Loader isLoading=isLoading}}}
+		<div class="form__error">${this.props.loginFormError}</div>
 		{{{Input 
 			wrapperClassName="form-input"
 			labelClassName="form-input__label"
@@ -138,7 +163,7 @@ export default class LoginPage extends Block<Props> {
 					Нет аккаунта?
 				</p>
 				{{{Link
-					href="#"
+					href="/sign-up"
 					label="Зарегистрироваться"
 					className="link link--standart"
 				}}}

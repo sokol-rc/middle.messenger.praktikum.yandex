@@ -1,6 +1,7 @@
 :root {
     --link-color-standart: #aaf;
     --btn-bg-submit-color: #6850f8;
+    --hr-border-bottom-color: #888686;
 }
 
 .visually-hidden {
@@ -24,30 +25,5 @@
     width: 100%;
     font-size: 0;
     line-height: 0;
-    border-bottom: 1px solid #888686;
-}
-
-.dev-header {
-    position: static;
-    background-color: beige;
-    display: flex;
-    justify-content: center;
-    padding: 15px;
-}
-
-.dev-header__inner {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    max-width: 1280px;
-    width: 100%;
-}
-
-.dev-link {
-    cursor: pointer;
-    color: #00e;
-}
-
-.dev-link:visited {
-    color: #551a8b;
+    border-bottom: 1px solid var(--hr-border-bottom-color);
 }

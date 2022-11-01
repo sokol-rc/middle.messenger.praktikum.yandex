@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default class ModalConfirm extends Block<Props> {
-	
     onConfirm() {
         this.props.onConfirm();
     }

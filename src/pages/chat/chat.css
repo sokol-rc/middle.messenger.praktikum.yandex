@@ -22,20 +22,3 @@
 .full-page {
     height: 100vh;
 }
-
-.nav-sidebar {
-    width: 100%;
-    max-width: 120px;
-    height: 100%;
-}
-
-.nav-sidebar__inner {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 30px;
-    height: 100%;
-}
-
-.nav-sidebar--bg-main {
-    background-color: var(--bg-main);
-}

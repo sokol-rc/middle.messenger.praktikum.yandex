@@ -6,7 +6,7 @@ type IncomingProps = {
     name?: string;
     className?: string;
     placeholder?: string;
-    pattern?: RegExp;
+    inputType?: string;
     onBlur: () => void;
     onFocus: () => void;
 };
@@ -32,14 +32,26 @@ export default class InputInner extends Block<Props> {
         return 'InputInner';
     }
 
-    protected render(): string {
+    render(): string {
+        const { className, id, type, placeholder, name, value, inputType } =
+            this.props;
+        if (typeof inputType !== 'undefined' && inputType === 'textarea') {
+            return `
+			<textarea
+			class="${className}"
+			id="${id}"
+			type="${type}"
+			placeholder="${placeholder}"
+			name="${name}"
+			value="${value}">`;
+        }
         return `
 			<input
-			class="${this.props.className}"
-			id="${this.props.id}"
-			type="${this.props.type}"
-			placeholder="${this.props.placeholder}"
-			name="${this.props.name}"
-			value="${this.props.value}">`;
+			class="${className}"
+			id="${id}"
+			type="${type}"
+			placeholder="${placeholder}"
+			name="${name}"
+			value="${value}">`;
     }
 }

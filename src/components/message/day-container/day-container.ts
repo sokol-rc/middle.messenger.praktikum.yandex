@@ -1,8 +1,6 @@
 import Block from 'core/Block';
 
-
 export default class DayContainer extends Block<{}> {
-
     static componentName = 'DayContainer';
 
     protected render(): string {

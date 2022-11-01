@@ -1,22 +1,50 @@
 import Block from 'core/Block';
+import { DialogType } from 'core/store/initial-store';
 import './sidebar.css';
 
 interface Props {
     isVisible: boolean;
+    isVisibleModal: boolean;
+    chatsListLoaded: boolean;
+    openedDialogId: number;
     toogleModal: () => void;
+    onConfirm: () => void;
+    onDecline: () => void;
+    deleteChat: (openedDialogId: number) => void;
+    openedDialog: DialogType;
 }
 export default class Sidebar extends Block<Props> {
     constructor(props: Props) {
         super({ ...props, isVisible: true });
+        this.setProps({
+            toogleModal: this.toogleModal.bind(this),
+            onConfirm: this.onConfirm.bind(this),
+            onDecline: this.onDecline.bind(this),
+            isVisibleModal: false,
+        });
     }
 
-    static componentName = 'Sidebar';
+    static componentName = 'SideBarContainer';
 
     toogleModal() {
-        this.props.toogleModal();
+        this.setProps({ isVisibleModal: true });
+    }
+
+    onConfirm() {
+        console.log('delete chat');
+        this.props.deleteChat(this.props.openedDialogId);
+        this.setProps({ isVisibleModal: false });
+    }
+
+    onDecline() {
+        this.setProps({ isVisibleModal: false });
     }
 
     protected render(): string {
+        const { chatsListLoaded, openedDialog } = this.props;
+        if (!chatsListLoaded) {
+            return '<div></div>';
+        }
         let classVisible: string = '';
         if (this.props.isVisible) {
             classVisible = 'right-sidebar--opened';
@@ -26,15 +54,10 @@ export default class Sidebar extends Block<Props> {
 		<div class="right-sidebar__inner">
 			<div class="chat-info">
 				<div class="chat-info__description">
-					{{{Avatar}}}
-					{{{PersonName name="Дворник Частный"}}}
+					{{{Avatar image="${openedDialog.chatInfoObject.avatar}" alt="Аватар чата ${openedDialog.chatInfoObject.title}"}}}
+					{{{PersonName name="${openedDialog.chatInfoObject.title}"}}}
 				</div>
 				<div class="chat-info__control">
-					{{{Link
-						href="/profile"
-						label="Редактировать"
-						className="chat-info__control-item chat-edit"
-					}}}
 					{{{Button
 						label="Удалить чат"
 						className="chat-info__control-item chat-delete button-text"
@@ -43,6 +66,14 @@ export default class Sidebar extends Block<Props> {
 				</div>
 			</div>
 		</div>
+		{{{ModalConfirm
+			label="Удалить чат?"
+			description="А вы уверены?"
+			onConfirm=onConfirm
+			onDecline=onDecline
+			isVisible=isVisibleModal
+			ref="ModalConfirmRef"
+		}}}
 	</aside>`;
     }
 }

@@ -10,7 +10,8 @@ export default function registerComponent<Props extends any>(
         function (
             this: Props,
             { hash: { ref, ...hash }, data, fn }: HelperOptions
-        ) {
+		) {
+			
             if (!data.root.children) {
                 data.root.children = {};
             }

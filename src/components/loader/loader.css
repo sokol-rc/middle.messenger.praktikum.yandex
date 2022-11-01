@@ -1,0 +1,145 @@
+:root {
+    --loader-color: #ce4233;
+    --loader-bg-1: #a7caed;
+    --loader-bg-2: #1976d2;
+}
+
+.loader-wrapper {
+    background: rgb(2 0 36);
+    background: radial-gradient(
+        circle,
+        rgb(2 0 36 / 100%) 0%,
+        rgb(244 244 244 / 33.1%) 0%,
+        rgb(0 212 255 / 100%) 100%
+    );
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 99999;
+}
+
+.loader {
+    width: 250px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: helvetica, arial, sans-serif;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: var(--loader-color);
+    letter-spacing: 0.2em;
+}
+
+.loader::before,
+.loader::after {
+    content: '';
+    display: block;
+    width: 15px;
+    height: 15px;
+    background: var(--loader-color);
+    position: absolute;
+    animation: load 0.7s infinite alternate ease-in-out;
+}
+
+.loader::before {
+    top: 0;
+}
+
+.loader::after {
+    bottom: 0;
+}
+@keyframes load {
+    0% {
+        left: 0;
+        height: 30px;
+        width: 15px;
+    }
+
+    50% {
+        height: 8px;
+        width: 40px;
+    }
+
+    100% {
+        left: 235px;
+        height: 30px;
+        width: 15px;
+    }
+}
+
+.loader-line-wrapper {
+    height: 4px;
+    z-index: 0;
+    background-color: var(--loader-bg-1);
+    display: block;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.loader-line1 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    transition: -webkit-transform 0.2s linear;
+    transition: transform 0.2s linear;
+    transform-origin: left;
+    background-color: var(--loader-bg-2);
+    width: auto;
+    animation: loader1 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+.loader-line2 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    transition: -webkit-transform 0.2s linear;
+    transition: transform 0.2s linear;
+    transform-origin: left;
+    background-color: var(--loader-bg-2);
+    width: auto;
+    animation: loader2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
+}
+@keyframes loader1 {
+    0% {
+        left: -200%;
+        right: 100%;
+    }
+
+    60% {
+        left: 107%;
+        right: -8%;
+    }
+
+    100% {
+        left: 107%;
+        right: -8%;
+    }
+}
+@keyframes loader2 {
+    0% {
+        left: -35%;
+        right: 100%;
+    }
+
+    60% {
+        left: 100%;
+        right: -90%;
+    }
+
+    100% {
+        left: 100%;
+        right: -90%;
+    }
+}

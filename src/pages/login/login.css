@@ -1,6 +1,7 @@
 :root {
     --dark-bg-color: #4a545a;
     --dark2-bg-color: #5c2e44;
+    --light-text-color: #fff;
 }
 
 .layout-container {
@@ -58,7 +59,7 @@
         position: absolute;
         bottom: 0;
         border-radius: 0 0 10px 10px;
-        color: #fff;
+        color: var(--light-text-color);
         display: flex;
         align-items: center;
     }
@@ -74,6 +75,10 @@
         text-align: center;
         margin-right: 10px;
     }
+
+    &__error {
+        color: red;
+    }
 }
 
 .form__check {
@@ -88,7 +93,7 @@
     }
 
     &__label {
-        color: #fff;
+        color: var(--light-text-color);
         font-weight: 300;
         font-size: 16px;
         line-height: 19px;
@@ -99,7 +104,7 @@
     margin-bottom: 30px;
 
     &__title {
-        color: #fff;
+        color: var(--light-text-color);
         font-weight: 400;
         font-size: 48px;
     }
@@ -107,7 +112,7 @@
 
 .btn--submit-style {
     background-color: var(--btn-bg-submit-color);
-    color: #fff;
+    color: var(--light-text-color);
 }
 
 .form-btns {

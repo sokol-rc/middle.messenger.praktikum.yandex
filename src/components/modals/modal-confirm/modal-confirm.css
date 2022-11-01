@@ -1,3 +1,8 @@
+:root {
+    --modal-default-border: #000;
+    --modal-bg-color: #fff;
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -23,7 +28,7 @@
     }
 
     &__window {
-        background: #fff;
+        background: var(--modal-bg-color);
         width: 600px;
         max-width: 100%;
         z-index: 9000;
@@ -43,7 +48,7 @@
     }
 
     &__button {
-        border: 1px solid #000;
+        border: 1px solid var(--modal-default-border);
         border-radius: 5px;
         width: 200px;
         padding: 14px;

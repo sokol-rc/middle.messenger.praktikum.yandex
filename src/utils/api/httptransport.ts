@@ -1,10 +1,24 @@
+import { HTTPTransportResponseType } from "./apiTypes";
+
 type METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-type Options = {
-    method?: METHOD;
-    data?: any;
+type HttpHeaders = {
+    [key: string]: string;
+};
+
+type BodyInit =
+    | Blob
+    | BufferSource
+    | FormData
+    | URLSearchParams
+    | string;
+
+export type Options = {
     timeout?: number;
-    headers?: Record<string, string>;
+    headers?: HttpHeaders;
+    method?: METHOD;
+	data?: Record<string, any>| Document | BodyInit | XMLHttpRequestBodyInit | null | undefined;
+	credentials?: boolean;
 };
 
 function queryStringify(data: any) {
@@ -19,27 +33,33 @@ function queryStringify(data: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class HTTPTransport {
-    get = (url: string, options: Options = {}) => {
+	private defaultHeaders = { accept: 'application/json', 'Content-Type': 'application/json' } as const;
+
+
+    get<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
         }
-        return this.request(
-            url,
-            { ...options, method: 'GET' }
-        );
+		return this.request(url, { ...options, method: 'GET' })
     };
 
-    put = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: 'PUT' });
+	put<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
+		return this.request(url, { ...options, method: 'PUT' });
+	}
+        
 
-    post = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: 'POST' });
+	post<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
+		return this.request(url, { ...options, method: 'POST' });
+	}
+        
 
-    delete = (url: string, options: Options = {}) =>
-        this.request(url, { ...options, method: 'DELETE' });
+	delete<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
+		return this.request(url, { ...options, method: 'DELETE' });
+	}
+        
 
-    request = (url: string, options: Options) => {
-        const { timeout = 5000, headers = {}, data, method } = options;
+    request = (url: string, options: Options): Promise<any> => {
+        const { timeout = 5000, headers = this.defaultHeaders, data, method } = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -47,14 +67,23 @@ class HTTPTransport {
                 xhr.open(method, url);
             }
 
-            xhr.timeout = timeout;
+            xhr.timeout = Number(timeout);
+            xhr.withCredentials = true;
 
             Object.keys(headers).forEach((key) => {
                 xhr.setRequestHeader(key, headers[key]);
             });
 
-            xhr.onload = () => {
-                resolve(xhr);
+			xhr.onload = () => {
+				let response: Record<string, any> | string;
+				const isJson = xhr.getResponseHeader('Content-Type')?.includes('application/json');
+				if (isJson) {
+					response = { status: xhr.status, data: JSON.parse(xhr.responseText) }
+				} else { 
+					response = { status: xhr.status, data: xhr.responseText }
+				}
+			  
+				resolve(response);
             };
             xhr.onabort = () => {
                 reject();
@@ -69,9 +98,15 @@ class HTTPTransport {
 
             if (method === 'GET' || !data) {
                 xhr.send();
-            } else {
-                xhr.send(data);
-            }
+			} else if (method === 'PUT' && data) {
+                xhr.send(data as any);
+			} else if (typeof data !== 'string') {
+					xhr.send(JSON.stringify(data));
+				} else { 
+					xhr.send(data);
+				}
         });
     };
 }
+
+export default new HTTPTransport();

@@ -1,3 +1,7 @@
+:root {
+    --disk-menu-bg-color: #000;
+}
+
 .sidebar-button {
     display: flex;
     max-width: 30px;
@@ -12,6 +16,6 @@
     width: 6px;
     height: 6px;
     border-radius: 5px;
-    background-color: #000;
+    background-color: var(--disk-menu-bg-color);
     margin: 3px 0;
 }

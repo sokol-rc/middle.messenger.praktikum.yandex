@@ -1,13 +1,15 @@
 import Block from 'core/Block';
 import './message-preview.css';
 
-export default class MessagePreview extends Block<{}> {
+type Props = {
+    message: string;
+};
+export default class MessagePreview extends Block<Props> {
     static componentName = 'MessagePreview';
 
     protected render(): string {
         return `<div class="message-preview">
-		<span class="message-preview__text">Привет! я тут погляжу ты чат рисуешь. А вот внизу там
-			криво, и контраст местами такой...</span>
+		<span class="message-preview__text">${this.props.message}</span>
 	</div>`;
     }
 }

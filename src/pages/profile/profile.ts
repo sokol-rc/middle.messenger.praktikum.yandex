@@ -1,24 +1,32 @@
 import Block from 'core/Block';
-import getFormValues from 'utils/formTools';
+import { UserProfileType } from 'reducers/thunkTypes';
+import getFormValues, { getAvatarFormValue } from 'utils/formTools';
 import { inputValidate, repeatPasswordValidate } from 'utils/validate/validate';
 import Patterns from 'utils/validate/validate-pattenrs';
+import { ValidationHandlers } from 'utils/validate/validateTypes';
 
 import './profile.css';
 
+export type FormValuesFormData<FormValues> = FormValues & { avatar?: FormData };
+
 type Props = {
+    user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
-    validateOnBlur: (input: ValidateInput) => void;
-    validateOnFocus: (input: ValidateInput) => void;
+    getUserInfo: () => void;
+    saveUserInfo: (data: {
+        data: UserProfileType;
+        avatar: FormData | null;
+    }) => void;
     personNamePattern: RegExp;
     loginPattern: RegExp;
     emailPattern: RegExp;
     phonePattern: RegExp;
     passwordPattern: RegExp;
-};
+} & ValidationHandlers;
 
 export default class ProfilePage extends Block<Props> {
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
         this.setProps({
             onSubmit: this.onSubmit.bind(this),
             validateOnBlur: this.validateOnBlur.bind(this),
@@ -28,10 +36,17 @@ export default class ProfilePage extends Block<Props> {
             emailPattern: this.patterns.emailPattern,
             phonePattern: this.patterns.phonePattern,
             passwordPattern: this.patterns.passwordPattern,
+            user: this.props.user,
         });
     }
 
     protected patterns = Patterns;
+
+    componentDidMount(): void {
+        if (this.props.user !== null) {
+            this.props.getUserInfo();
+        }
+    }
 
     validateOnFocus(inputRef: ValidateInput): void {
         let isValid: boolean = true;
@@ -41,11 +56,11 @@ export default class ProfilePage extends Block<Props> {
             isValid = repeatPasswordValidate(
                 this.refs.oldPasswordInputRef,
                 this.refs.newPasswordInputRef
-			);
-			ref = this.refs.newPasswordInputRef;
+            );
+            ref = this.refs.newPasswordInputRef;
         } else {
-			isValid = this._validateRefs(inputRef);
-			ref = inputRef;
+            isValid = this._validateRefs(inputRef);
+            ref = inputRef;
         }
         this._displayError(isValid, ref);
     }
@@ -58,31 +73,36 @@ export default class ProfilePage extends Block<Props> {
             isValid = repeatPasswordValidate(
                 this.refs.oldPasswordInputRef,
                 this.refs.newPasswordInputRef
-			);
-			ref = this.refs.newPasswordInputRef;
+            );
+            ref = this.refs.newPasswordInputRef;
         } else {
-			isValid = this._validateRefs(inputRef);
-			ref = inputRef;
+            isValid = this._validateRefs(inputRef);
+            ref = inputRef;
         }
         this._displayError(isValid, ref);
     }
 
     onSubmit(event: SubmitEvent): void {
         event.preventDefault();
+        let isValidateHasErrors = false;
 
         const inputsRefs: ValidateInput[] = [
             this.refs.firstNameInputRef,
             this.refs.secondNameInputRef,
             this.refs.loginInputRef,
+            this.refs.displayNameInputRef,
             this.refs.emailInputRef,
             this.refs.phoneInputRef,
             this.refs.oldPasswordInputRef,
             this.refs.newPasswordInputRef,
         ];
-        const formValues = getFormValues(inputsRefs);
+        const formValues = <UserProfileType>getFormValues(inputsRefs);
 
         inputsRefs.forEach((inputRef: ValidateInput) => {
             const isValid = this._validateRefs(inputRef);
+            if (!isValid) {
+                isValidateHasErrors = true;
+            }
             this._displayError(isValid, inputRef);
         });
 
@@ -90,11 +110,13 @@ export default class ProfilePage extends Block<Props> {
             this.refs.oldPasswordInputRef,
             this.refs.newPasswordInputRef
         );
-        console.log(matchPassword);
 
         this._displayError(matchPassword, this.refs.newPasswordInputRef);
 
-        console.log(formValues); // вывод в консоль по ТЗ, а вот комментарий запрещен ¯\_(ツ)_/¯
+        const avatar = getAvatarFormValue('.avatar-input__input');
+        if (!isValidateHasErrors) {
+            this.props.saveUserInfo({ data: formValues, avatar });
+        }
     }
 
     private _validateRefs(inputRef: ValidateInput) {
@@ -113,29 +135,29 @@ export default class ProfilePage extends Block<Props> {
         return `
 		<main class="profile-page layout-container">
 		<div class="profile-page__inner">
-			<div class="profile-page__view profile-page__view--hidden">
+			<div class="profile-page__view">
 				<div class="profile-page__avatar">
-					{{{Avatar}}}
+					{{{Avatar image="${this.props.user.avatar}"}}}
 				</div>
 				<div class="profile-page__data">
 					<div class="person-data">
 						<div class="person-data__item person-data__first-name">
-							Имя: Евгений
+							Имя: ${this.props.user.firstName || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__second-name">
-							Фамилия: Соколовский
+							Фамилия: ${this.props.user.secondName || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__display-name">
-							Отображаемое имя: sokoljd872ews
+							Отображаемое имя: ${this.props.user.displayName || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__login">
-							Логин: sokoljd872ews
+							Логин: ${this.props.user.login || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__email">
-							Email: cokol-rc@yandex.ru
+							Email: ${this.props.user.email || 'пусто'}
 						</div>
 						<div class="person-data__item person-data__phone">
-							Телефон: +7-911-911-91-91
+							Телефон: ${this.props.user.phone || 'пусто'}
 						</div>
 					</div>
 				</div>
@@ -147,8 +169,16 @@ export default class ProfilePage extends Block<Props> {
 			}}
 			<div class="person-data-form__avatar avatar-input">
 			{{{Avatar}}}
-			<label class="avatar-input__label visually-hidden" for="personFormAvatar">Аватарка</label>
-			<input class="avatar-input__input" name="avatar" id="personFormAvatar" type="file" value="">
+			{{{Input 
+				wrapperClassName=""
+				labelClassName="avatar-input__label visually-hidden"
+				className="avatar-input__input"
+				type="file" 
+				name="avatar" 
+				label="Аватарка" 
+				placeholder=""
+				ref="avatarInputRef"
+			}}}
 		</div>
 		<div class="person-data-form__person-data">
 		{{{Input 

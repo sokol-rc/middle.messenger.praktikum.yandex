@@ -1,6 +1,12 @@
 :root {
     --message-status-received: #51b050;
     --message-status-readed: green;
+    --dialog-window-bg-color: rgb(100 110 85);
+    --hr-color: #888686;
+    --send-form-shadow: rgb(0 0 0 / 6%);
+    --send-input-placeholder: #a2acb4;
+    --incoming-message-bg-color: #fff;
+    --outgoing-message-bg-color: rgb(247 216 177);
 }
 
 .dialog-window {
@@ -27,6 +33,8 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+        overflow: hidden;
+        position: relative;
     }
 
     &__controls {
@@ -35,7 +43,7 @@
 }
 
 .dialog-window__body--bg-dialog {
-    background-color: rgb(100 110 85);
+    background-color: var(--dialog-window-bg-color);
 }
 
 .dialog-header {
@@ -55,16 +63,24 @@
 }
 
 .hr-left {
-    border-left: 1px solid #888686;
+    border-left: 1px solid var(--hr-color);
 }
 
 .profile-info {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
 }
 
-.profile-info__avatar {
-    margin-right: 16px;
+.profile-info__control {
+    flex-direction: column;
+    padding: 5px;
+    display: flex;
+    font-size: 14px;
+}
+
+.dialog-window__chat-info {
+    display: flex;
 }
 
 .message-send {
@@ -80,15 +96,79 @@
     &__input-group {
         flex-grow: 1;
     }
+
+    &__submit {
+        padding: 5px 15px;
+    }
+
+    &__wrapper {
+        position: relative;
+        flex-direction: row;
+        justify-content: flex-start;
+        display: flex;
+        width: 100%;
+    }
+}
+
+.send-form-input {
+    &__input {
+        width: 100%;
+        resize: vertical;
+        padding: 15px;
+        border-radius: 15px;
+        border: 0;
+        box-shadow: 4px 4px 10px var(--send-form-shadow);
+        height: 50px;
+    }
+
+    &__input::before {
+        color: var(--send-input-placeholder);
+        content: attr(data-placeholder);
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+    }
+
+    &__input:empty::before {
+        opacity: 1;
+    }
+}
+
+.fake-input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
 }
 
 .dialog-scrollable-content {
     padding-bottom: 20px;
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 7px;
+    bottom: 0;
+}
+
+.scroll-y {
+    position: relative;
+    overflow-y: scroll;
+}
+
+.scroll-theme {
+    scrollbar-color: transparent transparent;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+}
+
+.scroll-theme:hover {
+    scrollbar-color: var(--scrollbar-color) transparent;
 }
 
 .bubbles-day-section {
-    max-width: 90%;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0 30px;
+    padding: 0 10px;
     display: flex;
     flex-direction: column;
 }
@@ -97,48 +177,6 @@
     width: 100%;
     display: flex;
     margin-bottom: 8px;
-}
-
-.bubble {
-    width: 100%;
-    display: flex;
-    position: relative;
-
-    &__inner {
-        max-width: 85%;
-        display: flex;
-        padding: 8px 10px;
-        border-radius: 10px;
-        position: relative;
-    }
-
-    &__time {
-        display: inline-block;
-        min-width: 50px;
-    }
-
-    &__tail-in {
-        fill: #fff;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        transform: translate(-9px, 0);
-    }
-
-    &__tail-out {
-        fill: rgb(247 216 177);
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        transform: translate(9px, 0);
-    }
-
-    &__sending-status {
-        position: absolute;
-        right: 5;
-        bottom: 0;
-        z-index: 2;
-    }
 }
 
 .sending-status {
@@ -181,7 +219,7 @@
 }
 
 .bubble-in .bubble__inner {
-    background-color: #fff;
+    background-color: var(--incoming-message-bg-color);
 }
 
 .bubble-out .time__inner {
@@ -189,5 +227,5 @@
 }
 
 .bubble-out .bubble__inner {
-    background-color: rgb(247 216 177);
+    background-color: var(--outgoing-message-bg-color);
 }

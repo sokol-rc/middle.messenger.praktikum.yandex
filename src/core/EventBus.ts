@@ -10,7 +10,6 @@ export default class EventBus<
         if (!this.listeners[event]) {
             this.listeners[event] = [];
         }
-
         this.listeners[event]!.push(callback);
     }
 
@@ -32,5 +31,9 @@ export default class EventBus<
         this.listeners[event]!.forEach((listener) => {
             listener(...args);
         });
+    }
+
+    destroy() {
+        this.listeners = {};
     }
 }

@@ -9,6 +9,7 @@ export default class Block<P extends Record<string, any>> {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
         FLOW_CDU: 'flow:component-did-update',
+        FLOW_CWU: 'flow:component-will-unmount',
         FLOW_RENDER: 'flow:render',
     } as const;
 
@@ -20,11 +21,11 @@ export default class Block<P extends Record<string, any>> {
 
     protected readonly props: P;
 
-	protected children: { [id: string]: Block<{}> } = {};
+    protected children: { [id: string]: Block<{}> } = {};
 
     eventBus: () => EventBus<Events>;
 
-	protected refs: { [key: string]: Block<{}> } = {};
+    protected refs: { [key: string]: Block<{}> } = {};
 
     public constructor(props?: P) {
         const eventBus = new EventBus<Events>();
@@ -41,6 +42,11 @@ export default class Block<P extends Record<string, any>> {
     _registerEvents(eventBus: EventBus<Events>) {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+        eventBus.on(
+            Block.EVENTS.FLOW_CWU,
+            this._componentWillUnmount.bind(this)
+        );
+        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
 
@@ -53,7 +59,22 @@ export default class Block<P extends Record<string, any>> {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
 
+	_componentDidMount() {
+		this._checkInDom();
+        this.componentDidMount();
+    }
+
+	_componentWillUnmount() {
+		this.eventBus().destroy();
+        this.componentWillUnmount();
+    }
+
+    componentWillUnmount() {}
+
+    componentDidMount() {}
+
     _componentDidUpdate() {
+
         const response = true;
         if (!response) {
             return;
@@ -69,7 +90,7 @@ export default class Block<P extends Record<string, any>> {
         return this.props;
     }
 
-    setProps(nextProps: P) {
+    setProps(nextProps: Partial<P>) {
         if (!nextProps) {
             return;
         }
@@ -79,6 +100,17 @@ export default class Block<P extends Record<string, any>> {
 
     get element() {
         return this._element;
+    }
+
+    _checkInDom() {
+        const elementInDOM = document.body.contains(this._element);
+
+        if (elementInDOM) {
+            setTimeout(() => this._checkInDom(), 1000);
+            return;
+        }
+
+        this.eventBus().emit(Block.EVENTS.FLOW_CWU, this.props);
     }
 
     _render() {
@@ -108,15 +140,15 @@ export default class Block<P extends Record<string, any>> {
                 ) {
                     this.eventBus().emit(Block.EVENTS.FLOW_CDM);
                 }
-            }, 100);
+            }, 200);
         }
 
         return this.element!;
     }
 
-	_makePropsProxy(props: any): any {
-		
+    _makePropsProxy(props: P): P {
         const self = this;
+        let waitProxy = false;
 
         return new Proxy(props as unknown as object, {
             get(target: Record<string, unknown>, prop: string) {
@@ -124,13 +156,21 @@ export default class Block<P extends Record<string, any>> {
                 return typeof value === 'function' ? value.bind(target) : value;
             },
             set(target: Record<string, unknown>, prop: string, value: unknown) {
+                if (
+                    typeof target[prop] !== 'undefined' &&
+                    value === target[prop]
+                ) {
+                    return true;
+                }
                 target[prop] = value;
+                if (!waitProxy) {
+                    waitProxy = true;
+                    setTimeout(() => {
+                        self.eventBus().emit(Block.EVENTS.FLOW_CDU, target);
+                        waitProxy = false;
+                    }, 100);
+                }
 
-                self.eventBus().emit(
-                    Block.EVENTS.FLOW_CDU,
-                    { ...target },
-                    target
-                );
                 return true;
             },
             deleteProperty() {
@@ -144,7 +184,7 @@ export default class Block<P extends Record<string, any>> {
     }
 
     _removeEvents() {
-        const { events } = this.props as any;
+        const { events } = this.props as P;
 
         if (!events || !this._element) {
             return;
@@ -158,7 +198,7 @@ export default class Block<P extends Record<string, any>> {
     }
 
     _addEvents() {
-        const { events = {} } = this.props as any;
+        const { events = {} } = this.props as P;
 
         if (!events) {
             return;
@@ -171,19 +211,17 @@ export default class Block<P extends Record<string, any>> {
         });
     }
 
-	_compile(): DocumentFragment {
-		
+    _compile(): DocumentFragment {
         const fragment = document.createElement('template');
-		const template = Handlebars.compile(this.render());
-		
+        const template = Handlebars.compile(this.render());
+
         fragment.innerHTML = template({
             ...this.props,
             children: this.children,
             refs: this.refs,
         });
 
-		Object.entries(this.children).forEach(([id, component]) => {
-			
+        Object.entries(this.children).forEach(([id, component]) => {
             const stub = fragment.content.querySelector(`[data-id="${id}"]`);
 
             if (!stub) {
@@ -205,11 +243,12 @@ export default class Block<P extends Record<string, any>> {
         return fragment.content;
     }
 
-    show() {
-        this.getContent().style.display = 'block';
-    }
-
     hide() {
-        this.getContent().style.display = 'none';
+        if (this._element) {
+            this.eventBus().emit(Block.EVENTS.FLOW_CWU);
+            this._element.remove();
+        }
     }
 }
+
+export type Component = typeof Block;
