@@ -52,9 +52,12 @@ export default class Router {
     }
 
     async _onRoute(pathname: string) {
-        if (!antiDOS()) {
-            return;
+        if (!process.env.DEBUG) {
+            if (!antiDOS()) {
+                return;
+            }
         }
+
         const routeWithFlags = this.getRoute(pathname);
 
         if (typeof routeWithFlags === 'undefined') {
@@ -66,19 +69,20 @@ export default class Router {
             return;
         }
         const { route, flags } = routeWithFlags;
-
-        const isAuth = await isAuthorized();
-        if (flags.shouldAuthorized && !isAuth) {
-            this.go('/');
-            return;
-        }
-        if (flags.shouldNotAuthorized && isAuth) {
-            if (this._currentRoute) {
-                this._currentRoute.render();
-            } else {
-                this.go('/messenger');
+        if (!process.env.DEBUG) {
+            const isAuth = await isAuthorized();
+            if (flags.shouldAuthorized && !isAuth) {
+                this.go('/');
+                return;
             }
-            return;
+            if (flags.shouldNotAuthorized && isAuth) {
+                if (this._currentRoute) {
+                    this._currentRoute.render();
+                } else {
+                    this.go('/messenger');
+                }
+                return;
+            }
         }
 
         if (this._currentRoute) {
