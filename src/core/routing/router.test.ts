@@ -42,7 +42,7 @@ describe('core/touting/router', () => {
         router.go('/messenger');
         router.go('/settings');
         router.go('/500');
-
+		// @ts-expect-error
         expect(router.history.length).toEqual(5);
     });
 });

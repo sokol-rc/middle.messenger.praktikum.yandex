@@ -1,6 +1,8 @@
 const path = require('path');
+const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
 const mode = 'development';
 const devMode = 'development';
@@ -21,11 +23,12 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.json'],
         alias: {
-            core: './src/core/',
-            utils: './src/utils',
-            services: './src/services',
-            hoc: './src/hoc',
-            reducers: './src/reducers',
+            core: path.resolve(__dirname, 'src/core/'),
+            utils: path.resolve(__dirname, 'src/utils/'),
+            services: path.resolve(__dirname, 'src/services/'),
+            hoc: path.resolve(__dirname, 'src/hoc/'),
+            reducers: path.resolve(__dirname, 'src/reducers/'),
+            handlebars: 'handlebars/dist/handlebars.min.js',
         },
     },
     plugins: [
@@ -35,7 +38,15 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css',
         }),
+        new webpack.DefinePlugin({
+            'process.env': JSON.stringify(dotenv.parsed),
+            'process.env.DEBUG': false,
+        }),
     ],
+    devServer: {
+        port: 3000,
+        historyApiFallback: true,
+    },
     module: {
         rules: [
             {
@@ -60,6 +71,10 @@ module.exports = {
                     'css-loader',
                     'postcss-loader',
                 ],
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
             },
         ],
     },
