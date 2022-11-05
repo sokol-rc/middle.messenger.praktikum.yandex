@@ -5,8 +5,8 @@ import Router from './router';
 import RegistrationPageContainer from '../../pages/registration/registrationContainer';
 
 describe('core/touting/router', () => {
+	const router = new Router('.app');
     it('should get Route object by pathname', () => {
-        const router = new Router('.app');
         initRouter(router);
 
         const route = new Route('/sign-up', RegistrationPageContainer, {
@@ -19,7 +19,6 @@ describe('core/touting/router', () => {
     });
 
     it('Should add new route', () => {
-        const router = new Router('.app');
         const routes = {
             path: '/new-path',
             component: RegistrationPageContainer,
@@ -37,7 +36,7 @@ describe('core/touting/router', () => {
     });
 
     it('Shoult increment router history', () => {
-        const router = new Router('.app');
+
         initRouter(router);
 
         router.go('/messenger');

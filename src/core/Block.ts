@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
-import Handlebars from 'handlebars';
 import EventBus from './EventBus';
+// import Handlebars from 'handlebars';
+const Handlebars = require('handlebars')
 
 type Events = Values<typeof Block.EVENTS>;
 
