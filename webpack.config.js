@@ -1,13 +1,12 @@
 const path = require('path');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config({ path: './.env' });
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
-const mode = 'development';
-const devMode = 'development';
+const mode = process.env.NODE_ENV || 'development';
+const devMode = mode === 'development';
 
-const target = devMode ? 'web' : 'browserlist';
+const target = devMode ? 'web' : 'browserslist';
 const devtool = devMode ? 'source-map' : undefined;
 
 module.exports = {
@@ -31,20 +30,23 @@ module.exports = {
             handlebars: 'handlebars/dist/handlebars.min.js',
         },
     },
+    performance: {
+        hints: false,
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'src', 'index.html'),
         }),
-        new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css',
-        }),
         new webpack.DefinePlugin({
             'process.env': JSON.stringify(dotenv.parsed),
-            'process.env.DEBUG': false,
         }),
+        new webpack.HotModuleReplacementPlugin(),
     ],
     devServer: {
         port: 3000,
+        open: true,
+        compress: true,
+        hot: true,
         historyApiFallback: true,
     },
     module: {
@@ -66,11 +68,7 @@ module.exports = {
             },
             {
                 test: /\.css$/i,
-                use: [
-                    devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'postcss-loader',
-                ],
+                use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,

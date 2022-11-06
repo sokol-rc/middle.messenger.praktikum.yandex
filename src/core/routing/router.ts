@@ -52,7 +52,11 @@ export default class Router {
     }
 
     async _onRoute(pathname: string) {
-        if (!process.env.DEBUG) {
+        console.log(111222);
+        console.log(process.env.NODE_ENV);
+
+        // if (process.env.NODE_ENV === 'production') {
+        if (true) {
             if (!antiDOS()) {
                 return;
             }
@@ -69,7 +73,8 @@ export default class Router {
             return;
         }
         const { route, flags } = routeWithFlags;
-        if (!process.env.DEBUG) {
+        // if (process.env.NODE_ENV === 'production') {
+        if (true) {
             const isAuth = await isAuthorized();
             if (flags.shouldAuthorized && !isAuth) {
                 this.go('/');
