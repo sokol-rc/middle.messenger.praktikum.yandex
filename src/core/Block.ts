@@ -3,8 +3,6 @@ import EventBus from './EventBus';
 // import Handlebars from 'handlebars';
 const Handlebars = require('handlebars');
 
-// for test commit
-
 type Events = Values<typeof Block.EVENTS>;
 
 export default class Block<P extends Record<string, any>> {
