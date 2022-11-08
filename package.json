@@ -9,7 +9,7 @@
         "build": "cross-env NODE_ENV=production webpack",
         "lint": "eslint ./src/**/*.ts --fix && stylelint ./src/**/*.css --fix",
         "test": "jest",
-        "pre-commit": "npm run test && npm run lint",
+        "pre-commit": "npx lint-staged",
         "start-webpack": "webpack serve",
         "build-webpack": "webpack"
     },
