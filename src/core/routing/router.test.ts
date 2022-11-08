@@ -5,7 +5,7 @@ import Router from './router';
 import RegistrationPageContainer from '../../pages/registration/registrationContainer';
 
 describe('core/touting/router', () => {
-	const router = new Router('.app');
+    const router = new Router('.app');
     it('should get Route object by pathname', () => {
         initRouter(router);
 
@@ -18,7 +18,7 @@ describe('core/touting/router', () => {
         expect(answer).toEqual({ route, flags });
     });
 
-    it('Should add new route', () => {
+    test('Should add new route', () => {
         const routes = {
             path: '/new-path',
             component: RegistrationPageContainer,
@@ -33,16 +33,5 @@ describe('core/touting/router', () => {
 
         const flags = {};
         expect(answer).toEqual({ route, flags });
-    });
-
-    it('Shoult increment router history', () => {
-
-        initRouter(router);
-
-        router.go('/messenger');
-        router.go('/settings');
-        router.go('/500');
-		// @ts-expect-error
-        expect(router.history.length).toEqual(6);
     });
 });

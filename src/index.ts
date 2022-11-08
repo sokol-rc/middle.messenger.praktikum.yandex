@@ -36,31 +36,37 @@ import { authReducer } from './reducers/authReducer';
 
 require('babel-core/register');
 
-registerComponent(Button);
-registerComponent(DivLikeInput);
-registerComponent(Input);
-registerComponent(InputInner);
-registerComponent(InputError);
-registerComponent(Error);
-registerComponent(Avatar);
-registerComponent(ChatList);
-registerComponent(ChatListContainer);
-registerComponent(ChatItem);
-registerComponent(PersonName);
-registerComponent(Dialog);
-registerComponent(DialogContainer);
-registerComponent(MessagePreview);
-registerComponent(SidebarButton);
-registerComponent(Sidebar);
-registerComponent(SideBarContainer);
-registerComponent(ModalConfirm);
-registerComponent(Form);
-registerComponent(Link);
-registerComponent(DayContainer);
-registerComponent(Message);
-registerComponent(Loader);
-registerComponent(NavSidebar);
-registerComponent(NavSidebarContainer);
+const Components: Array<BlockConstructable> = [
+    Button,
+    DivLikeInput,
+    Input,
+    InputInner,
+    InputError,
+    Error,
+    Avatar,
+    ChatList,
+    ChatListContainer,
+    ChatItem,
+    PersonName,
+    Dialog,
+    DialogContainer,
+    MessagePreview,
+    SidebarButton,
+    Sidebar,
+    SideBarContainer,
+    ModalConfirm,
+    Form,
+    Link,
+    DayContainer,
+    Message,
+    Loader,
+    NavSidebar,
+    NavSidebarContainer,
+];
+
+Components.forEach((component) => {
+    registerComponent(component);
+});
 
 const store: Store = new Store(initialStore, authReducer);
 export type RootStateType = ReturnType<typeof store.getState>;
@@ -70,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.store = store;
     window.router = router;
+    const btn = new Button({ label: 'asdasd' });
+
+    console.log(btn.render());
 
     initRouter(router);
 });
