@@ -45,4 +45,16 @@ describe('componens/button', () => {
         expect(getByTestId(document.body, 'btn-test')).toBeInTheDocument();
         expect(screen.getByRole('button')).toHaveClass('qwerty');
     });
+    it('shoud be called onClick', () => {
+        const mockClick = jest.fn();
+
+        renderBlock({
+            Block: Button as any,
+            props: { onClick: mockClick },
+        });
+
+        const button = getByTestId(document.body, 'btn-test');
+        button.click();
+        expect(mockClick).toHaveBeenCalled();
+    });
 });

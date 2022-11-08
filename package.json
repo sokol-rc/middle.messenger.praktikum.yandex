@@ -5,9 +5,11 @@
     "scripts": {
         "dev": "webpack-dev-server --mode development",
         "start": "npm run build && node server.js",
+        "start:prod": "node server.js",
         "build": "cross-env NODE_ENV=production webpack",
-        "lint": "eslint ./src/**/*.ts && stylelint ./src/**/*.css",
+        "lint": "eslint ./src/**/*.ts --fix && stylelint ./src/**/*.css --fix",
         "test": "jest",
+        "pre-commit": "npm run test && npm run lint",
         "start-webpack": "webpack serve",
         "build-webpack": "webpack"
     },
