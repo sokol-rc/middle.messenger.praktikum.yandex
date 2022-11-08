@@ -17,7 +17,7 @@ WORKDIR /
 COPY --from=build /package*.json /
 COPY --from=build /node_modules/ /node_modules/
 COPY --from=build /dist/ /dist/
-COPY --from=build /server.js /server.js
+COPY --from=build /server.ts /server.ts
 
 EXPOSE 3000
 
