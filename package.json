@@ -16,6 +16,10 @@
     "engines": {
         "node": "14.17.6"
     },
+	"lint-staged": {
+		"./src/**/*.ts": "eslint --fix",
+		"./src/**/*.css": "stylelint --fix"
+	  },
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -46,6 +50,7 @@
         "husky": "^8.0.2",
         "identity-obj-proxy": "3.0.0",
         "jest": "27.5.1",
+        "lint-staged": "^13.0.3",
         "msw": "0.47.4",
         "postcss": "8.4.16",
         "postcss-import": "15.0.0",
