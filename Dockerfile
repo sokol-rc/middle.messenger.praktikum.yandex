@@ -4,12 +4,11 @@ WORKDIR /
 
 COPY . /
 
-RUN npm ci --legacy-peer-deps\
+RUN npm ci\
     && npm run build \
-    && npm prune --production \
-    && npm install express -D
+    && npm prune --production 
 
-FROM node:14-alpine
+FROM node:18-alpine
 
 ENV NODE_ENV=production
 USER node
@@ -17,7 +16,7 @@ WORKDIR /
 COPY --from=build /package*.json /
 COPY --from=build /node_modules/ /node_modules/
 COPY --from=build /dist/ /dist/
-COPY --from=build /server.ts /server.ts
+COPY --from=build /server.js /server.js
 
 EXPOSE 3000
 

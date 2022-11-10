@@ -1,7 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Request, Response } from 'express';
-
-// eslint-disable-next-line import/no-extraneous-dependencies
+// @ts-nocheck
 const express = require('express');
 
 const app = express();
@@ -9,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.static('./dist'));
 
-app.get('*', (_req: Request, res: Response) => {
+app.get('*', (_req, res) => {
     res.sendFile(`${__dirname}/dist/index.html`);
 });
 
