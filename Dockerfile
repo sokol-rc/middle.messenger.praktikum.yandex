@@ -4,7 +4,7 @@ WORKDIR /
 
 COPY . /
 
-RUN npm ci \
+RUN npm ci --legacy-peer-deps\
     && npm run build \
     && npm prune --production \
     && npm install express -D
