@@ -1,4 +1,3 @@
-const path = require('path');
 const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -7,7 +6,7 @@ const baseConfig = require('../webpack.config');
 const config = {
     mode: 'production',
     output: {
-        path: path.resolve(__dirname, 'dist/'),
+        path: '../dist/',
         filename: '[contenthash:8].js',
     },
     optimization: {

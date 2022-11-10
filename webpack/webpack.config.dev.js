@@ -1,4 +1,3 @@
-const path = require('path');
 const { merge } = require('webpack-merge');
 const baseConfig = require('../webpack.config');
 
@@ -13,7 +12,7 @@ const config = {
     },
     devtool: 'source-map',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: '../dist',
         filename: 'bundle.dev.js',
     },
     module: {
