@@ -1,7 +1,7 @@
 module.exports = {
     testEnvironment: 'jsdom',
     setupFiles: ['<rootDir>/src/tests/setupEnv.ts'],
-    setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts'],
+    setupFilesAfterEnv: ['<rootDir>/src/tests/setupJestDom.ts'],
     testMatch: ['<rootDir>/src/**/*.test.ts'],
     moduleNameMapper: {
         '^core(.*)$': '<rootDir>/src/core$1',

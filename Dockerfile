@@ -1,13 +1,13 @@
-FROM node:14-alpine as build
+FROM node:18-alpine as build
 
 WORKDIR /
 
 COPY . /
 
 RUN npm ci \
-	&& npm run build \
-	&& npm prune --production \
-	&& npm install express -D
+    && npm run build \
+    && npm prune --production \
+    && npm install express -D
 
 FROM node:14-alpine
 

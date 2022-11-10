@@ -21,7 +21,7 @@ export type Options = {
 	credentials?: boolean;
 };
 
-function queryStringify(data: any) {
+export function queryStringify(data: any) {
     if (typeof data !== 'object') {
         throw new Error('Data must be object');
     }
