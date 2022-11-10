@@ -31,7 +31,6 @@ export default class Sidebar extends Block<Props> {
     }
 
     onConfirm() {
-        console.log('delete chat');
         this.props.deleteChat(this.props.openedDialogId);
         this.setProps({ isVisibleModal: false });
     }

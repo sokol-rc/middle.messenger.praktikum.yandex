@@ -17,7 +17,6 @@ describe('componens/button', () => {
     let btn = null;
     let answer = null;
     afterEach(() => {
-        // cleanup on exiting
         btn = null;
         answer = null;
     });

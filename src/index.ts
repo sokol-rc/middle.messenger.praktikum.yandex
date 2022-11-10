@@ -76,9 +76,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.store = store;
     window.router = router;
-    const btn = new Button({ label: 'asdasd' });
-
-    console.log(btn.render());
-
     initRouter(router);
 });
