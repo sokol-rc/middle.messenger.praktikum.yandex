@@ -1,25 +1,12 @@
 const path = require('path');
-const dotenv = require('dotenv').config({ path: './.env' });
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
-const mode = process.env.NODE_ENV || 'development';
-const devMode = mode === 'development';
-
-const target = devMode ? 'web' : 'browserslist';
-const devtool = devMode ? 'source-map' : undefined;
-
-module.exports = {
-    target,
-    devtool,
-    mode,
+const config = {
     entry: path.resolve(__dirname, 'src', 'index.ts'),
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        clean: true,
-        filename: 'project-name.bundle.[contenthash].js',
-    },
     resolve: {
         extensions: ['.ts', '.js', '.json'],
         alias: {
@@ -31,18 +18,20 @@ module.exports = {
             handlebars: 'handlebars/dist/handlebars.min.js',
         },
     },
-    performance: {
-        hints: false,
-    },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'src', 'index.html'),
-        }),
-        new webpack.DefinePlugin({
-            'process.env': JSON.stringify(dotenv.parsed),
+            minify: {
+                removeComments: true,
+                collapseWhitespace: false,
+            },
         }),
         new webpack.HotModuleReplacementPlugin(),
+        new BundleAnalyzerPlugin({
+            openAnalyzer: true,
+            analyzerMode: 'server',
+        }),
     ],
     devServer: {
         port: 3000,
@@ -69,13 +58,11 @@ module.exports = {
                 exclude: /(node_modules)/,
             },
             {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader', 'postcss-loader'],
-            },
-            {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource',
             },
         ],
     },
 };
+
+module.exports = config;
