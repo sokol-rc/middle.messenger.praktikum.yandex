@@ -1,4 +1,4 @@
-[![Heroku](https://messenger-sokol-rc.herokuapp.com?app=messenger-sokol-rc)]
+[![Heroku](https://heroku-badge.herokuapp.com/?app=messenger-sokol-rc)]
 
 # Мессенджер SPA
 
