@@ -1,4 +1,4 @@
-import { HTTPTransportResponseType } from "./apiTypes";
+import { HTTPTransportResponseType } from './apiTypes';
 
 type METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -6,19 +6,25 @@ type HttpHeaders = {
     [key: string]: string;
 };
 
-type BodyInit =
-    | Blob
-    | BufferSource
-    | FormData
-    | URLSearchParams
-    | string;
+type HttpMethod = <T = any, R = HTTPTransportResponseType<T>>(
+    url: string,
+    options: Options
+) => Promise<R>;
+
+type BodyInit = Blob | BufferSource | FormData | URLSearchParams | string;
 
 export type Options = {
     timeout?: number;
     headers?: HttpHeaders;
     method?: METHOD;
-	data?: Record<string, any>| Document | BodyInit | XMLHttpRequestBodyInit | null | undefined;
-	credentials?: boolean;
+    data?:
+        | Record<string, any>
+        | Document
+        | BodyInit
+        | XMLHttpRequestBodyInit
+        | null
+        | undefined;
+    credentials?: boolean;
 };
 
 export function queryStringify(data: any) {
@@ -33,33 +39,34 @@ export function queryStringify(data: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class HTTPTransport {
-	private defaultHeaders = { accept: 'application/json', 'Content-Type': 'application/json' } as const;
+    private defaultHeaders = {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+    } as const;
 
-
-    get<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> {
+    get: HttpMethod = (url, options = {} as Options) => {
         if (options.data) {
             url = `${url}${queryStringify(options.data)}`;
         }
-		return this.request(url, { ...options, method: 'GET' })
+        return this.request(url, { ...options, method: 'GET' });
     };
 
-	put<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
-		return this.request(url, { ...options, method: 'PUT' });
-	}
-        
+    put: HttpMethod = (url, options = {} as Options) =>
+        this.request(url, { ...options, method: 'PUT' });
 
-	post<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
-		return this.request(url, { ...options, method: 'POST' });
-	}
-        
+    post: HttpMethod = (url, options = {} as Options) =>
+        this.request(url, { ...options, method: 'POST' });
 
-	delete<T = any, R = HTTPTransportResponseType<T>>(url: string, options: Options = {} as Options): Promise<R> { 
-		return this.request(url, { ...options, method: 'DELETE' });
-	}
-        
+    delete: HttpMethod = (url, options = {} as Options) =>
+        this.request(url, { ...options, method: 'DELETE' });
 
     request = (url: string, options: Options): Promise<any> => {
-        const { timeout = 5000, headers = this.defaultHeaders, data, method } = options;
+        const {
+            timeout = 5000,
+            headers = this.defaultHeaders,
+            data,
+            method,
+        } = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -74,16 +81,21 @@ class HTTPTransport {
                 xhr.setRequestHeader(key, headers[key]);
             });
 
-			xhr.onload = () => {
-				let response: Record<string, any> | string;
-				const isJson = xhr.getResponseHeader('Content-Type')?.includes('application/json');
-				if (isJson) {
-					response = { status: xhr.status, data: JSON.parse(xhr.responseText) }
-				} else { 
-					response = { status: xhr.status, data: xhr.responseText }
-				}
-			  
-				resolve(response);
+            xhr.onload = () => {
+                let response: Record<string, any> | string;
+                const isJson = xhr
+                    .getResponseHeader('Content-Type')
+                    ?.includes('application/json');
+                if (isJson) {
+                    response = {
+                        status: xhr.status,
+                        data: JSON.parse(xhr.responseText),
+                    };
+                } else {
+                    response = { status: xhr.status, data: xhr.responseText };
+                }
+
+                resolve(response);
             };
             xhr.onabort = () => {
                 reject();
@@ -98,13 +110,13 @@ class HTTPTransport {
 
             if (method === 'GET' || !data) {
                 xhr.send();
-			} else if (method === 'PUT' && data) {
+            } else if (method === 'PUT' && data) {
                 xhr.send(data as any);
-			} else if (typeof data !== 'string') {
-					xhr.send(JSON.stringify(data));
-				} else { 
-					xhr.send(data);
-				}
+            } else if (typeof data !== 'string') {
+                xhr.send(JSON.stringify(data));
+            } else {
+                xhr.send(data);
+            }
         });
     };
 }
