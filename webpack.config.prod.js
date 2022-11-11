@@ -28,7 +28,21 @@ const config = {
             },
         ],
     },
-    plugins: [new MiniCssExtractPlugin(), new CompressionPlugin()],
+    plugins: [
+        new MiniCssExtractPlugin(),
+        new CompressionPlugin(),
+        {
+            apply: (compiler) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                compiler.hooks.done.tap('DonePlugin', (stats) => {
+                    console.log('Compile is done !');
+                    setTimeout(() => {
+                        process.exit(0);
+                    });
+                });
+            },
+        },
+    ],
 };
 
 module.exports = merge(baseConfig, { ...config });

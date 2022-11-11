@@ -3,11 +3,10 @@
     "version": "1.0.0",
     "description": "Проектная работа Яндекс.Практикум. Курс мидл фронтенд-разработчик.",
     "scripts": {
-        "dev": "webpack-dev-server --mode development",
         "start": "npm run build && node server.js",
         "start:prod": "node server.js",
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js",
-        "dev-build": "cross-env NODE_ENV=development webpack-dev-server --hot --config webpack.config.dev.js",
+        "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --config webpack.config.dev.js",
         "lint": "eslint ./src/**/*.ts --fix && stylelint ./src/**/*.css --fix",
         "test": "jest",
         "pre-commit": "npm run test && npm run lint",
