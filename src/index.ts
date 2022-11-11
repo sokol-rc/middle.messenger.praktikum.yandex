@@ -77,4 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.store = store;
     window.router = router;
     initRouter(router);
+    if (process.env.NODE_ENV === 'development') {
+        store.on('changed', (nextState) => {
+            console.log(
+                '%cstore updated',
+                'background: #222; color: #7B68EE',
+                nextState
+            );
+        });
+    }
 });
