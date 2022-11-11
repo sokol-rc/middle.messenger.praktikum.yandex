@@ -13,6 +13,7 @@ type Props = {
     user: Record<string, string>;
     onSubmit: (event: SubmitEvent) => void;
     getUserInfo: () => void;
+    goBack: () => void;
     saveUserInfo: (data: {
         data: UserProfileType;
         avatar: FormData | null;
@@ -37,6 +38,7 @@ export default class ProfilePage extends Block<Props> {
             phonePattern: this.patterns.phonePattern,
             passwordPattern: this.patterns.passwordPattern,
             user: this.props.user,
+            goBack: this.goBack.bind(this),
         });
     }
 
@@ -46,6 +48,10 @@ export default class ProfilePage extends Block<Props> {
         if (this.props.user !== null) {
             this.props.getUserInfo();
         }
+    }
+
+    goBack() {
+        window.router.back();
     }
 
     validateOnFocus(inputRef: ValidateInput): void {
@@ -303,6 +309,7 @@ export default class ProfilePage extends Block<Props> {
 		</div>
 			{{/Form}}
 		</div>
+        {{{Button label="Вернуться" onClick=goBack}}}
 	</main>
 `;
     }

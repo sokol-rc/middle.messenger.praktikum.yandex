@@ -8,7 +8,7 @@ type HttpHeaders = {
 
 type HttpMethod = <T = any, R = HTTPTransportResponseType<T>>(
     url: string,
-    options: Options
+    options?: Options
 ) => Promise<R>;
 
 type BodyInit = Blob | BufferSource | FormData | URLSearchParams | string;
