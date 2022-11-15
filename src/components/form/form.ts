@@ -18,7 +18,7 @@ export default class Form extends Block<Props> {
     static componentName = 'Form';
 
     protected render(): string {
-        return `<form class="{{className}}" action="">
+        return `<form data-testid="loginForm" class="{{className}}" action="">
 		<div data-cont="1"></div>
 
 	</form> `;

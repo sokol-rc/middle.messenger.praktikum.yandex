@@ -24,12 +24,8 @@ export default class ChatPage extends Block<Props> {
     }
 
     componentWillUnmount(): void {
-        console.log('unmout');
-        // console.log(this.props.openedDialog);
 
-        // if (this.props.openedDialog !== null && this.props.openedDialog.isSocketReady) {
         this.props.closeAllSockets();
-        // }
     }
 
     componentDidMount(): void {

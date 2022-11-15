@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
-import Handlebars from 'handlebars';
 import EventBus from './EventBus';
+// import Handlebars from 'handlebars';
+const Handlebars = require('handlebars');
 
 type Events = Values<typeof Block.EVENTS>;
 
@@ -59,13 +60,13 @@ export default class Block<P extends Record<string, any>> {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
 
-	_componentDidMount() {
-		this._checkInDom();
+    _componentDidMount() {
+        this._checkInDom();
         this.componentDidMount();
     }
 
-	_componentWillUnmount() {
-		this.eventBus().destroy();
+    _componentWillUnmount() {
+        this.eventBus().destroy();
         this.componentWillUnmount();
     }
 
@@ -74,7 +75,6 @@ export default class Block<P extends Record<string, any>> {
     componentDidMount() {}
 
     _componentDidUpdate() {
-
         const response = true;
         if (!response) {
             return;

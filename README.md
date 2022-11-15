@@ -1,19 +1,41 @@
-[![Build Status](https://badges.netlify.app/api/classy-squirrel-825120.svg?branch=deploy)](https://classy-squirrel-825120.netlify.app/)
+[![Heroku](https://heroku-badge.herokuapp.com/?app=messenger-sokol-rc)]
 
-# Мессенджер SPA
+# LiveDemo
 
-Проектная работа Яндекс.Практикум. Курс мидл фронтенд-разработчик.
+Ссылка на heroku: https://messenger-sokol-rc.herokuapp.com
 
+# Описание
 
-## Подробная:
+_Проектная работа Яндекс.Практикум. Курс мидл фронтенд-разработчик._
+
+Это мессенджер, альтернативная платформа для коммуникаций.
+
+# Функционал
+
+-Регистрация
+-Авторизация
+-Наполнение профиля пользователя
+-Загрузка списка чатов
+-Создание чата
+-Удаление чата
+-Отправка текстовых сообщений
+-Получение текстовых сообщений других участников чата онлайн
+
+# План развития
+
+-Редизайн
+-Статус получения/прочтения сообщений (fix API)
+-Лучший контроль создания новых чатов и добавления пользователей
+
+## Установка:
+
 ```
 npm run dev # запуск проекта локально
-npm run build # сборка проекта
-npm run start # сборка + запуск проекта на 3000 порту
+npm run start # сборка проекта & запуск на 300 порту
 npm run lint # ESLint + Stylelint
+npm run test # Jest tests
 ```
 
+# Дизайн
+
 Макеты в figma: https://www.figma.com/file/Dhb1EOJFJ2U1X430XoKSTr/yandex-praktikum-messenger?node-id=0%3A1
-
-
-Ссылка на netlify: https://classy-squirrel-825120.netlify.app/

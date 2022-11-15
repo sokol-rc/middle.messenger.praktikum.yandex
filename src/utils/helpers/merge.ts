@@ -23,22 +23,9 @@ export function merge(lhs: Indexed, rhs: Indexed): Indexed {
             console.log((e as Error).message);
         }
     }
-    console.log(lhs);
-
     return lhs;
 }
 
 export default merge;
 
 merge({ a: { b: { a: 2 } }, d: 5 }, { a: { b: { c: 1 } } });
-/*
-  {
-	  a: {
-		  b: {
-			  a: 2,
-			  c: 1,
-		  }
-	  },
-	  d: 5,
-  }
-  */

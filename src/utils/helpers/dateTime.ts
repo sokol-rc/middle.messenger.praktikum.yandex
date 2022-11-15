@@ -1,12 +1,9 @@
-import { DayType } from "core/store/initial-store";
+import { DayType } from 'core/store/initial-store';
 
 export const getDayId = (dateString: string) => {
-    const date = new Date(dateString).toLocaleDateString([], {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
-    const dateId = date.split('.').join('');
+    const date = new Date(dateString).toISOString().split('T')[0];
+
+    const dateId = date.split('-').join('');
     return Number(dateId);
 };
 
@@ -22,13 +19,16 @@ export const getMessageTimeFromDate = (date: string) => {
     const time = new Date(date).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
-	});
-	return time;
+    });
+    return time;
 };
 
 export const getDayTextFromDate = (date: string) => {
-	const d = new Date(date);
-	const months = 'января,февраля,марта,апреля,мая,июня,июля,августа,сентября,октября,ноября,декабря'.split(',');
-	const dayText = `${d.getDate()} ${months[d.getMonth()]}`
-	return dayText;
-	}
+    const d = new Date(date);
+    const months =
+        'января,февраля,марта,апреля,мая,июня,июля,августа,сентября,октября,ноября,декабря'.split(
+            ','
+        );
+    const dayText = `${d.getDate()} ${months[d.getMonth()]}`;
+    return dayText;
+};
